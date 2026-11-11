@@ -1,0 +1,418 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    font-family: Arial, sans-serif;
+    color: #222;
+    background: #d9d9d9;
+    font-synthesis: none;
+  }
+
+  body {
+    min-width: 1100px;
+    min-height: 100vh;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.app-frame {
+  width: min(1440px, 100%);
+  min-height: 1024px;
+  margin: 0 auto;
+  background: #fff;
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
+  position: relative;
+  padding-bottom: 70px;
+}
+
+.topbar {
+  height: 76px;
+  border-bottom: 2px solid #222;
+  padding: 0 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eee;
+}
+
+.logo {
+  border: 0;
+  background: transparent;
+  font-size: 24px;
+  font-weight: 700;
+  padding: 8px 0;
+}
+
+.topbar nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar nav > button:not(.button) {
+  border: 0;
+  background: transparent;
+  padding: 12px 14px;
+  color: #333;
+}
+
+.topbar nav > button.active:not(.button) {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+main {
+  padding: 50px 72px;
+}
+
+h1 {
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+p {
+  line-height: 1.5;
+}
+
+.page-header {
+  min-height: 60px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.page-header p {
+  color: #555;
+  margin: 0;
+}
+
+.button {
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid #0759b8;
+  background: #1267c8;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.button:hover {
+  background: #0759b8;
+}
+
+.button-secondary {
+  border-color: #555;
+  background: #fff;
+  color: #222;
+}
+
+.button-secondary:hover {
+  background: #e8e8e8;
+}
+
+.button-danger {
+  border-color: #333;
+  background: #555;
+  color: #fff;
+}
+
+.narrow-panel {
+  width: 520px;
+  margin: 20px auto 0;
+  border: 1px solid #777;
+  padding: 36px;
+}
+
+.medium-panel {
+  max-width: 850px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.field > span,
+.filter-row label > span {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #666;
+  background: #fff;
+  padding: 11px 12px;
+  color: #222;
+  border-radius: 0;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #777;
+}
+
+.role-choice {
+  border: 1px solid #999;
+  padding: 16px;
+  margin: 0 0 20px;
+}
+
+.role-choice legend {
+  padding: 0 5px;
+  font-weight: 700;
+}
+
+.role-choice label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 30px;
+}
+
+.role-choice input {
+  width: auto;
+}
+
+.form-actions,
+.inline-actions,
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-actions {
+  margin-top: 24px;
+}
+
+.text-link {
+  border: 0;
+  background: transparent;
+  padding: 16px 0 0;
+  color: #222;
+  text-decoration: underline;
+}
+
+.search-row {
+  display: grid;
+  grid-template-columns: 1fr 300px auto;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid #888;
+  background: #eee;
+  margin-bottom: 28px;
+}
+
+.card-list {
+  display: grid;
+  gap: 14px;
+}
+
+.offer-card {
+  border: 1px solid #777;
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 0.75fr) auto;
+  align-items: center;
+  gap: 22px;
+}
+
+.offer-card h2,
+.offer-card p {
+  margin: 0;
+}
+
+.offer-card b {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.detail-section,
+.summary-box,
+.questions,
+.upload-box {
+  border: 1px solid #888;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.detail-section h2:not(:first-child) {
+  margin-top: 24px;
+}
+
+.questions {
+  background: #eee;
+}
+
+.question-block {
+  border: 1px solid #999;
+  background: #fff;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.question-block div {
+  border-top: 1px solid #bbb;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.summary-box p {
+  margin: 4px 0;
+}
+
+.summary-box .button {
+  margin-top: 18px;
+}
+
+.file-row,
+.upload-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.file-row {
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #eee;
+  border: 1px solid #999;
+}
+
+.upload-box p {
+  margin: 5px 0 0;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 22px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #666;
+}
+
+th,
+td {
+  padding: 15px 16px;
+  border-bottom: 1px solid #aaa;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background: #ddd;
+  font-size: 13px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #666;
+}
+
+tbody tr:nth-child(even) {
+  background: #f3f3f3;
+}
+
+.status {
+  display: inline-block;
+  min-width: 82px;
+  padding: 6px 9px;
+  border: 1px solid #777;
+  background: #eee;
+  text-align: center;
+  font-size: 13px;
+}
+
+.table-actions button {
+  border: 0;
+  background: transparent;
+  padding: 3px;
+  text-decoration: underline;
+}
+
+.filter-row {
+  width: 360px;
+  margin-bottom: 22px;
+}
+
+.add-row {
+  width: 620px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.logo-placeholder {
+  width: 150px;
+  height: 110px;
+  border: 1px solid #666;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.prototype-switcher {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 54px;
+  padding: 0 72px;
+  border-top: 1px solid #999;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+}
+
+.prototype-switcher span {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.prototype-switcher button {
+  border: 1px solid #777;
+  background: #fff;
+  padding: 6px 12px;
+}
+
+.prototype-switcher button.active {
+  background: #333;
+  color: #fff;
+}

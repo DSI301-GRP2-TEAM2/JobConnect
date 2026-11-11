@@ -1,0 +1,10 @@
+{
+  "description": "A job board connecting candidates with employers to discover roles, manage applications, and review applicants, with admin tools for moderating listings and users.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

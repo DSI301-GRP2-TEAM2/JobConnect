@@ -19,6 +19,7 @@ app.http("register", {
         };
       }
 
+      // Les agents ne peuvent pas s'inscrire eux-mêmes
       if (!["candidat", "entreprise"].includes(role)) {
         return {
           status: 400,
@@ -48,6 +49,8 @@ app.http("register", {
         mdp: hash,
         role,
         prenom: body.prenom,
+        telephone: body.telephone,
+        adresse: body.adresse,
         nomEntreprise: body.nomEntreprise,
         secteur: body.secteur,
         siteWeb: body.siteWeb,

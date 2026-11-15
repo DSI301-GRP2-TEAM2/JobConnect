@@ -15,6 +15,16 @@ jobs:
     defaults:
       run:
         working-directory: api
+
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
+    env:
+      TEST_MONGODB_URI: mongodb://localhost:27017/jobconnect_test
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,4 +38,7 @@ jobs:
         run: npm ci
 
       - name: Check syntax
-        run: for f in $(find src -name "*.js"); do node --check "$f"; done
+        run: for f in $(find src tests -name "*.js"); do node --check "$f"; done
+
+      - name: Run tests (login and register)
+        run: npm test

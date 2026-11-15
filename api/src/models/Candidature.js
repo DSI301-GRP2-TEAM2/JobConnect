@@ -16,5 +16,8 @@ const candidatureSchema = new mongoose.Schema(
   { collection: "candidatures" }
 );
 
+// Une seule candidature par candidat et par offre
+candidatureSchema.index({ candidat: 1, offre: 1 }, { unique: true });
+
 module.exports =
   mongoose.models.Candidature || mongoose.model("Candidature", candidatureSchema);

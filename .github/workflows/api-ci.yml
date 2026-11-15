@@ -5,9 +5,15 @@ on:
     branches: [main]
     paths:
       - "api/**"
+      - ".github/workflows/api-ci.yml"
   pull_request:
     paths:
       - "api/**"
+  workflow_dispatch:
+
+env:
+  # Nom exact de ton App Service dans Azure (avec ton suffixe s'il y en a un)
+  AZURE_WEBAPP_NAME: jobconnect-team2-api
 
 jobs:
   build:
@@ -42,3 +48,27 @@ jobs:
 
       - name: Run tests (login and register)
         run: npm test
+
+  deploy:
+    # Déploie seulement depuis main, jamais depuis une pull request
+    needs: build
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install production dependencies
+        working-directory: api
+        run: npm ci --omit=dev
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: api

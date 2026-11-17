@@ -12,13 +12,11 @@ const offerSchema = new mongoose.Schema(
       default: "en_attente",
     },
 
-    // hybride : référence + résumé intégré (nom affiché dans les listes d'offres)
     entreprise: {
       id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
       nomEntreprise: { type: String, required: true },
     },
 
-    // référence
     categorie: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
   },
   { collection: "offres" }

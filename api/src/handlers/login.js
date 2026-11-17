@@ -24,7 +24,6 @@ async function loginHandler(request, context) {
 
     await connect();
 
-    // mdp est exclu par défaut du modèle : on le demande explicitement
     const user = await User.findOne({ email: email.toLowerCase().trim() }).select("+mdp");
     const valid = user && (await bcrypt.compare(mdp, user.mdp));
 

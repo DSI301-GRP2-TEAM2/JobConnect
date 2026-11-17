@@ -9,26 +9,21 @@ const userSchema = new mongoose.Schema(
     statut: { type: String, enum: ["actif", "bloque"], default: "actif" },
     dateInscription: { type: Date, default: Date.now },
 
-    // candidat
     prenom: String,
     cv: String,
 
-    // candidat et entreprise
     telephone: String,
     adresse: String,
 
-    // entreprise
     nomEntreprise: String,
     secteur: String,
     siteWeb: String,
 
-    // agent
     matricule: String,
   },
   { collection: "users" }
 );
 
-// Le mot de passe n'apparaît jamais dans une réponse JSON
 userSchema.set("toJSON", {
   transform: (doc, ret) => {
     delete ret.mdp;

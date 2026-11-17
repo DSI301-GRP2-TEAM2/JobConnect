@@ -1,7 +1,6 @@
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9 ]{8,15}$/;
 
-// Champs propres à chaque rôle (l'agent ne s'inscrit pas lui-même)
 const ROLE_FIELDS = {
   candidat: {
     required: ["prenom"],
@@ -26,7 +25,6 @@ function isValidUrl(value) {
   }
 }
 
-// Retourne { errors: [...] } si invalide, sinon { data: {...} }
 function validateRegister(body) {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return { errors: ["Corps de requête invalide"] };
@@ -79,7 +77,6 @@ function validateRegister(body) {
     return { errors };
   }
 
-  // On ne garde que les champs autorisés pour ce rôle
   const data = {
     nom: body.nom.trim(),
     email: body.email.trim().toLowerCase(),

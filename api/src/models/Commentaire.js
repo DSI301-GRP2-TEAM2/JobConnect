@@ -7,7 +7,6 @@ const commentaireSchema = new mongoose.Schema(
     offre: { type: mongoose.Schema.Types.ObjectId, ref: "Offer", required: true },
     candidat: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
-    // intégré : réponses de l'entreprise (peu nombreuses, lues avec le commentaire)
     reponses: [
       {
         entreprise: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },

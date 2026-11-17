@@ -49,8 +49,6 @@ test.after(async () => {
   await mongoose.disconnect();
 });
 
-// ---------- register ----------
-
 test("register : crée un candidat valide", { skip }, async () => {
   const res = await registerHandler(fakeRequest(candidat), context);
   assert.equal(res.status, 201);
@@ -116,8 +114,6 @@ test("register : refuse le rôle agent", { skip }, async () => {
   );
   assert.equal(res.status, 400);
 });
-
-// ---------- login ----------
 
 test("login : retourne un token avec les bons identifiants", { skip }, async () => {
   const res = await loginHandler(

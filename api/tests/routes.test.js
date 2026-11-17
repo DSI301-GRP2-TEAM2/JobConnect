@@ -5,6 +5,7 @@ const http = require("node:http");
 const TEST_URI = process.env.TEST_MONGODB_URI;
 const skip = TEST_URI ? false : "TEST_MONGODB_URI non défini : tests ignorés";
 
+// À définir avant d'importer server.js (lu au chargement du module)
 process.env.CORS_ORIGIN = "https://front.test";
 if (TEST_URI) {
   process.env.MONGODB_URI = TEST_URI;
@@ -18,6 +19,7 @@ const app = require("../src/server");
 let server;
 let port;
 
+// Requête HTTP réelle vers le serveur Express de test
 function request(method, path, body, headers = {}) {
   return new Promise((resolve, reject) => {
     const data =
@@ -85,6 +87,8 @@ test.after(async () => {
   }
 });
 
+// ---------- sans base de données ----------
+
 test("GET /api/health répond ok", async () => {
   const res = await request("GET", "/api/health");
   assert.equal(res.status, 200);
@@ -124,6 +128,8 @@ test("CORS : une autre origine n'est pas autorisée", async () => {
   });
   assert.equal(res.headers["access-control-allow-origin"], undefined);
 });
+
+// ---------- avec base de données ----------
 
 test("POST /api/auth/register crée un candidat", { skip }, async () => {
   const res = await request("POST", "/api/auth/register", candidat);

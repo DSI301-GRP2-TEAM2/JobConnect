@@ -3,7 +3,7 @@ const router = express.Router();
 const candidatureController = require('../controllers/candidatureController');
 const { verifyToken, authorizeRoles } = require('../middlewares/authMiddleware');
 
-// US-22 : Liste des candidatures du candidat connecté (doit être placée avant /:id)
+// US-22 (doit être placée avant /:id)
 router.get(
   '/mes-candidatures',
   verifyToken,
@@ -11,7 +11,7 @@ router.get(
   candidatureController.getMesCandidatures
 );
 
-// US-20 : Dossier complet d'un candidat
+// US-20 
 router.get(
   '/:id',
   verifyToken,
@@ -19,7 +19,7 @@ router.get(
   candidatureController.getDossierCandidat
 );
 
-// US-21 : Accepter ou refuser une candidature
+// US-21 
 router.patch(
   '/:id/statut',
   verifyToken,

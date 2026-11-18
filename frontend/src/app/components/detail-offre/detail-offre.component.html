@@ -1,0 +1,79 @@
+<section id="tab-detail">
+  <button class="back-link" (click)="onRetour()">← Retour aux offres</button>
+
+  <div *ngIf="loading" class="status-info">
+    Chargement du détail de l'offre...
+  </div>
+
+  <div *ngIf="error" class="error-box">
+    {{ error }}
+  </div>
+
+  <div class="detail-card" *ngIf="!loading && offre">
+    <div class="detail-top-bar">
+      <div>
+        <span class="badge badge-success">{{ offre.categorie?.libelle || 'Général' }}</span>
+        <h2 class="detail-title">{{ offre.titre }}</h2>
+        <p class="detail-company">🏢 {{ getEntrepriseNom() }}</p>
+        <p class="detail-date">Publiée le {{ formatDate(offre.dateCreation) }}</p>
+      </div>
+      <button class="btn btn-primary" (click)="postuler()">Postuler</button>
+    </div>
+
+    <div *ngIf="postulerMessage" class="info-alert">
+      {{ postulerMessage }}
+    </div>
+
+    <div class="detail-section">
+      <h4>Missions & Description du poste</h4>
+      <p class="detail-desc">{{ offre.description }}</p>
+    </div>
+
+    <div class="detail-section">
+      <h4>Conditions & Rémunération</h4>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Rémunération</strong>
+          <span>{{ formatSalary(offre.salaire) }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Statut de l'offre</strong>
+          <span class="badge badge-success">Publiée (active)</span>
+        </div>
+        <div class="info-item" *ngIf="offre.typeContrat">
+          <strong>Type de contrat</strong>
+          <span>{{ offre.typeContrat }}</span>
+        </div>
+        <div class="info-item" *ngIf="offre.localisation">
+          <strong>Localisation</strong>
+          <span>{{ offre.localisation }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h4>Informations Entreprise</h4>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Entreprise</strong>
+          <span>{{ getEntrepriseNom() }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Secteur d'activité</strong>
+          <span>{{ getEntrepriseSecteur() }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Site web</strong>
+          <span *ngIf="getEntrepriseSiteWeb()">
+            <a [href]="getEntrepriseSiteWeb()" target="_blank" rel="noopener noreferrer">{{ getEntrepriseSiteWeb() }}</a>
+          </span>
+          <span *ngIf="!getEntrepriseSiteWeb()">Non précisé</span>
+        </div>
+        <div class="info-item">
+          <strong>Contact</strong>
+          <span>{{ getEntrepriseEmail() }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

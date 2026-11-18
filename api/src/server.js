@@ -10,17 +10,15 @@ const { authMiddleware, requireRole } = require("./middleware/auth");
 const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
+const { getOffresPublieesHandler } = require("./handlers/getOffres");
 
 const app = express();
 
-// Configuration du moteur EJS pour les vues Agent
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Fichiers statiques (CSS pour les vues EJS)
 app.use(express.static(path.join(__dirname, "public")));
 
-// CORS_ORIGIN
 const origins = (process.env.CORS_ORIGIN || "")
   .split(",")
   .map((o) => o.trim())
@@ -39,7 +37,6 @@ const context = {
   log: (...args) => console.log(...args),
 };
 
-// Adapte un handler (request, context) -> { status, jsonBody } à Express
 function adapt(handler) {
   return async (req, res) => {
     try {
@@ -52,7 +49,6 @@ function adapt(handler) {
         headers: req.headers,
       };
       const result = await handler(requestObj, context);
-      // Si un agent se connecte, positionner le cookie sécurisé
       if (result.status === 200 && result.jsonBody?.token && result.jsonBody?.user?.role === "agent") {
         res.cookie("token", result.jsonBody.token, {
           httpOnly: true,
@@ -68,7 +64,6 @@ function adapt(handler) {
   };
 }
 
-// Extraction sécurisée d'un cookie par nom
 function getCookie(req, name) {
   const cookieHeader = req.headers.cookie;
   if (!cookieHeader) return null;
@@ -76,13 +71,11 @@ function getCookie(req, name) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-// Middleware de protection des routes EJS Agent (utilise un cookie sécurisé ou Bearer token)
 function agentAuth(req, res, next) {
   const authHeader = req.headers["authorization"] || req.headers["Authorization"];
   const bearerToken =
     authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
 
-  // Récupération sécurisée depuis le cookie (token, agent_token ou jwt)
   const cookieToken =
     getCookie(req, "token") ||
     getCookie(req, "agent_token") ||
@@ -110,12 +103,10 @@ function agentAuth(req, res, next) {
   }
 }
 
-// ---------------- Routes publiques ----------------
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.post("/api/auth/register", adapt(registerHandler));
 app.post("/api/auth/login", adapt(loginHandler));
 
-// ---------------- Vues et actions Agent EJS (US-13 protégées par Cookie) ----------------
 app.get("/agent/offres", agentAuth, async (req, res) => {
   try {
     await connect();
@@ -153,7 +144,6 @@ app.post("/agent/offres/:id/reject", agentAuth, async (req, res) => {
   }
 });
 
-// ---------------- API JSON US-13 : Refuser une offre (Agent) ----------------
 app.patch(
   "/api/offres/:id/reject",
   authMiddleware,
@@ -161,7 +151,13 @@ app.patch(
   adapt(rejectOffreHandler)
 );
 
-// Erreurs de parsing (JSON invalide) et erreurs inattendues
+app.get(
+  "/api/offres",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getOffresPublieesHandler)
+);
+
 app.use((err, req, res, next) => {
   if (err.type === "entity.parse.failed") {
     return res.status(400).json({ errors: ["JSON invalide"] });

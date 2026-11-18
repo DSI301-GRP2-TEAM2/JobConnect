@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 
 const offerSchema = new mongoose.Schema(
   {
-    titre: { type: String, required: true },
-    description: { type: String, required: true },
+    titre: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
     salaire: Number,
     dateCreation: { type: Date, default: Date.now },
     statut: {
       type: String,
-      enum: ["en_attente", "publiee", "rejetee"],
-      default: "en_attente",
+      enum: ["brouillon", "en_attente", "publiee", "rejetee"],
+      default: "brouillon",
     },
 
     entreprise: {

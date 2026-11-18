@@ -1,0 +1,49 @@
+<section id="tab-catalogue">
+  <div class="section-header">
+    <div>
+      <h2>Offres d'emploi</h2>
+      <p>Consultez la liste des offres d'emploi publiées et découvrez vos opportunités.</p>
+    </div>
+    <button class="btn btn-outline btn-sm" (click)="loadOffres()">Rafraîchir</button>
+  </div>
+
+  <div *ngIf="!authService.isAuthenticated()" class="unauth-card">
+    <p>Vous devez être connecté en tant que <strong>Candidat</strong> pour consulter les offres d'emploi.</p>
+    <button class="btn btn-primary" (click)="authService.openLoginModal()">Se connecter comme Candidat</button>
+  </div>
+
+  <div *ngIf="authService.isAuthenticated() && loading" class="status-info">
+    Chargement des offres d'emploi...
+  </div>
+
+  <div *ngIf="authService.isAuthenticated() && !loading && allOffres.length === 0" class="status-info">
+    Aucune offre d'emploi publiée pour le moment.
+  </div>
+
+  <div *ngIf="authService.isAuthenticated() && !loading && allOffres.length > 0" class="grid-cards">
+    <div class="card" *ngFor="let o of pagedOffres">
+      <div>
+        <div class="card-header">
+          <h3 class="card-title">{{ o.titre }}</h3>
+          <span class="badge badge-success">{{ o.categorie?.libelle || 'Général' }}</span>
+        </div>
+        <div class="card-company">
+          🏢 {{ o.entreprise?.nomEntreprise || 'Entreprise' }}
+          <span *ngIf="o.localisation">• {{ o.localisation }}</span>
+          <span *ngIf="o.typeContrat">• {{ o.typeContrat }}</span>
+        </div>
+        <p class="card-desc">{{ o.description }}</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-salary">{{ formatSalary(o.salaire) }}</span>
+        <span class="card-date">Publiée le {{ formatDate(o.dateCreation) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="authService.isAuthenticated() && !loading && totalPages > 1">
+    <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">&lt;</button>
+    <button class="page-btn" *ngFor="let p of pages" [class.active]="p === currentPage" (click)="goToPage(p)">{{ p }}</button>
+    <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">&gt;</button>
+  </div>
+</section>

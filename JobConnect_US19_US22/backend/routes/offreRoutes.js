@@ -3,7 +3,7 @@ const router = express.Router();
 const candidatureController = require('../controllers/candidatureController');
 const { verifyToken, authorizeRoles } = require('../middlewares/authMiddleware');
 
-// US-19 : Liste des candidatures d'une offre
+// US-19 
 router.get(
   '/:id/candidatures',
   verifyToken,

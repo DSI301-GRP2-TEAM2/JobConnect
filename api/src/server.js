@@ -11,6 +11,7 @@ const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { getOffresPublieesHandler, getOffreByIdHandler } = require("./handlers/getOffres");
+const { updateProfilCandidatHandler, getProfilCandidatHandler } = require("./handlers/profilCandidat");
 
 const app = express();
 
@@ -163,6 +164,20 @@ app.get(
   authMiddleware,
   requireRole("candidat"),
   adapt(getOffreByIdHandler)
+);
+
+app.put(
+  "/api/candidats/me",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(updateProfilCandidatHandler)
+);
+
+app.get(
+  "/api/candidats/me",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getProfilCandidatHandler)
 );
 
 app.use((err, req, res, next) => {

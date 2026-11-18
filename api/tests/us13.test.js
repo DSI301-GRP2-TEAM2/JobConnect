@@ -110,29 +110,34 @@ test("US-13 API Validation : PATCH /api/offres/:id/reject avec identifiant inval
   assert.equal(res.status, 400);
 });
 
-test("US-13 EJS Sécurité : GET /agent/offres sans token -> 401", async () => {
+test("US-13 EJS Sécurité : GET /agent/offres sans token ni cookie -> 401", async () => {
   const res = await request("GET", "/agent/offres");
   assert.equal(res.status, 401);
 });
 
-test("US-13 EJS Sécurité : GET /agent/offres avec rôle candidat -> 403", async () => {
+test("US-13 EJS Sécurité : GET /agent/offres avec token dans l'URL uniquement est refusé -> 401", async () => {
+  const res = await request("GET", `/agent/offres?token=${agentToken}`);
+  assert.equal(res.status, 401);
+});
+
+test("US-13 EJS Sécurité : GET /agent/offres avec cookie candidat -> 403", async () => {
   const res = await request("GET", "/agent/offres", undefined, {
-    authorization: `Bearer ${candidatToken}`,
+    cookie: `token=${candidatToken}`,
   });
   assert.equal(res.status, 403);
 });
 
-test("US-13 EJS Sécurité : POST /agent/offres/:id/reject sans token -> 401", async () => {
+test("US-13 EJS Sécurité : POST /agent/offres/:id/reject sans token ni cookie -> 401", async () => {
   const res = await request("POST", "/agent/offres/507f1f77bcf86cd799439011/reject");
   assert.equal(res.status, 401);
 });
 
-test("US-13 EJS Sécurité : POST /agent/offres/:id/reject avec rôle candidat -> 403", async () => {
+test("US-13 EJS Sécurité : POST /agent/offres/:id/reject avec cookie candidat -> 403", async () => {
   const res = await request(
     "POST",
     "/agent/offres/507f1f77bcf86cd799439011/reject",
     {},
-    { authorization: `Bearer ${candidatToken}` }
+    { cookie: `token=${candidatToken}` }
   );
   assert.equal(res.status, 403);
 });
@@ -141,8 +146,10 @@ test("US-13 EJS Sécurité : POST /agent/offres/:id/reject avec rôle candidat -
 // Tests fonctionnels avec base de données (exécutés dans GitHub Actions)
 // -------------------------------------------------------------
 
-test("US-13 EJS : GET /agent/offres avec agentToken répond 200 et affiche la vue", { skip }, async () => {
-  const res = await request("GET", `/agent/offres?token=${agentToken}`);
+test("US-13 EJS : GET /agent/offres avec cookie agent valide répond 200 et affiche la vue", { skip }, async () => {
+  const res = await request("GET", "/agent/offres", undefined, {
+    cookie: `token=${agentToken}`,
+  });
   assert.equal(res.status, 200);
   assert.ok(res.raw.includes("Offres en attente de validation"));
   assert.ok(res.raw.includes("agent.css"));
@@ -197,7 +204,7 @@ test("US-13 Fonctionnel : L'agent refuse une offre en attente via l'API", { skip
   await Category.deleteMany({ libelle: "Cat US13 API" });
 });
 
-test("US-13 Fonctionnel : L'agent refuse une offre via l'interface EJS (redirection 302)", { skip }, async () => {
+test("US-13 Fonctionnel : L'agent refuse une offre via l'interface EJS avec cookie (redirection sans token dans l'URL)", { skip }, async () => {
   await Offer.deleteMany({ titre: /Test US13 EJS/ });
 
   const cat = await Category.create({ libelle: "Cat US13 EJS", description: "Desc" });
@@ -218,15 +225,16 @@ test("US-13 Fonctionnel : L'agent refuse une offre via l'interface EJS (redirect
     categorie: cat._id,
   });
 
-  // Action POST sur /agent/offres/:id/reject avec token agent -> 302 Redirection
+  // Action POST sur /agent/offres/:id/reject avec cookie token agent -> 302 Redirection sans token en URL
   const res = await request(
     "POST",
     `/agent/offres/${offre._id}/reject`,
-    { token: agentToken },
-    { authorization: `Bearer ${agentToken}` }
+    {},
+    { cookie: `token=${agentToken}` }
   );
   assert.equal(res.status, 302);
   assert.ok(res.headers.location.includes("success"));
+  assert.ok(!res.headers.location.includes("token"));
 
   const check = await Offer.findById(offre._id);
   assert.equal(check.statut, "rejetee");

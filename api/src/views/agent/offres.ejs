@@ -74,7 +74,6 @@
             <div class="offer-actions">
               <!-- Formulaire de refus d'offre (US-13) -->
               <form action="/agent/offres/<%= offre._id %>/reject" method="POST" onsubmit="return confirm('Confirmer le refus de cette offre ?');">
-                <input type="hidden" name="token" value="<%= typeof token !== 'undefined' && token ? token : '' %>">
                 <button type="submit" class="btn-reject">
                   Refuser l'offre (US-13)
                 </button>

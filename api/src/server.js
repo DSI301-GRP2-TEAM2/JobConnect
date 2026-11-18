@@ -52,6 +52,14 @@ function adapt(handler) {
         headers: req.headers,
       };
       const result = await handler(requestObj, context);
+      // Si un agent se connecte, positionner le cookie sécurisé
+      if (result.status === 200 && result.jsonBody?.token && result.jsonBody?.user?.role === "agent") {
+        res.cookie("token", result.jsonBody.token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+        });
+      }
       res.status(result.status).json(result.jsonBody);
     } catch (err) {
       console.error(err);
@@ -60,16 +68,30 @@ function adapt(handler) {
   };
 }
 
-// Middleware de protection des routes EJS Agent (supporte Bearer header, query et body)
+// Extraction sécurisée d'un cookie par nom
+function getCookie(req, name) {
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+// Middleware de protection des routes EJS Agent (utilise un cookie sécurisé ou Bearer token)
 function agentAuth(req, res, next) {
   const authHeader = req.headers["authorization"] || req.headers["Authorization"];
-  const token =
-    authHeader && authHeader.startsWith("Bearer ")
-      ? authHeader.split(" ")[1]
-      : req.query.token || req.body?.token;
+  const bearerToken =
+    authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+
+  // Récupération sécurisée depuis le cookie (token, agent_token ou jwt)
+  const cookieToken =
+    getCookie(req, "token") ||
+    getCookie(req, "agent_token") ||
+    getCookie(req, "jwt");
+
+  const token = cookieToken || bearerToken;
 
   if (!token) {
-    return res.status(401).send("Accès refusé : token manquant");
+    return res.status(401).send("Accès refusé : token manquant (cookie requis)");
   }
 
   if (!process.env.JWT_SECRET) {
@@ -82,10 +104,9 @@ function agentAuth(req, res, next) {
       return res.status(403).send("Accès refusé : rôle Agent requis");
     }
     req.user = decoded;
-    req.token = token;
     next();
   } catch (err) {
-    return res.status(401).send("Accès refusé : token invalide ou expiré");
+    return res.status(401).send("Accès refusé : session invalide ou expirée");
   }
 }
 
@@ -94,7 +115,7 @@ app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.post("/api/auth/register", adapt(registerHandler));
 app.post("/api/auth/login", adapt(loginHandler));
 
-// ---------------- Vues et actions Agent EJS (US-13 protégées) ----------------
+// ---------------- Vues et actions Agent EJS (US-13 protégées par Cookie) ----------------
 app.get("/agent/offres", agentAuth, async (req, res) => {
   try {
     await connect();
@@ -104,7 +125,6 @@ app.get("/agent/offres", agentAuth, async (req, res) => {
 
     res.render("agent/offres", {
       offres: offres || [],
-      token: req.token,
       success: req.query.success || null,
       error: req.query.error || null,
     });
@@ -117,16 +137,15 @@ app.get("/agent/offres", agentAuth, async (req, res) => {
 app.post("/agent/offres/:id/reject", agentAuth, async (req, res) => {
   try {
     const result = await rejectOffre(req.params.id);
-    const tokenParam = req.token ? `&token=${encodeURIComponent(req.token)}` : "";
 
     if (result.error) {
       return res.redirect(
-        `/agent/offres?error=${encodeURIComponent(result.error)}${tokenParam}`
+        `/agent/offres?error=${encodeURIComponent(result.error)}`
       );
     }
 
     res.redirect(
-      `/agent/offres?success=${encodeURIComponent("Offre rejetée avec succès")}${tokenParam}`
+      `/agent/offres?success=${encodeURIComponent("Offre rejetée avec succès")}`
     );
   } catch (err) {
     console.error(err);

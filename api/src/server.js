@@ -11,6 +11,7 @@ const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
+const { getCategories, getCategoriesHandler } = require("./handlers/getCategories");
 const { getOffresPublieesHandler } = require("./handlers/getOffres");
 
 const app = express();
@@ -107,6 +108,18 @@ function agentAuth(req, res, next) {
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.post("/api/auth/register", adapt(registerHandler));
 app.post("/api/auth/login", adapt(loginHandler));
+
+app.get("/api/categories", authMiddleware, requireRole("agent"), adapt(getCategoriesHandler));
+
+app.get("/agent/categories", agentAuth, async (req, res) => {
+  try {
+    const categories = await getCategories();
+    res.render("agent/categories", { categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erreur serveur");
+  }
+});
 
 app.post("/api/categories", authMiddleware, requireRole("agent"), adapt(createCategorieHandler));
 

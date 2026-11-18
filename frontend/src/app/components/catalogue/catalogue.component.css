@@ -141,6 +141,12 @@
   color: #64748b;
 }
 
+.status-box.error-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
 .unauth-box p {
   margin-bottom: 1rem;
   color: #1e293b;

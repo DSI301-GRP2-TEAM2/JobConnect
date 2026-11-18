@@ -13,11 +13,16 @@
     Chargement des offres d'emploi...
   </div>
 
-  <div *ngIf="authService.isAuthenticated() && !loading && allOffres.length === 0" class="status-box">
+  <div *ngIf="authService.isAuthenticated() && !loading && error" class="status-box error-box">
+    <p>{{ error }}</p>
+    <button class="btn btn-outline btn-sm" (click)="loadOffres()" style="margin-top: 1rem;">Réessayer</button>
+  </div>
+
+  <div *ngIf="authService.isAuthenticated() && !loading && !error && allOffres.length === 0" class="status-box">
     Aucune offre d'emploi publiée pour le moment.
   </div>
 
-  <div *ngIf="authService.isAuthenticated() && !loading && allOffres.length > 0" class="offres-list">
+  <div *ngIf="authService.isAuthenticated() && !loading && !error && allOffres.length > 0" class="offres-list">
     <div class="offre-item" *ngFor="let o of pagedOffres">
       <div class="offre-info">
         <div class="offre-header-line">
@@ -25,7 +30,7 @@
           <span class="offre-category-badge" *ngIf="o.categorie?.libelle">{{ o.categorie?.libelle }}</span>
         </div>
         <div class="offre-meta-line">
-          <span>{{ o.entreprise?.nomEntreprise || 'TechCorp Solutions' }}</span>
+          <span>{{ o.entreprise?.nomEntreprise }}</span>
           <span *ngIf="o.localisation"> · {{ o.localisation }}</span>
           <span *ngIf="o.typeContrat"> · {{ o.typeContrat }}</span>
           <span *ngIf="!o.localisation && !o.typeContrat && o.salaire"> · {{ formatSalary(o.salaire) }}</span>
@@ -39,7 +44,7 @@
     </div>
   </div>
 
-  <div class="pagination-bar" *ngIf="authService.isAuthenticated() && !loading && totalPages > 1">
+  <div class="pagination-bar" *ngIf="authService.isAuthenticated() && !loading && !error && totalPages > 1">
     <button class="page-arrow" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">&lt;</button>
     <button class="page-number" *ngFor="let p of pages" [class.active]="p === currentPage" (click)="goToPage(p)">{{ p }}</button>
     <button class="page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">&gt;</button>
@@ -53,7 +58,7 @@
       <span class="offre-category-badge" style="margin-left: 0;">{{ selectedOffre.categorie?.libelle || 'Général' }}</span>
       <h3 style="font-size: 1.35rem; margin-top: 0.5rem; color: #0f172a;">{{ selectedOffre.titre }}</h3>
       <p style="font-size: 0.95rem; color: #475569; margin-top: 0.25rem;">
-        🏢 {{ selectedOffre.entreprise?.nomEntreprise || 'Entreprise' }}
+        {{ selectedOffre.entreprise?.nomEntreprise }}
         <span *ngIf="selectedOffre.localisation"> · {{ selectedOffre.localisation }}</span>
         <span *ngIf="selectedOffre.typeContrat"> · {{ selectedOffre.typeContrat }}</span>
       </p>

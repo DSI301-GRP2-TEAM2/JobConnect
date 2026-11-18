@@ -11,6 +11,9 @@ const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
+const { getCategories, getCategoriesHandler } = require("./handlers/getCategories");
+const { createOffreHandler, getCategoriesEntrepriseHandler } = require("./handlers/createOffre");
+const { submitOffreHandler } = require("./handlers/submitOffre");
 
 const app = express();
 
@@ -116,6 +119,19 @@ app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.post("/api/auth/register", adapt(registerHandler));
 app.post("/api/auth/login", adapt(loginHandler));
 
+// ---------------- US-07 : consultation des catégories (Agent) ----------------
+app.get("/api/categories", authMiddleware, requireRole("agent"), adapt(getCategoriesHandler));
+
+app.get("/agent/categories", agentAuth, async (req, res) => {
+  try {
+    const categories = await getCategories();
+    res.render("agent/categories", { categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erreur serveur");
+  }
+});
+
 // ---------------- US-06 : création de catégories (Agent) ----------------
 app.post("/api/categories", authMiddleware, requireRole("agent"), adapt(createCategorieHandler));
 
@@ -143,6 +159,13 @@ app.post("/agent/categories/nouvelle", agentAuth, async (req, res) => {
     });
   }
 });
+
+// ---------------- US-08 : création d'une offre en brouillon (Entreprise) ----------------
+app.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
+app.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));
+
+// ---------------- US-09 : soumission d'un brouillon à validation (Entreprise) ----------------
+app.patch("/api/offres/:id/submit", authMiddleware, requireRole("entreprise"), adapt(submitOffreHandler));
 
 // ---------------- Vues et actions Agent EJS (US-13 protégées par Cookie) ----------------
 app.get("/agent/offres", agentAuth, async (req, res) => {

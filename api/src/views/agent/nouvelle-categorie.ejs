@@ -12,7 +12,7 @@
       <a href="/agent/offres" class="brand-title">JobConnect</a>
       <ul class="nav-menu">
         <li><a href="/agent/offres" class="nav-link">Offres en attente</a></li>
-        <li><a href="/agent/categories/nouvelle" class="nav-link active" aria-current="page">Catégories</a></li>
+        <li><a href="/agent/categories" class="nav-link active" aria-current="page">Catégories</a></li>
       </ul>
       <div class="agent-profile"><span>Agent Modérateur</span><span class="badge-agent">Agent</span></div>
     </nav>
@@ -24,6 +24,7 @@
     </div>
     <% if (success) { %><div class="alert alert-success" role="status"><%= success %></div><% } %>
     <% if (error) { %><div class="alert alert-error" role="alert"><%= error %></div><% } %>
+    <p class="category-return"><a href="/agent/categories">← Retour à la liste des catégories</a></p>
     <section class="category-form-card">
       <form action="/agent/categories/nouvelle" method="POST">
         <div class="form-field">

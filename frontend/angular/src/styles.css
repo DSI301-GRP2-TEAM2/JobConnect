@@ -1,0 +1,167 @@
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    font: 16px/1.5 system-ui, Arial, sans-serif;
+    background: #f5f7fa;
+    color: #16283e
+}
+
+.container {
+    max-width: 840px;
+    margin: auto;
+    padding: 22px
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px
+}
+
+.brand {
+    font-weight: 800;
+    font-size: 21px;
+    color: #135c71
+}
+
+.section {
+    font-size: 13px;
+    color: #52657a
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid #dce5ec;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 6px 30px #15253d0a
+}
+
+h1 {
+    margin: 0 0 5px;
+    font-size: 27px
+}
+
+.subtitle {
+    color: #65778b;
+    margin: 0 0 25px
+}
+
+label {
+    display: block;
+    font-weight: 650;
+    font-size: 14px;
+    margin: 17px 0 6px
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bdcbd5;
+    border-radius: 8px;
+    background: white;
+    color: #16283e;
+    font: inherit
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: 2px solid #65adc0;
+    border-color: #238ba6
+}
+
+.token-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch
+}
+
+.token-row input {
+    flex: 1;
+    min-width: 0
+}
+
+.token-row button {
+    white-space: nowrap
+}
+
+button {
+    padding: 12px 17px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 650
+}
+
+button:disabled {
+    opacity: .55;
+    cursor: default
+}
+
+.primary {
+    background: #10627b;
+    color: white;
+    margin-top: 23px
+}
+
+.secondary {
+    color: #10627b;
+    background: #e4f0f3
+}
+
+.hint {
+    font-size: 13px;
+    color: #65778b
+}
+
+.field-error, .error {
+    display: block;
+    font-size: 13px;
+    color: #a22b35;
+    margin-top: 5px
+}
+
+.success {
+    background: #e4f4eb;
+    color: #145b34;
+    margin-top: 17px;
+    padding: 12px;
+    border-radius: 8px
+}
+
+.error {
+    background: #ffeded;
+    margin-top: 17px;
+    padding: 12px;
+    border-radius: 8px
+}
+
+@media (max-width: 640px) {
+    .token-row {
+        flex-direction: column
+    }
+
+    .panel {
+        padding: 17px
+    }
+
+    .container {
+        padding: 14px
+    }
+}
+
+.draft-action {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid #c5dce3;
+    border-radius: 10px;
+    background: #f0f8fa
+}
+
+.draft-action p {
+    margin: 0 0 12px
+}

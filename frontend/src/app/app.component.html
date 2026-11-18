@@ -1,12 +1,12 @@
 <header>
   <div class="navbar">
-    <a href="#" class="brand">
+    <a href="#" class="brand" (click)="onRetourCatalogue()">
       <svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
       JobConnect
     </a>
 
     <ul class="nav-links">
-      <li><button class="nav-btn active">Offres</button></li>
+      <li><button class="nav-btn" [class.active]="currentView === 'catalogue'" (click)="onRetourCatalogue()">Offres</button></li>
     </ul>
 
     <div class="auth-zone">
@@ -24,7 +24,8 @@
 </header>
 
 <main>
-  <app-catalogue></app-catalogue>
+  <app-catalogue *ngIf="currentView === 'catalogue'" (selectOffre)="onSelectOffre($event)"></app-catalogue>
+  <app-detail-offre *ngIf="currentView === 'detail' && selectedOffreId" [offreId]="selectedOffreId" (retour)="onRetourCatalogue()"></app-detail-offre>
 </main>
 
 <div class="modal-overlay" [class.active]="authService.showModal">

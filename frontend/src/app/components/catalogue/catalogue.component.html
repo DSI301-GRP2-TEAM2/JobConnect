@@ -36,7 +36,7 @@
       </div>
       <div class="card-footer">
         <span class="card-salary">{{ formatSalary(o.salaire) }}</span>
-        <span class="card-date">Publiée le {{ formatDate(o.dateCreation) }}</span>
+        <button class="btn btn-outline btn-sm" (click)="voirDetail(o._id)">Voir le détail</button>
       </div>
     </div>
   </div>

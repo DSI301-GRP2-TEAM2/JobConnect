@@ -4,8 +4,17 @@ export interface Categorie {
   description?: string;
 }
 
+export interface EntrepriseDetail {
+  _id?: string;
+  nom?: string;
+  nomEntreprise?: string;
+  email?: string;
+  siteWeb?: string;
+  secteur?: string;
+}
+
 export interface EntrepriseOffre {
-  id: string;
+  id?: string | EntrepriseDetail;
   nomEntreprise: string;
 }
 

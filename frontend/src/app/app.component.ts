@@ -2,21 +2,37 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CatalogueComponent } from './components/catalogue/catalogue.component';
+import { DetailOffreComponent } from './components/detail-offre/detail-offre.component';
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, CatalogueComponent],
+  imports: [CommonModule, FormsModule, CatalogueComponent, DetailOffreComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  currentView: 'catalogue' | 'detail' = 'catalogue';
+  selectedOffreId: string | null = null;
+
   loginEmail = '';
   loginMdp = '';
   loginError = '';
 
   constructor(public authService: AuthService) {}
+
+  onSelectOffre(id: string): void {
+    this.selectedOffreId = id;
+    this.currentView = 'detail';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  onRetourCatalogue(): void {
+    this.selectedOffreId = null;
+    this.currentView = 'catalogue';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   handleLogin(): void {
     this.loginError = '';

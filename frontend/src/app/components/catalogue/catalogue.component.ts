@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OffreService } from '../../services/offre.service';
 import { AuthService } from '../../services/auth.service';
@@ -12,6 +12,8 @@ import { Offre } from '../../models/offre.model';
   styleUrls: ['./catalogue.component.css']
 })
 export class CatalogueComponent implements OnInit {
+  @Output() selectOffre = new EventEmitter<string>();
+
   allOffres: Offre[] = [];
   pagedOffres: Offre[] = [];
   currentPage = 1;
@@ -72,6 +74,10 @@ export class CatalogueComponent implements OnInit {
     this.currentPage = page;
     this.updatePagination();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  voirDetail(id: string): void {
+    this.selectOffre.emit(id);
   }
 
   formatSalary(salaire?: number): string {

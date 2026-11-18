@@ -19,4 +19,12 @@ export class OffreService {
     });
     return this.http.get<Offre[]>(`${this.apiUrl}/api/offres`, { headers });
   }
+
+  getOffreById(id: string): Observable<Offre> {
+    const token = localStorage.getItem('jobconnect_token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<Offre>(`${this.apiUrl}/api/offres/${id}`, { headers });
+  }
 }

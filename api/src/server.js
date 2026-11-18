@@ -10,7 +10,7 @@ const { authMiddleware, requireRole } = require("./middleware/auth");
 const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
-const { getOffresPublieesHandler } = require("./handlers/getOffres");
+const { getOffresPublieesHandler, getOffreByIdHandler } = require("./handlers/getOffres");
 
 const app = express();
 
@@ -156,6 +156,13 @@ app.get(
   authMiddleware,
   requireRole("candidat"),
   adapt(getOffresPublieesHandler)
+);
+
+app.get(
+  "/api/offres/:id",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getOffreByIdHandler)
 );
 
 app.use((err, req, res, next) => {

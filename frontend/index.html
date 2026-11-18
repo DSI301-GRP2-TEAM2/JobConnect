@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JobConnect - Plateforme d'Emploi</title>
+  <title>JobConnect - Catalogue des Offres</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,29 +16,24 @@
       </a>
 
       <ul class="nav-links">
-        <li><button class="nav-btn active" data-tab="catalogue">📋 Catalogue Offres</button></li>
-        <li><button class="nav-btn" data-tab="profil">👤 Mon Profil & CV</button></li>
-        <li><button class="nav-btn" data-tab="candidatures">✉️ Mes Candidatures</button></li>
-        <li><button class="nav-btn" data-tab="agent" id="nav-agent" style="display: none;">🛡️ Modération Agent</button></li>
+        <li><button class="nav-btn active">Offres</button></li>
       </ul>
 
       <div class="auth-zone">
         <div id="user-info" style="display: none;" class="user-badge">
           <span id="user-name">Utilisateur</span>
           <span id="user-role-pill" class="role-pill role-candidat">candidat</span>
-          <button class="btn btn-outline btn-sm" onclick="logout()" title="Se déconnecter">Sortir</button>
+          <button class="btn btn-outline btn-sm" onclick="logout()" title="Se déconnecter">Déconnexion</button>
         </div>
 
         <div id="auth-buttons">
-          <button class="btn btn-outline btn-sm" onclick="openLoginModal('agent')">Connexion Agent</button>
-          <button class="btn btn-primary btn-sm" onclick="openLoginModal('candidat')">Connexion Candidat</button>
+          <button class="btn btn-primary btn-sm" onclick="openLoginModal()">Connexion</button>
         </div>
       </div>
     </div>
   </header>
 
   <main>
-
     <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; background: #ffffff; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
       <div style="display: flex; align-items: center; gap: 0.5rem;">
         <span>🌐 <strong>API Backend :</strong></span>
@@ -50,137 +45,22 @@
     <section id="tab-catalogue" class="tab-content active">
       <div class="section-header">
         <div>
-          <h2>Offres d'emploi disponibles</h2>
-          <p>Consultez les offres publiées et postulez en un clic.</p>
+          <h2>Offres d'emploi</h2>
+          <p>Consultez la liste des offres publiées et découvrez vos opportunités.</p>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="loadOffresPubliees()">🔄 Rafraîchir</button>
+        <button class="btn btn-outline btn-sm" onclick="loadOffresPubliees()">Rafraîchir</button>
       </div>
 
       <div id="offres-grid" class="grid-cards"></div>
+
+      <div id="pagination-container" class="pagination"></div>
     </section>
-
-    <section id="tab-profil" class="tab-content">
-      <div class="section-header">
-        <div>
-          <h2>Espace Candidat — Profil & CV</h2>
-          <p>Mettez à jour vos coordonnées et téléversez votre CV (PDF / DOCX).</p>
-        </div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div class="form-box" style="margin: 0; max-width: 100%;">
-          <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">📝 Informations personnelles</h3>
-          <form id="profile-form">
-            <div class="form-group">
-              <label for="profil-nom">Nom *</label>
-              <input type="text" id="profil-nom" class="form-control" required placeholder="Votre nom">
-            </div>
-            <div class="form-group">
-              <label for="profil-prenom">Prénom *</label>
-              <input type="text" id="profil-prenom" class="form-control" required placeholder="Votre prénom">
-            </div>
-            <div class="form-group">
-              <label for="profil-email">Email (non modifiable)</label>
-              <input type="email" id="profil-email" class="form-control" disabled style="background: var(--bg-main);">
-            </div>
-            <div class="form-group">
-              <label for="profil-tel">Téléphone (8 à 15 chiffres)</label>
-              <input type="tel" id="profil-tel" class="form-control" placeholder="+33612345678">
-            </div>
-            <div class="form-group">
-              <label for="profil-adresse">Adresse</label>
-              <input type="text" id="profil-adresse" class="form-control" placeholder="Ville, Pays">
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Enregistrer les modifications</button>
-          </form>
-        </div>
-
-        <div class="form-box" style="margin: 0; max-width: 100%;">
-          <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">📄 Téléversement du CV</h3>
-          <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1rem;">
-            Formats autorisés : <strong>PDF</strong> ou <strong>DOCX</strong> (Taille max : 5 Mo).
-          </p>
-
-          <div class="upload-dropzone" id="cv-dropzone">
-            <div class="upload-icon">📁</div>
-            <p style="font-weight: 600; margin-bottom: 0.25rem;">Glissez-déposez votre CV ici</p>
-            <p style="font-size: 0.82rem; color: var(--text-muted);">ou cliquez pour parcourir vos fichiers</p>
-            <input type="file" id="cv-file-input" accept=".pdf,.docx,.doc" style="display: none;">
-          </div>
-
-          <div id="profil-cv-status" style="margin-top: 1.5rem; padding: 0.75rem; background: var(--bg-main); border-radius: 8px; border: 1px solid var(--border); font-size: 0.88rem;">
-            Chargement de l'état du CV...
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="tab-agent" class="tab-content">
-      <div class="section-header">
-        <div>
-          <h2>🛡️ Modération des Offres (Agent)</h2>
-          <p>Examinez les offres en attente et modérez les publications.</p>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="loadOffresEnAttente()">🔄 Rafraîchir</button>
-      </div>
-
-      <div id="agent-offres-grid" class="grid-cards"></div>
-    </section>
-
-    <section id="tab-candidatures" class="tab-content">
-      <div class="section-header">
-        <div>
-          <h2>✉️ Suivi de mes candidatures</h2>
-          <p>Consultez l'historique et l'avancement de vos candidatures.</p>
-        </div>
-      </div>
-
-      <div id="mes-candidatures-list" style="max-width: 800px; margin: 0 auto;"></div>
-    </section>
-
   </main>
-
-  <div class="modal-overlay" id="detail-modal">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('detail-modal')">&times;</button>
-      
-      <div style="margin-bottom: 1.25rem;">
-        <span class="badge badge-success" id="detail-categorie">Catégorie</span>
-        <h2 id="detail-titre" style="font-size: 1.5rem; margin-top: 0.5rem;">Titre de l'offre</h2>
-        <p style="color: var(--primary); font-weight: 600;" id="detail-entreprise">Nom Entreprise</p>
-        <p style="color: var(--text-muted); font-size: 0.9rem;" id="detail-salaire">Salaire</p>
-      </div>
-
-      <div style="margin-bottom: 1.5rem; background: var(--bg-main); padding: 1rem; border-radius: 8px;">
-        <h4 style="margin-bottom: 0.5rem; font-size: 0.95rem;">Missions & Description du poste :</h4>
-        <p id="detail-description" style="font-size: 0.92rem; white-space: pre-line; color: var(--text-main);"></p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-      <div>
-        <h3 style="font-size: 1.2rem; margin-bottom: 0.75rem;">✉️ Postuler à cette offre</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-          Votre profil complet et le CV enregistré seront automatiquement joints à cette candidature.
-        </p>
-        <form id="candidature-form">
-          <input type="hidden" id="candidature-offre-id">
-          <div class="form-group">
-            <label for="candidature-lettre">Lettre de motivation</label>
-            <textarea id="candidature-lettre" class="form-control" rows="4" placeholder="Expliquez pourquoi votre profil correspond à cette offre d'emploi..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;">
-            Confirmer et envoyer ma candidature
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <div class="modal-overlay" id="login-modal">
     <div class="modal-card" style="max-width: 420px;">
       <button class="modal-close" onclick="closeModal('login-modal')">&times;</button>
-      <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion JobConnect</h3>
+      <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion Candidat</h3>
       <form id="login-form">
         <div class="form-group">
           <label for="login-email">Adresse e-mail</label>

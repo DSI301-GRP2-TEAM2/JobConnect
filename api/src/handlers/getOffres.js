@@ -8,7 +8,6 @@ async function getOffresPublieesHandler(request, context) {
 
     const offres = await Offer.find({ statut: "publiee" })
       .populate("categorie", "libelle description")
-      .populate("entreprise", "nomEntreprise email")
       .sort({ dateCreation: -1 });
 
     return {

@@ -20,6 +20,7 @@ export class CatalogueComponent implements OnInit {
   pages: number[] = [];
   loading = false;
   error = '';
+  selectedOffre: Offre | null = null;
 
   constructor(
     private offreService: OffreService,
@@ -72,6 +73,14 @@ export class CatalogueComponent implements OnInit {
     this.currentPage = page;
     this.updatePagination();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  voirOffre(offre: Offre): void {
+    this.selectedOffre = offre;
+  }
+
+  fermerApercu(): void {
+    this.selectedOffre = null;
   }
 
   formatSalary(salaire?: number): string {

@@ -130,7 +130,40 @@ function validateUpdateProfil(body) {
   return { data };
 }
 
+const ALLOWED_EXTENSIONS = [".pdf", ".docx"];
+const ALLOWED_MIME_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/msword",
+];
+
+function validateCvFile({ originalname, mimetype, size }) {
+  const errors = [];
+  if (!originalname) {
+    return { errors: ["Nom de fichier manquant"] };
+  }
+
+  const dot = originalname.lastIndexOf(".");
+  const ext = dot === -1 ? "" : originalname.slice(dot).toLowerCase();
+
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    errors.push("Format de fichier non autorisé. Formats acceptés : PDF, DOCX");
+  }
+
+  if (mimetype && !ALLOWED_MIME_TYPES.includes(mimetype) && mimetype !== "application/octet-stream") {
+    errors.push("Type MIME non autorisé pour le CV");
+  }
+
+  if (typeof size === "number" && size > 5 * 1024 * 1024) {
+    errors.push("Le fichier dépasse la taille maximale autorisée (5 Mo)");
+  }
+
+  if (errors.length > 0) return { errors };
+  return { valid: true };
+}
+
 module.exports = {
   validateRegister,
   validateUpdateProfil,
+  validateCvFile,
 };

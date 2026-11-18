@@ -10,6 +10,7 @@ const { authMiddleware, requireRole } = require("./middleware/auth");
 const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
+const { updateProfilCandidatHandler, getProfilCandidatHandler } = require("./handlers/profilCandidat");
 
 const app = express();
 
@@ -159,6 +160,20 @@ app.patch(
   authMiddleware,
   requireRole("agent"),
   adapt(rejectOffreHandler)
+);
+
+app.put(
+  "/api/candidats/me",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(updateProfilCandidatHandler)
+);
+
+app.get(
+  "/api/candidats/me",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getProfilCandidatHandler)
 );
 
 // Erreurs de parsing (JSON invalide) et erreurs inattendues

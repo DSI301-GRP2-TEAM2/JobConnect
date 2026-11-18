@@ -92,4 +92,45 @@ function validateRegister(body) {
   return { data };
 }
 
-module.exports = { validateRegister };
+function validateUpdateProfil(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return { errors: ["Corps de requête invalide"] };
+  }
+
+  const errors = [];
+  const data = {};
+
+  if (body.nom !== undefined) {
+    if (!isNonEmptyString(body.nom)) errors.push("nom ne peut pas être vide");
+    else data.nom = body.nom.trim();
+  }
+
+  if (body.prenom !== undefined) {
+    if (!isNonEmptyString(body.prenom)) errors.push("prenom ne peut pas être vide");
+    else data.prenom = body.prenom.trim();
+  }
+
+  if (body.titre !== undefined) {
+    data.titre = String(body.titre).trim();
+  }
+
+  if (body.telephone !== undefined) {
+    if (typeof body.telephone !== "string" || !PHONE_RE.test(body.telephone.trim())) {
+      errors.push("numéro de téléphone invalide");
+    } else {
+      data.telephone = body.telephone.trim();
+    }
+  }
+
+  if (body.adresse !== undefined) {
+    data.adresse = String(body.adresse).trim();
+  }
+
+  if (errors.length > 0) return { errors };
+  return { data };
+}
+
+module.exports = {
+  validateRegister,
+  validateUpdateProfil,
+};

@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     dateInscription: { type: Date, default: Date.now },
 
     prenom: String,
+    titre: String,
     cv: String,
 
     telephone: String,

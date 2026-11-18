@@ -4,7 +4,7 @@ const http = require("node:http");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
-const TEST_URI = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/jobconnect_test';
+const TEST_URI = process.env.TEST_MONGODB_URI
 const skip = TEST_URI ? false : "TEST_MONGODB_URI non défini : tests BDD ignorés";
 process.env.JWT_SECRET = process.env.JWT_SECRET || "us06-test-secret";
 if (TEST_URI) process.env.MONGODB_URI = TEST_URI;

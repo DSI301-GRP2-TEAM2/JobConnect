@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catégories d'offres d'emploi - JobConnect Agent</title>
+  <link rel="stylesheet" href="/css/agent.css">
+</head>
+<body>
+  <header class="agent-header">
+    <nav class="agent-nav" aria-label="Navigation Agent">
+      <a href="/agent/offres" class="brand-title">JobConnect</a>
+      <ul class="nav-menu">
+        <li><a href="/agent/offres" class="nav-link">Offres en attente</a></li>
+        <li><a href="/agent/categories" class="nav-link active" aria-current="page">Catégories</a></li>
+      </ul>
+      <div class="agent-profile"><span>Agent Modérateur</span><span class="badge-agent">Agent</span></div>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <div class="page-header category-page-heading">
+      <div>
+        <h1 class="page-title">Catégories d'offres d'emploi</h1>
+        <p class="page-subtitle">Consultez les catégories disponibles dans le catalogue (US-07).</p>
+      </div>
+      <a href="/agent/categories/nouvelle" class="btn-primary category-add-link">Créer une catégorie</a>
+    </div>
+
+    <% if (!categories || categories.length === 0) { %>
+      <div class="empty-box" role="status">
+        <h2 class="empty-title">Aucune catégorie enregistrée</h2>
+        <p>Créez une première catégorie pour organiser les offres d'emploi.</p>
+      </div>
+    <% } else { %>
+      <p class="category-count"><%= categories.length %> catégorie<%= categories.length > 1 ? 's' : '' %> enregistrée<%= categories.length > 1 ? 's' : '' %></p>
+      <div class="category-list">
+        <% categories.forEach(function(categorie) { %>
+          <article class="category-item">
+            <h2 class="category-name"><%= categorie.libelle %></h2>
+            <% if (categorie.description) { %>
+              <p class="category-description"><%= categorie.description %></p>
+            <% } else { %>
+              <p class="category-description category-description-empty">Aucune description</p>
+            <% } %>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+  </main>
+</body>
+</html>

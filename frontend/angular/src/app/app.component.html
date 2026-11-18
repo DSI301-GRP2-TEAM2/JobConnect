@@ -1,5 +1,5 @@
 <main class="container">
-  <header><span class="brand">JobConnect</span><span class="section">Espace Entreprise · US08</span></header>
+  <header><span class="brand">JobConnect</span><span class="section">Espace Entreprise · US08–US09</span></header>
   <section class="panel">
     <h1>Créer une offre d'emploi</h1>
     <p class="subtitle">Renseignez votre offre et enregistrez-la en brouillon. Elle ne sera pas publiée automatiquement.</p>
@@ -27,6 +27,12 @@
       <small class="field-error" *ngIf="form.controls.salaire.touched && form.controls.salaire.invalid">Le salaire doit être positif ou nul.</small>
       <div role="alert" class="error" *ngIf="error">{{ error }}</div>
       <div role="status" class="success" *ngIf="success">{{ success }} <span *ngIf="createdOffer">ID : {{ createdOffer.id }} · Statut : {{ createdOffer.statut }}</span></div>
+      <div class="draft-action" *ngIf="createdOffer?.statut === 'brouillon'">
+        <p>Votre brouillon est enregistré. Vous pouvez maintenant l'envoyer à un agent pour validation.</p>
+        <button type="button" class="secondary" (click)="submitForValidation()" [disabled]="submitting">
+          {{ submitting ? 'Soumission…' : 'Soumettre à validation' }}
+        </button>
+      </div>
       <button class="primary" type="submit" [disabled]="saving || form.invalid">{{ saving ? 'Enregistrement…' : 'Enregistrer en brouillon' }}</button>
     </form>
   </section>

@@ -1,0 +1,51 @@
+<header>
+  <div class="navbar">
+    <a href="#" class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+      JobConnect
+    </a>
+
+    <ul class="nav-links">
+      <li><button class="nav-btn active">Profil</button></li>
+    </ul>
+
+    <div class="auth-zone">
+      <div *ngIf="authService.currentUser && authService.currentToken" class="user-badge">
+        <span>{{ authService.currentUser.prenom }} {{ authService.currentUser.nom }}</span>
+        <span class="role-pill role-candidat">{{ authService.currentUser.role }}</span>
+        <button class="btn btn-outline btn-sm" (click)="authService.logout()">Déconnexion</button>
+      </div>
+
+      <div *ngIf="!authService.currentUser || !authService.currentToken">
+        <button class="btn btn-primary btn-sm" (click)="authService.openLoginModal()">Connexion</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <app-profil></app-profil>
+</main>
+
+<div class="modal-overlay" [class.active]="authService.showModal">
+  <div class="modal-card">
+    <button class="modal-close" (click)="authService.closeLoginModal()">&times;</button>
+    <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion Candidat</h3>
+    <form (ngSubmit)="handleLogin()">
+      <div class="form-group">
+        <label for="login-email">Adresse e-mail</label>
+        <input type="email" id="login-email" class="form-control" required placeholder="nom@exemple.com" [(ngModel)]="loginEmail" name="loginEmail">
+      </div>
+      <div class="form-group">
+        <label for="login-mdp">Mot de passe</label>
+        <input type="password" id="login-mdp" class="form-control" required placeholder="••••••••" [(ngModel)]="loginMdp" name="loginMdp">
+      </div>
+      <p *ngIf="loginError" style="color: var(--danger); font-size: 0.88rem; margin-top: 0.5rem;">{{ loginError }}</p>
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Se connecter</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>JobConnect — DSI301 Team 2</p>
+</footer>

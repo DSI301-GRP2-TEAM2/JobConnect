@@ -1,0 +1,67 @@
+<section id="tab-profil">
+  <div class="section-header">
+    <div>
+      <h2>Mon Profil Candidat</h2>
+      <p>Consultez et mettez à jour vos informations personnelles et professionnelles.</p>
+    </div>
+    <button *ngIf="authService.isAuthenticated()" class="btn btn-outline btn-sm" (click)="loadProfil()">Rafraîchir</button>
+  </div>
+
+  <div *ngIf="!authService.isAuthenticated()" class="unauth-box">
+    <p>Vous devez être connecté en tant que <strong>Candidat</strong> pour accéder à votre profil.</p>
+    <button class="btn btn-primary" (click)="authService.openLoginModal()">Se connecter comme Candidat</button>
+  </div>
+
+  <div *ngIf="authService.isAuthenticated() && loading" class="status-box">
+    Chargement de vos informations...
+  </div>
+
+  <div *ngIf="authService.isAuthenticated() && !loading" class="form-box">
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="profil-nom">Nom *</label>
+          <input type="text" id="profil-nom" class="form-control" required [(ngModel)]="profil.nom" name="nom">
+        </div>
+        <div class="form-group">
+          <label for="profil-prenom">Prénom *</label>
+          <input type="text" id="profil-prenom" class="form-control" required [(ngModel)]="profil.prenom" name="prenom">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="profil-titre">Titre professionnel</label>
+        <input type="text" id="profil-titre" class="form-control" placeholder="ex: Développeur Full Stack" [(ngModel)]="profil.titre" name="titre">
+      </div>
+
+      <div class="form-group">
+        <label for="profil-email">Adresse e-mail</label>
+        <input type="email" id="profil-email" class="form-control" [value]="profil.email" disabled>
+        <span class="field-hint">L'adresse e-mail sert d'identifiant unique et ne peut pas être modifiée.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="profil-telephone">Numéro de téléphone</label>
+        <input type="tel" id="profil-telephone" class="form-control" placeholder="ex: +33 6 12 34 56 78" [(ngModel)]="profil.telephone" name="telephone">
+      </div>
+
+      <div class="form-group">
+        <label for="profil-adresse">Adresse postale</label>
+        <textarea id="profil-adresse" class="form-control" rows="3" placeholder="ex: 12 rue de la Paix, 75001 Paris" [(ngModel)]="profil.adresse" name="adresse"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="saving">
+        <span *ngIf="!saving">Enregistrer les modifications</span>
+        <span *ngIf="saving">Enregistrement...</span>
+      </button>
+    </form>
+  </div>
+</section>

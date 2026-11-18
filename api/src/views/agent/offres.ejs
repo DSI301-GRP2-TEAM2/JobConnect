@@ -3,97 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Espace Modération Agent - JobConnect (EJS)</title>
-  <style>
-    :root {
-      --primary: #1e40af;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --border: #e2e8f0;
-      --danger: #dc2626;
-      --danger-hover: #b91c1c;
-      --success: #16a34a;
-      --text: #0f172a;
-      --muted: #64748b;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding: 2rem 1rem; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    header { background: var(--card-bg); padding: 1.5rem 2rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
-    h1 { font-size: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
-    .badge-agent { background: #fef3c7; color: #92400e; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
-    .alert { padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem; }
-    .alert-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-    .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .card-company { color: var(--primary); font-size: 0.95rem; font-weight: 500; margin-bottom: 0.75rem; }
-    .card-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; flex-wrap: wrap; }
-    .card-desc { background: #f1f5f9; padding: 1rem; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem; white-space: pre-line; }
-    .btn-danger { background: var(--danger); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-    .btn-danger:hover { background: var(--danger-hover); }
-    .empty-state { text-align: center; padding: 3rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); color: var(--muted); }
-  </style>
+  <title>Offres en attente de validation - JobConnect Agent</title>
+  <link rel="stylesheet" href="/css/agent.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div>
-        <h1>🛡️ JobConnect — Espace Agent (Rendu EJS)</h1>
-        <p style="color: var(--muted); font-size: 0.9rem;">Modération et validation des offres d'emploi déposées par les entreprises (US-13)</p>
+
+  <!-- Navigation principale Agent (Maquette 05c & 07) -->
+  <header class="agent-header">
+    <nav class="agent-nav">
+      <a href="/agent/offres" class="brand-title">JobConnect</a>
+      <ul class="nav-menu">
+        <li><a href="/agent/offres" class="nav-link active">Offres en attente</a></li>
+        <li><a href="#" class="nav-link">Catégories</a></li>
+      </ul>
+      <div class="agent-profile">
+        <span>Agent Modérateur</span>
+        <span class="badge-agent">Agent</span>
       </div>
-      <span class="badge-agent">Rôle Agent</span>
-    </header>
+    </nav>
+  </header>
+
+  <!-- Contenu principal -->
+  <main class="main-container">
+
+    <div class="page-header">
+      <h1 class="page-title">Offres en attente de validation</h1>
+      <p class="page-subtitle">Annonces postées par les entreprises en attente de vérification avant publication.</p>
+    </div>
 
     <% if (typeof success !== 'undefined' && success) { %>
-      <div class="alert alert-success">✅ <%= success %></div>
+      <div class="alert alert-success">
+        <%= success %>
+      </div>
     <% } %>
 
     <% if (typeof error !== 'undefined' && error) { %>
-      <div class="alert alert-error">❌ <%= error %></div>
+      <div class="alert alert-error">
+        <%= error %>
+      </div>
     <% } %>
 
-    <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">Offres en attente de modération (<%= offres.length %>)</h2>
-
-    <% if (offres.length === 0) { %>
-      <div class="empty-state">
-        <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">🎉 Aucune offre en attente de modération</p>
-        <p style="font-size: 0.9rem;">Toutes les offres déposées ont été traitées.</p>
+    <% if (!offres || offres.length === 0) { %>
+      <div class="empty-box">
+        <h2 class="empty-title">Aucune offre en attente</h2>
+        <p>Toutes les annonces déposées ont été traitées.</p>
       </div>
     <% } else { %>
-      <% offres.forEach(function(offre) { %>
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-              <h3 class="card-title"><%= offre.titre %></h3>
-              <div class="card-company">🏢 <%= offre.entreprise ? offre.entreprise.nomEntreprise : 'Entreprise' %></div>
+      <div class="offers-list">
+        <% offres.forEach(function(offre) { %>
+          <article class="offer-card">
+            <div class="offer-header">
+              <h2 class="offer-title"><%= offre.titre %></h2>
+              <span class="badge-status">En attente de validation</span>
             </div>
-            <span style="background: #fef3c7; color: #92400e; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600;">
-              En attente
-            </span>
-          </div>
 
-          <div class="card-meta">
-            <span>📂 Catégorie : <strong><%= offre.categorie ? offre.categorie.libelle : 'Non catégorisé' %></strong></span>
-            <span>💰 Salaire : <strong><%= offre.salaire ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></strong></span>
-            <span>📅 Déposée le : <strong><%= new Date(offre.dateCreation).toLocaleDateString('fr-FR') %></strong></span>
-          </div>
+            <div class="offer-company">
+              🏢 <%= offre.entreprise ? offre.entreprise.nomEntreprise : 'Entreprise' %>
+            </div>
 
-          <div class="card-desc">
-            <%= offre.description %>
-          </div>
+            <div class="offer-meta">
+              <span>Catégorie : <strong><%= offre.categorie ? offre.categorie.libelle : 'Général' %></strong></span>
+              <span>Salaire : <strong><%= offre.salaire ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></strong></span>
+              <span>Déposée le : <strong><%= new Date(offre.dateCreation).toLocaleDateString('fr-FR') %></strong></span>
+            </div>
 
-          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border); padding-top: 1rem;">
-            <!-- Formulaire US-13 : Refuser l'offre en attente -->
-            <form action="/agent/offres/<%= offre._id %>/reject" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir refuser cette offre ?');">
-              <button type="submit" class="btn-danger">
-                ❌ Refuser l'offre (US-13)
-              </button>
-            </form>
-          </div>
-        </div>
-      <% }); %>
+            <div class="offer-desc">
+              <%= offre.description %>
+            </div>
+
+            <div class="offer-actions">
+              <!-- Formulaire de refus d'offre (US-13) -->
+              <form action="/agent/offres/<%= offre._id %>/reject" method="POST" onsubmit="return confirm('Confirmer le refus de cette offre ?');">
+                <input type="hidden" name="token" value="<%= typeof token !== 'undefined' && token ? token : '' %>">
+                <button type="submit" class="btn-reject">
+                  Refuser l'offre (US-13)
+                </button>
+              </form>
+            </div>
+          </article>
+        <% }); %>
+      </div>
     <% } %>
-  </div>
+
+  </main>
+
 </body>
 </html>

@@ -82,15 +82,15 @@ test.after(async () => {
 });
 
 // -------------------------------------------------------------
-// Tests unitaires et de sécurité US-13 (sans BDD)
+// Tests de sécurité et d'accès non autorisé (sans BDD)
 // -------------------------------------------------------------
 
-test("US-13 Sécurité : PATCH /api/offres/:id/reject requiert un token (401)", async () => {
+test("US-13 API Sécurité : PATCH /api/offres/:id/reject sans token -> 401", async () => {
   const res = await request("PATCH", "/api/offres/507f1f77bcf86cd799439011/reject");
   assert.equal(res.status, 401);
 });
 
-test("US-13 Sécurité : PATCH /api/offres/:id/reject refuse un rôle candidat (403)", async () => {
+test("US-13 API Sécurité : PATCH /api/offres/:id/reject avec rôle candidat -> 403", async () => {
   const res = await request(
     "PATCH",
     "/api/offres/507f1f77bcf86cd799439011/reject",
@@ -100,48 +100,76 @@ test("US-13 Sécurité : PATCH /api/offres/:id/reject refuse un rôle candidat (
   assert.equal(res.status, 403);
 });
 
-test("US-13 Validation : PATCH /api/offres/:id/reject avec un ID non valide -> 400", async () => {
+test("US-13 API Validation : PATCH /api/offres/:id/reject avec identifiant invalide -> 400", async () => {
   const res = await request(
     "PATCH",
-    "/api/offres/id-invalide-non-objectid/reject",
+    "/api/offres/invalid-id/reject",
     {},
     { authorization: `Bearer ${agentToken}` }
   );
   assert.equal(res.status, 400);
 });
 
-test("US-13 Interface Agent EJS : GET /agent/offres répond 200 en HTML", async () => {
+test("US-13 EJS Sécurité : GET /agent/offres sans token -> 401", async () => {
   const res = await request("GET", "/agent/offres");
-  // Même sans BDD connectée en local, l'endpoint existe et renvoie le HTML ou tente la connexion
-  assert.ok(res.status === 200 || res.status === 500);
+  assert.equal(res.status, 401);
+});
+
+test("US-13 EJS Sécurité : GET /agent/offres avec rôle candidat -> 403", async () => {
+  const res = await request("GET", "/agent/offres", undefined, {
+    authorization: `Bearer ${candidatToken}`,
+  });
+  assert.equal(res.status, 403);
+});
+
+test("US-13 EJS Sécurité : POST /agent/offres/:id/reject sans token -> 401", async () => {
+  const res = await request("POST", "/agent/offres/507f1f77bcf86cd799439011/reject");
+  assert.equal(res.status, 401);
+});
+
+test("US-13 EJS Sécurité : POST /agent/offres/:id/reject avec rôle candidat -> 403", async () => {
+  const res = await request(
+    "POST",
+    "/agent/offres/507f1f77bcf86cd799439011/reject",
+    {},
+    { authorization: `Bearer ${candidatToken}` }
+  );
+  assert.equal(res.status, 403);
 });
 
 // -------------------------------------------------------------
-// Tests avec base de données (exécutés dans GitHub Actions)
+// Tests fonctionnels avec base de données (exécutés dans GitHub Actions)
 // -------------------------------------------------------------
 
-test("US-13 Fonctionnel : L'agent refuse avec succès une offre en attente", { skip }, async () => {
-  await Offer.deleteMany({ titre: /Test US13/ });
+test("US-13 EJS : GET /agent/offres avec agentToken répond 200 et affiche la vue", { skip }, async () => {
+  const res = await request("GET", `/agent/offres?token=${agentToken}`);
+  assert.equal(res.status, 200);
+  assert.ok(res.raw.includes("Offres en attente de validation"));
+  assert.ok(res.raw.includes("agent.css"));
+});
 
-  const cat = await Category.create({ libelle: "Cat Test US13", description: "Desc" });
+test("US-13 Fonctionnel : L'agent refuse une offre en attente via l'API", { skip }, async () => {
+  await Offer.deleteMany({ titre: /Test US13 API/ });
+
+  const cat = await Category.create({ libelle: "Cat US13 API", description: "Desc" });
   const entreprise = await User.create({
     nom: "Ent US13",
     nomEntreprise: "Ent US13 SAS",
-    email: "ent-us13@test.com",
+    email: "ent-api@test.com",
     mdp: "Test12345",
     role: "entreprise",
   });
 
   const offre = await Offer.create({
-    titre: "Offre Test US13 Refus",
-    description: "Poste à refuser",
-    salaire: 35000,
+    titre: "Test US13 API Refus",
+    description: "Poste à rejeter",
+    salaire: 38000,
     statut: "en_attente",
     entreprise: { id: entreprise._id, nomEntreprise: entreprise.nomEntreprise },
     categorie: cat._id,
   });
 
-  // 1. Refus de l'offre par l'Agent
+  // 1. Refus par l'agent
   const res = await request(
     "PATCH",
     `/api/offres/${offre._id}/reject`,
@@ -151,11 +179,11 @@ test("US-13 Fonctionnel : L'agent refuse avec succès une offre en attente", { s
   assert.equal(res.status, 200);
   assert.equal(res.json.offre.statut, "rejetee");
 
-  // 2. Vérification en BDD
-  const updated = await Offer.findById(offre._id);
-  assert.equal(updated.statut, "rejetee");
+  // 2. Vérification que le statut en BDD est passé à rejetee
+  const check = await Offer.findById(offre._id);
+  assert.equal(check.statut, "rejetee");
 
-  // 3. Tentative de refuser une offre déjà rejetée -> 400
+  // 3. Tentative de rejeter à nouveau -> 400
   const resDouble = await request(
     "PATCH",
     `/api/offres/${offre._id}/reject`,
@@ -164,8 +192,46 @@ test("US-13 Fonctionnel : L'agent refuse avec succès une offre en attente", { s
   );
   assert.equal(resDouble.status, 400);
 
-  // 4. Nettoyage
-  await Offer.deleteMany({ titre: /Test US13/ });
-  await User.deleteMany({ email: "ent-us13@test.com" });
-  await Category.deleteMany({ libelle: "Cat Test US13" });
+  await Offer.deleteMany({ titre: /Test US13 API/ });
+  await User.deleteMany({ email: "ent-api@test.com" });
+  await Category.deleteMany({ libelle: "Cat US13 API" });
+});
+
+test("US-13 Fonctionnel : L'agent refuse une offre via l'interface EJS (redirection 302)", { skip }, async () => {
+  await Offer.deleteMany({ titre: /Test US13 EJS/ });
+
+  const cat = await Category.create({ libelle: "Cat US13 EJS", description: "Desc" });
+  const entreprise = await User.create({
+    nom: "Ent EJS",
+    nomEntreprise: "Ent EJS SAS",
+    email: "ent-ejs@test.com",
+    mdp: "Test12345",
+    role: "entreprise",
+  });
+
+  const offre = await Offer.create({
+    titre: "Test US13 EJS Refus",
+    description: "Poste à refuser via form EJS",
+    salaire: 42000,
+    statut: "en_attente",
+    entreprise: { id: entreprise._id, nomEntreprise: entreprise.nomEntreprise },
+    categorie: cat._id,
+  });
+
+  // Action POST sur /agent/offres/:id/reject avec token agent -> 302 Redirection
+  const res = await request(
+    "POST",
+    `/agent/offres/${offre._id}/reject`,
+    { token: agentToken },
+    { authorization: `Bearer ${agentToken}` }
+  );
+  assert.equal(res.status, 302);
+  assert.ok(res.headers.location.includes("success"));
+
+  const check = await Offer.findById(offre._id);
+  assert.equal(check.statut, "rejetee");
+
+  await Offer.deleteMany({ titre: /Test US13 EJS/ });
+  await User.deleteMany({ email: "ent-ejs@test.com" });
+  await Category.deleteMany({ libelle: "Cat US13 EJS" });
 });

@@ -2,39 +2,50 @@ const mongoose = require("mongoose");
 const { connect } = require("../db");
 const Offer = require("../models/Offer");
 
+// Logique métier partagée pour le refus d'une offre (US-13)
+async function rejectOffre(id) {
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    return { status: 400, error: "Identifiant d'offre invalide" };
+  }
+
+  await connect();
+
+  const offre = await Offer.findById(id);
+  if (!offre) {
+    return { status: 404, error: "Offre introuvable" };
+  }
+
+  if (offre.statut !== "en_attente") {
+    return { status: 400, error: "Seule une offre en attente peut être rejetée" };
+  }
+
+  offre.statut = "rejetee";
+  await offre.save();
+
+  return {
+    status: 200,
+    success: true,
+    offre: {
+      id: offre._id,
+      titre: offre.titre,
+      statut: offre.statut,
+    },
+  };
+}
+
+// Handler HTTP JSON pour l'API
 async function rejectOffreHandler(request, context) {
   try {
-    const id = request.params?.id;
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return { status: 400, jsonBody: { error: "Identifiant d'offre invalide" } };
+    const result = await rejectOffre(request.params?.id);
+    if (result.error) {
+      return { status: result.status, jsonBody: { error: result.error } };
     }
-
-    await connect();
-
-    const offre = await Offer.findById(id);
-    if (!offre) {
-      return { status: 404, jsonBody: { error: "Offre introuvable" } };
-    }
-
-    if (offre.statut !== "en_attente") {
-      return {
-        status: 400,
-        jsonBody: { error: "Seule une offre en attente peut être rejetée" },
-      };
-    }
-
-    offre.statut = "rejetee";
-    await offre.save();
 
     return {
       status: 200,
       jsonBody: {
         message: "Offre rejetée avec succès",
-        offre: {
-          id: offre._id,
-          titre: offre.titre,
-          statut: offre.statut,
-        },
+        offre: result.offre,
       },
     };
   } catch (err) {
@@ -43,4 +54,7 @@ async function rejectOffreHandler(request, context) {
   }
 }
 
-module.exports = { rejectOffreHandler };
+module.exports = {
+  rejectOffre,
+  rejectOffreHandler,
+};

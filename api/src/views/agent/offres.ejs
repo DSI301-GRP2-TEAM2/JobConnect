@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offres en attente de validation - JobConnect Agent</title>
+  <link rel="stylesheet" href="/css/agent.css">
+</head>
+<body>
+
+  <!-- Navigation principale Agent (Maquette 05c & 07) -->
+  <header class="agent-header">
+    <nav class="agent-nav">
+      <a href="/agent/offres" class="brand-title">JobConnect</a>
+      <ul class="nav-menu">
+        <li><a href="/agent/offres" class="nav-link active">Offres en attente</a></li>
+        <li><a href="#" class="nav-link">Catégories</a></li>
+      </ul>
+      <div class="agent-profile">
+        <span>Agent Modérateur</span>
+        <span class="badge-agent">Agent</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenu principal -->
+  <main class="main-container">
+
+    <div class="page-header">
+      <h1 class="page-title">Offres en attente de validation</h1>
+      <p class="page-subtitle">Annonces postées par les entreprises en attente de vérification avant publication.</p>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert alert-success">
+        <%= success %>
+      </div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <% if (!offres || offres.length === 0) { %>
+      <div class="empty-box">
+        <h2 class="empty-title">Aucune offre en attente</h2>
+        <p>Toutes les annonces déposées ont été traitées.</p>
+      </div>
+    <% } else { %>
+      <div class="offers-list">
+        <% offres.forEach(function(offre) { %>
+          <article class="offer-card">
+            <div class="offer-header">
+              <h2 class="offer-title"><%= offre.titre %></h2>
+              <span class="badge-status">En attente de validation</span>
+            </div>
+
+            <div class="offer-company">
+              🏢 <%= offre.entreprise ? offre.entreprise.nomEntreprise : 'Entreprise' %>
+            </div>
+
+            <div class="offer-meta">
+              <span>Catégorie : <strong><%= offre.categorie ? offre.categorie.libelle : 'Général' %></strong></span>
+              <span>Salaire : <strong><%= offre.salaire ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></strong></span>
+              <span>Déposée le : <strong><%= new Date(offre.dateCreation).toLocaleDateString('fr-FR') %></strong></span>
+            </div>
+
+            <div class="offer-desc">
+              <%= offre.description %>
+            </div>
+
+            <div class="offer-actions">
+              <!-- Formulaire de refus d'offre (US-13) -->
+              <form action="/agent/offres/<%= offre._id %>/reject" method="POST" onsubmit="return confirm('Confirmer le refus de cette offre ?');">
+                <button type="submit" class="btn-reject">
+                  Refuser l'offre (US-13)
+                </button>
+              </form>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+
+  </main>
+
+</body>
+</html>

@@ -51,3 +51,5 @@ __tablestorage__
 __azurite_db*__.json
 AzuriteConfig
 .env
+
+uploads/

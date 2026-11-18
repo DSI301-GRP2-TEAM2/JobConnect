@@ -1,0 +1,99 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { OffreService } from '../../services/offre.service';
+import { AuthService } from '../../services/auth.service';
+import { Offre } from '../../models/offre.model';
+
+@Component({
+  selector: 'app-catalogue',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './catalogue.component.html',
+  styleUrls: ['./catalogue.component.css']
+})
+export class CatalogueComponent implements OnInit {
+  allOffres: Offre[] = [];
+  pagedOffres: Offre[] = [];
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalPages = 1;
+  pages: number[] = [];
+  loading = false;
+  error = '';
+  selectedOffre: Offre | null = null;
+
+  constructor(
+    private offreService: OffreService,
+    public authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    if (this.authService.isAuthenticated()) {
+      this.loadOffres();
+    }
+  }
+
+  loadOffres(): void {
+    this.loading = true;
+    this.error = '';
+    this.offreService.getOffresPubliees().subscribe({
+      next: (offres) => {
+        this.loading = false;
+        this.allOffres = offres || [];
+        this.currentPage = 1;
+        this.updatePagination();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.allOffres = [];
+        this.pagedOffres = [];
+        if (err.status === 401 || err.status === 403) {
+          this.error = 'Accès réservé aux candidats';
+        } else if (err?.error?.error && typeof err.error.error === 'string') {
+          this.error = err.error.error;
+        } else {
+          this.error = "Erreur lors du chargement des offres d'emploi";
+        }
+      }
+    });
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.allOffres.length / this.itemsPerPage) || 1;
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    this.pagedOffres = this.allOffres.slice(start, start + this.itemsPerPage);
+
+    this.pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      this.pages.push(i);
+    }
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePagination();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  voirOffre(offre: Offre): void {
+    this.selectedOffre = offre;
+  }
+
+  fermerApercu(): void {
+    this.selectedOffre = null;
+  }
+
+  formatSalary(salaire?: number): string {
+    if (!salaire) return 'Salaire non précisé';
+    return Number(salaire).toLocaleString('fr-FR') + ' €/an';
+  }
+
+  formatDate(dateStr?: string): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('fr-FR');
+  }
+}

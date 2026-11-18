@@ -162,8 +162,29 @@ function validateCvFile({ originalname, mimetype, size }) {
   return { valid: true };
 }
 
+function validateCandidature(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return { errors: ["Corps de requête invalide"] };
+  }
+
+  const errors = [];
+  if (!body.offreId || typeof body.offreId !== "string" || !body.offreId.trim()) {
+    errors.push("offreId est obligatoire");
+  }
+
+  if (errors.length > 0) return { errors };
+
+  return {
+    data: {
+      offreId: body.offreId.trim(),
+      lettreMotivation: typeof body.lettreMotivation === "string" ? body.lettreMotivation.trim() : "",
+    },
+  };
+}
+
 module.exports = {
   validateRegister,
   validateUpdateProfil,
   validateCvFile,
+  validateCandidature,
 };

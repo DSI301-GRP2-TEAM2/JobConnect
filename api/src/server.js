@@ -13,6 +13,7 @@ const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { getOffresPublieesHandler, getOffreByIdHandler } = require("./handlers/getOffres");
 const { updateProfilCandidatHandler, getProfilCandidatHandler } = require("./handlers/profilCandidat");
 const { uploadCvHandler, uploadMiddleware } = require("./handlers/uploadCv");
+const { createCandidatureHandler, getMesCandidaturesHandler } = require("./handlers/candidatures");
 
 const app = express();
 
@@ -187,6 +188,20 @@ app.post(
   requireRole("candidat"),
   uploadMiddleware,
   adapt(uploadCvHandler)
+);
+
+app.post(
+  "/api/candidatures",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(createCandidatureHandler)
+);
+
+app.get(
+  "/api/candidatures/mes-candidatures",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getMesCandidaturesHandler)
 );
 
 app.use((err, req, res, next) => {

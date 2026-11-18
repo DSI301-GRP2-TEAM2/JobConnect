@@ -1,0 +1,47 @@
+<div class="container" *ngIf="dossier">
+  <a [routerLink]="['/entreprise/offres', dossier.offre._id, 'candidatures']">← Retour aux candidatures</a>
+  <h2>Dossier de candidature : {{ dossier.candidat.prenom }} {{ dossier.candidat.nom }}</h2>
+  <p><strong>Poste :</strong> {{ dossier.offre.titre }}</p>
+
+  <div class="card">
+    <h3>Informations personnelles</h3>
+    <p><strong>E-mail :</strong> {{ dossier.candidat.email }}</p>
+    <p><strong>Téléphone :</strong> {{ dossier.candidat.telephone }}</p>
+    <p><strong>Ville :</strong> {{ dossier.candidat.ville }}</p>
+    <p><strong>Compétences :</strong> {{ dossier.candidat.competences?.join(', ') }}</p>
+  </div>
+
+  <div class="card">
+    <h3>CV du candidat</h3>
+    <a *ngIf="dossier.candidat.cv" [href]="dossier.candidat.cv" target="_blank" download class="btn">
+      Télécharger le CV
+    </a>
+    <p *ngIf="!dossier.candidat.cv">Aucun CV disponible.</p>
+  </div>
+
+  <div class="card">
+    <h3>Lettre de motivation</h3>
+    <p>{{ dossier.lettreMotivation }}</p>
+  </div>
+
+  <div class="card statut-box">
+    <h3>
+      Statut de la candidature :
+      <span class="badge" [ngClass]="'badge-' + dossier.statut">{{ dossier.statut }}</span>
+    </h3>
+    <div class="actions">
+      <button
+        (click)="changerStatut('ACCEPTEE')"
+        [disabled]="dossier.statut === 'ACCEPTEE'"
+        class="btn-accept">
+        Accepter
+      </button>
+      <button
+        (click)="changerStatut('REFUSEE')"
+        [disabled]="dossier.statut === 'REFUSEE'"
+        class="btn-reject">
+        Refuser
+      </button>
+    </div>
+  </div>
+</div>

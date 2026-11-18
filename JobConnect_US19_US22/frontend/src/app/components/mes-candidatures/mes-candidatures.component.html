@@ -1,0 +1,28 @@
+<div class="container">
+  <h2>Mes candidatures</h2>
+
+  <p *ngIf="mesCandidatures.length === 0">Vous n'avez envoyé aucune candidature pour le moment.</p>
+
+  <table *ngIf="mesCandidatures.length > 0">
+    <thead>
+      <tr>
+        <th>Offre</th>
+        <th>Entreprise</th>
+        <th>Lieu</th>
+        <th>Date d'envoi</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of mesCandidatures">
+        <td><strong>{{ c.offre?.titre }}</strong></td>
+        <td>{{ c.offre?.entreprise?.nomEntreprise }}</td>
+        <td>{{ c.offre?.lieu }}</td>
+        <td>{{ c.dateCandidature | date:'dd/MM/yyyy' }}</td>
+        <td>
+          <span class="badge" [ngClass]="'badge-' + c.statut">{{ c.statut }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

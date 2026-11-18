@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   categories: Categorie[] = [];
   loadingCategories = false;
   saving = false;
+  submitting = false;
   error = '';
   success = '';
   createdOffer: CreatedOffer | null = null;
@@ -68,6 +69,31 @@ export class AppComponent implements OnInit {
         this.form.reset({ titre: '', description: '', categorie: '', salaire: null });
       },
       error: err => { this.saving = false; this.error = this.getError(err); },
+    });
+  }
+
+  submitForValidation(): void {
+    const offer = this.createdOffer;
+    if (!offer || offer.statut !== 'brouillon' || this.submitting) return;
+    if (!this.token.trim()) { this.error = 'Saisissez votre token JWT entreprise.'; return; }
+
+    this.submitting = true;
+    this.error = '';
+    this.success = '';
+    this.http.patch<{ message: string; offre: CreatedOffer }>(
+      `${this.apiUrl}/api/offres/${encodeURIComponent(offer.id)}/submit`,
+      {},
+      { headers: this.authHeaders() }
+    ).subscribe({
+      next: response => {
+        this.submitting = false;
+        this.createdOffer = response.offre;
+        this.success = 'Offre soumise à validation. Statut : en attente.';
+      },
+      error: err => {
+        this.submitting = false;
+        this.error = this.getError(err);
+      },
     });
   }
 

@@ -12,6 +12,7 @@ const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
 const { getCategories, getCategoriesHandler } = require("./handlers/getCategories");
+const { createOffreHandler, getCategoriesEntrepriseHandler } = require("./handlers/createOffre");
 
 const app = express();
 
@@ -157,6 +158,10 @@ app.post("/agent/categories/nouvelle", agentAuth, async (req, res) => {
     });
   }
 });
+
+// ---------------- US-08 : création d'une offre en brouillon (Entreprise) ----------------
+app.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
+app.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));
 
 // ---------------- Vues et actions Agent EJS (US-13 protégées par Cookie) ----------------
 app.get("/agent/offres", agentAuth, async (req, res) => {

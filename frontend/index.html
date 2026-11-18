@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" ng-app="jobConnectApp">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JobConnect - Catalogue des Offres</title>
+  <title>JobConnect - Offres d'emploi</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 </head>
-<body>
+<body ng-controller="JobConnectController as vm">
 
   <header>
     <div class="navbar">
@@ -20,55 +21,83 @@
       </ul>
 
       <div class="auth-zone">
-        <div id="user-info" style="display: none;" class="user-badge">
-          <span id="user-name">Utilisateur</span>
-          <span id="user-role-pill" class="role-pill role-candidat">candidat</span>
-          <button class="btn btn-outline btn-sm" onclick="logout()" title="Se déconnecter">Déconnexion</button>
+        <div ng-if="vm.currentUser && vm.currentToken" class="user-badge">
+          <span>{{ vm.currentUser.prenom }} {{ vm.currentUser.nom }}</span>
+          <span class="role-pill role-candidat">{{ vm.currentUser.role }}</span>
+          <button class="btn btn-outline btn-sm" ng-click="vm.logout()" title="Se déconnecter">Déconnexion</button>
         </div>
 
-        <div id="auth-buttons">
-          <button class="btn btn-primary btn-sm" onclick="openLoginModal()">Connexion</button>
+        <div ng-if="!vm.currentUser || !vm.currentToken" id="auth-buttons">
+          <button class="btn btn-primary btn-sm" ng-click="vm.openLoginModal()">Connexion</button>
         </div>
       </div>
     </div>
   </header>
 
   <main>
-    <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; background: #ffffff; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <span>🌐 <strong>API Backend :</strong></span>
-        <input type="text" id="api-url-input" class="form-control" style="width: 250px; padding: 0.25rem 0.5rem; font-size: 0.8rem;" value="http://localhost:8080">
-      </div>
-      <span style="color: var(--text-muted);">JobConnect Platform</span>
-    </div>
-
-    <section id="tab-catalogue" class="tab-content active">
+    <section id="tab-catalogue">
       <div class="section-header">
         <div>
           <h2>Offres d'emploi</h2>
-          <p>Consultez la liste des offres publiées et découvrez vos opportunités.</p>
+          <p>Consultez la liste des offres d'emploi publiées et découvrez vos opportunités.</p>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="loadOffresPubliees()">Rafraîchir</button>
+        <button class="btn btn-outline btn-sm" ng-click="vm.loadOffresPubliees()">Rafraîchir</button>
       </div>
 
-      <div id="offres-grid" class="grid-cards"></div>
+      <div ng-if="!vm.currentToken" style="grid-column: 1/-1; text-align: center; padding: 2.5rem; background: #ffffff; border-radius: 10px; border: 1px solid var(--border);">
+        <p style="margin-bottom: 1rem; color: var(--text-muted);">Vous devez être connecté en tant que <strong>Candidat</strong> pour consulter les offres d'emploi.</p>
+        <button class="btn btn-primary" ng-click="vm.openLoginModal()">Se connecter comme Candidat</button>
+      </div>
 
-      <div id="pagination-container" class="pagination"></div>
+      <div ng-if="vm.currentToken && vm.loading" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        Chargement des offres d'emploi...
+      </div>
+
+      <div ng-if="vm.currentToken && !vm.loading && vm.allOffres.length === 0" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        Aucune offre d'emploi publiée pour le moment.
+      </div>
+
+      <div id="offres-grid" class="grid-cards" ng-if="vm.currentToken && !vm.loading && vm.allOffres.length > 0">
+        <div class="card" ng-repeat="o in vm.pagedOffres">
+          <div>
+            <div class="card-header">
+              <h3 class="card-title">{{ o.titre }}</h3>
+              <span class="badge badge-success">{{ o.categorie.libelle || 'Général' }}</span>
+            </div>
+            <div class="card-company">
+              🏢 {{ o.entreprise.nomEntreprise || 'Entreprise' }}
+              <span ng-if="o.localisation">• {{ o.localisation }}</span>
+              <span ng-if="o.typeContrat">• {{ o.typeContrat }}</span>
+            </div>
+            <p class="card-desc">{{ o.description }}</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-salary">{{ vm.formatSalary(o.salaire) }}</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Publiée le {{ vm.formatDate(o.dateCreation) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination" ng-if="vm.currentToken && !vm.loading && vm.totalPages > 1">
+        <button class="page-btn" ng-disabled="vm.currentPage === 1" ng-click="vm.goToPage(vm.currentPage - 1)">&lt;</button>
+        <button class="page-btn" ng-repeat="p in vm.pages" ng-class="{'active': p === vm.currentPage}" ng-click="vm.goToPage(p)">{{ p }}</button>
+        <button class="page-btn" ng-disabled="vm.currentPage === vm.totalPages" ng-click="vm.goToPage(vm.currentPage + 1)">&gt;</button>
+      </div>
     </section>
   </main>
 
-  <div class="modal-overlay" id="login-modal">
+  <div class="modal-overlay" ng-class="{'active': vm.showLoginModal}">
     <div class="modal-card" style="max-width: 420px;">
-      <button class="modal-close" onclick="closeModal('login-modal')">&times;</button>
+      <button class="modal-close" ng-click="vm.closeLoginModal()">&times;</button>
       <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion Candidat</h3>
-      <form id="login-form">
+      <form ng-submit="vm.submitLogin()">
         <div class="form-group">
           <label for="login-email">Adresse e-mail</label>
-          <input type="email" id="login-email" class="form-control" required placeholder="nom@exemple.com">
+          <input type="email" id="login-email" class="form-control" required placeholder="nom@exemple.com" ng-model="vm.loginEmail">
         </div>
         <div class="form-group">
           <label for="login-mdp">Mot de passe</label>
-          <input type="password" id="login-mdp" class="form-control" required placeholder="••••••••">
+          <input type="password" id="login-mdp" class="form-control" required placeholder="••••••••" ng-model="vm.loginMdp">
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Se connecter</button>
       </form>

@@ -1,7 +1,7 @@
 const Candidature = require('../models/Candidature');
 const Offre = require('../models/Offre');
 
-// US-19 : Consulter la liste des candidatures reçues pour une offre (Entreprise)
+// US-19
 exports.getCandidaturesByOffre = async (req, res) => {
   try {
     const offre = await Offre.findById(req.params.id);
@@ -23,7 +23,7 @@ exports.getCandidaturesByOffre = async (req, res) => {
   }
 };
 
-// US-20 : Consulter le dossier d'un candidat (Entreprise)
+// US-20
 exports.getDossierCandidat = async (req, res) => {
   try {
     const candidature = await Candidature.findById(req.params.id)
@@ -44,7 +44,7 @@ exports.getDossierCandidat = async (req, res) => {
   }
 };
 
-// US-21 : Accepter ou refuser une candidature reçue (Entreprise)
+// US-21
 exports.updateCandidatureStatut = async (req, res) => {
   try {
     const { statut } = req.body;
@@ -70,7 +70,7 @@ exports.updateCandidatureStatut = async (req, res) => {
   }
 };
 
-// US-22 : Consulter la liste de mes candidatures avec leur statut (Candidat)
+// US-22
 exports.getMesCandidatures = async (req, res) => {
   try {
     const candidatures = await Candidature.find({ candidat: req.user.id })

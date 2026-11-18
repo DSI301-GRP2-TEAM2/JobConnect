@@ -1,23 +1,46 @@
-name: API CI
+
+name: API CI/CD
 
 on:
   push:
     branches: [main]
-    paths:
-      - "api/**"
-      - ".github/workflows/api-ci.yml"
   pull_request:
-    paths:
-      - "api/**"
+    branches: [main]
   workflow_dispatch:
 
 env:
-  # Nom exact de ton App Service dans Azure (avec ton suffixe s'il y en a un)
   AZURE_WEBAPP_NAME: jobconnect-team2-api
 
 jobs:
+
+  # 1. BUILD
   build:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check syntax
+        run: for f in $(find src tests -name "*.js"); do node --check "$f"; done
+
+  # 2. TEST
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: api
@@ -43,16 +66,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check syntax
-        run: for f in $(find src tests -name "*.js"); do node --check "$f"; done
-
-      - name: Run tests (login and register)
+      - name: Run automated tests
         run: npm test
 
+      - name: Code coverage
+        run: npm run coverage
+  
+  # 3. DEPLOY
   deploy:
-    # Déploie seulement depuis main, jamais depuis une pull request
-    needs: build
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: test
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -67,8 +90,14 @@ jobs:
         run: npm ci --omit=dev
 
       - name: Deploy to Azure App Service
+        id: azure-deploy
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: api
+
+      - name: Verify deployment
+        run: |
+          curl --fail --retry 10 --retry-delay 10 --retry-all-errors "${{ steps.azure-deploy.outputs.webapp-url }}/api/health"
+

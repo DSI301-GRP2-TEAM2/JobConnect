@@ -8,5 +8,7 @@ const categorySchema = new mongoose.Schema(
   { collection: "categories" }
 );
 
+categorySchema.index({ libelle: 1 }, { unique: true, collation: { locale: "fr", strength: 2 }, name: "unique_libelle_fr" });
+
 module.exports =
   mongoose.models.Category || mongoose.model("Category", categorySchema);

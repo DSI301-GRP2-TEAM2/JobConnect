@@ -10,6 +10,7 @@ const { authMiddleware, requireRole } = require("./middleware/auth");
 const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
+const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
 
 const app = express();
 

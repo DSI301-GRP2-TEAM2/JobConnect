@@ -10,6 +10,7 @@ const { authMiddleware, requireRole } = require("./middleware/auth");
 const { registerHandler } = require("./handlers/register");
 const { loginHandler } = require("./handlers/login");
 const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
+const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
 
 const app = express();
 
@@ -114,6 +115,34 @@ function agentAuth(req, res, next) {
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.post("/api/auth/register", adapt(registerHandler));
 app.post("/api/auth/login", adapt(loginHandler));
+
+// ---------------- US-06 : création de catégories (Agent) ----------------
+app.post("/api/categories", authMiddleware, requireRole("agent"), adapt(createCategorieHandler));
+
+app.get("/agent/categories/nouvelle", agentAuth, (req, res) => {
+  res.render("agent/nouvelle-categorie", { error: null, success: null, values: {} });
+});
+
+app.post("/agent/categories/nouvelle", agentAuth, async (req, res) => {
+  try {
+    const result = await createCategorie(req.body);
+    if (result.error || result.errors) {
+      return res.status(result.status).render("agent/nouvelle-categorie", {
+        error: result.error || result.errors.join(". "),
+        success: null,
+        values: { libelle: typeof req.body.libelle === "string" ? req.body.libelle : "", description: typeof req.body.description === "string" ? req.body.description : "" },
+      });
+    }
+    return res.status(201).render("agent/nouvelle-categorie", {
+      error: null, success: "Catégorie créée avec succès", values: {},
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render("agent/nouvelle-categorie", {
+      error: "Erreur serveur", success: null, values: {},
+    });
+  }
+});
 
 // ---------------- Vues et actions Agent EJS (US-13 protégées par Cookie) ----------------
 app.get("/agent/offres", agentAuth, async (req, res) => {

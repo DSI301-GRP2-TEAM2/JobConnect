@@ -11,8 +11,10 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
+    "ejs": "^7.0.2",
     "express": "^4.22.3",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.12.1"
+    "mongoose": "^9.12.1",
+    "multer": "^2.5.0"
   }
 }

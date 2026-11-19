@@ -1,0 +1,63 @@
+<div class="auth-page">
+  <section class="auth-card">
+
+    <div class="auth-head">
+      <span class="jc-badge">JC</span>
+      <span class="title">JobConnect - Espace Candidat</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="form-row">
+        <div>
+          <label for="nom">Nom *</label>
+          <input id="nom" type="text" formControlName="nom" placeholder="Dupont" />
+          <p class="field-error" *ngIf="form.get('nom')?.touched && form.get('nom')?.errors?.['required']">
+            Le nom est obligatoire.
+          </p>
+        </div>
+        <div>
+          <label for="prenom">Prénom *</label>
+          <input id="prenom" type="text" formControlName="prenom" placeholder="Jean" />
+          <p class="field-error" *ngIf="form.get('prenom')?.touched && form.get('prenom')?.errors?.['required']">
+            Le prénom est obligatoire.
+          </p>
+        </div>
+      </div>
+
+      <label for="email">E-mail *</label>
+      <input id="email" type="email" formControlName="email" placeholder="jean.dupont@email.fr" />
+      <p class="field-error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">
+        Format d'e-mail invalide.
+      </p>
+
+      <label for="mdp">Mot de passe *</label>
+      <input id="mdp" type="password" formControlName="mdp" placeholder="password123" />
+      <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['minlength']">
+        Au moins 8 caractères.
+      </p>
+      <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['maxlength']">
+        72 caractères maximum.
+      </p>
+
+      <label for="mdpConfirmation">Confirmation du mot de passe *</label>
+      <input id="mdpConfirmation" type="password" formControlName="mdpConfirmation" placeholder="password123" />
+      <p class="field-error" *ngIf="form.get('mdpConfirmation')?.touched && form.get('mdpConfirmation')?.errors?.['required']">
+        La confirmation est obligatoire.
+      </p>
+
+      <button type="submit" class="btn full" [disabled]="submitting()">
+        {{ submitting() ? 'Création...' : 'Créer mon compte' }}
+      </button>
+    </form>
+
+    <p class="field-error inline" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+    <p class="form-success" *ngIf="successMsg()">{{ successMsg() }}</p>
+
+    <hr />
+
+    <div class="auth-foot">
+      <a routerLink="/login" class="red-link">Déjà inscrit ? Se connecter</a>
+    </div>
+
+  </section>
+</div>

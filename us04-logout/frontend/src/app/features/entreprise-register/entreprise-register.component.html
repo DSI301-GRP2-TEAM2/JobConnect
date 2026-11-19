@@ -1,0 +1,65 @@
+<div class="auth-page">
+  <section class="auth-card">
+
+    <div class="auth-head">
+      <span class="jc-badge">JC</span>
+      <span class="title">JobConnect - Espace Entreprise</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label for="nomEntreprise">Nom de l'entreprise *</label>
+      <input id="nomEntreprise" type="text" formControlName="nomEntreprise" placeholder="TechCorp Solutions" />
+      <p class="field-error" *ngIf="form.get('nomEntreprise')?.touched && form.get('nomEntreprise')?.errors?.['required']">
+        Le nom de l'entreprise est obligatoire.
+      </p>
+
+      <label for="secteur">Secteur d'activité *</label>
+      <select id="secteur" formControlName="secteur">
+        <option value="" disabled>-- Choisir un secteur --</option>
+        <option *ngFor="let s of secteurs" [value]="s">{{ s }}</option>
+      </select>
+      <p class="field-error" *ngIf="form.get('secteur')?.touched && form.get('secteur')?.errors?.['required']">
+        Le secteur d'activité est obligatoire.
+      </p>
+
+      <label for="nom">Nom du contact *</label>
+      <input id="nom" type="text" formControlName="nom" placeholder="Dupont" />
+      <p class="field-error" *ngIf="form.get('nom')?.touched && form.get('nom')?.errors?.['required']">
+        Le nom du contact est obligatoire.
+      </p>
+
+      <label for="email">E-mail professionnel *</label>
+      <input id="email" type="email" formControlName="email" placeholder="rh@techcorp.fr" />
+      <p class="field-error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">
+        Format d'e-mail invalide.
+      </p>
+
+      <label for="mdp">Mot de passe *</label>
+      <input id="mdp" type="password" formControlName="mdp" placeholder="securepass2023" />
+      <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['minlength']">
+        Au moins 8 caractères.
+      </p>
+
+      <label for="mdpConfirmation">Confirmation *</label>
+      <input id="mdpConfirmation" type="password" formControlName="mdpConfirmation" placeholder="securepass2023" />
+      <p class="field-error" *ngIf="form.get('mdpConfirmation')?.touched && form.get('mdpConfirmation')?.errors?.['required']">
+        La confirmation est obligatoire.
+      </p>
+
+      <button type="submit" class="btn full" [disabled]="submitting()">
+        {{ submitting() ? 'Création...' : 'Créer le compte entreprise' }}
+      </button>
+    </form>
+
+    <p class="field-error inline" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+    <p class="form-success" *ngIf="successMsg()">{{ successMsg() }}</p>
+
+    <hr />
+
+    <div class="auth-foot">
+      <p><a routerLink="/login" class="red-link">Déjà inscrit ? Se connecter</a></p>
+      <p><a routerLink="/register-candidat">Créer un compte candidat</a></p>
+    </div>
+
+  </section>
+</div>

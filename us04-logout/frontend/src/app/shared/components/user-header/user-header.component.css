@@ -1,0 +1,78 @@
+:host { display: block; }
+
+.app-header {
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.app-header .brand-block { display: flex; align-items: center; gap: 10px; }
+.app-header .wordmark { font-weight: 700; font-size: 15px; }
+.app-header .app-nav-links {
+  display: flex; gap: 18px; margin-left: 24px;
+}
+.app-header .app-nav-links a {
+  color: var(--color-text-muted);
+  font-weight: 600; font-size: 13px;
+  text-decoration: none;
+}
+.app-header .app-nav-links a.active {
+  color: var(--color-link-red);
+  text-decoration: underline;
+}
+.app-header .who-block { margin-left: auto; position: relative; }
+.app-header .who-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: transparent; border: 0; cursor: pointer; padding: 0;
+  font-family: inherit;
+}
+.app-header .who-btn .name { font-weight: 600; font-size: 13px; color: var(--color-text); }
+
+.user-menu {
+  position: absolute;
+  top: 100%; right: 0;
+  margin-top: 8px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  min-width: 220px; padding: 8px;
+  z-index: 50;
+}
+.user-menu .connected-as { font-size: 12px; color: var(--color-text-muted); padding: 6px 10px; margin: 0; }
+.user-menu hr { border: 0; border-top: 1px solid var(--color-border); margin: 6px 0; }
+.user-menu .label { font-weight: 600; padding: 6px 10px; font-size: 13px; margin: 0; }
+.user-menu .logout-btn {
+  width: 100%; text-align: left;
+  background: transparent; color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 8px 10px; margin-top: 6px; cursor: pointer;
+  font-weight: 600; font-size: 13px; font-family: inherit;
+}
+.user-menu .logout-btn:hover {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal {
+  background: var(--color-card);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  width: 420px; max-width: 92vw;
+  box-shadow: var(--shadow-md);
+}
+.modal h2 { font-size: 16px; margin: 0 0 8px 0; }
+.modal p { color: var(--color-text-muted); margin: 0 0 16px 0; font-size: 13px; }
+.modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modal .modal-actions button { margin: 0; }

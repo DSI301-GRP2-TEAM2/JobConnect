@@ -1,0 +1,37 @@
+<div class="auth-page">
+  <section class="auth-card compact">
+
+    <div class="auth-head">
+      <span class="jc-badge">JC</span>
+      <span class="title">JobConnect</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label for="email">E-mail *</label>
+      <input id="email" type="email" formControlName="email" placeholder="jean.dupont@email.fr" />
+      <p class="field-error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">
+        Format d'e-mail invalide.
+      </p>
+
+      <label for="mdp">Mot de passe *</label>
+      <input id="mdp" type="password" formControlName="mdp" placeholder="••••••••" />
+      <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['required']">
+        Le mot de passe est obligatoire.
+      </p>
+
+      <button type="submit" class="btn full" [disabled]="submitting()">
+        {{ submitting() ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <p class="field-error inline" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+
+    <hr />
+
+    <div class="auth-foot">
+      <p><a routerLink="/register-candidat" class="red-link">Créer un compte candidat</a></p>
+      <p><a routerLink="/register-entreprise" class="red-link">Créer un compte entreprise</a></p>
+    </div>
+
+  </section>
+</div>

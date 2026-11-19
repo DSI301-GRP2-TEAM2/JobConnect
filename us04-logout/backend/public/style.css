@@ -1,0 +1,124 @@
+
+:root {
+  --color-primary: #1f3a5f;
+  --color-primary-light: #2c5680;
+  --color-error: #b00020;
+  --color-error-bg: #fdecee;
+  --color-bg: #f5f7fa;
+  --color-card: #ffffff;
+  --color-text: #222;
+  --color-text-muted: #666;
+  --color-border: #d0d4da;
+  --color-border-strong: #6b7280;
+  --radius: 4px;
+  --radius-lg: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+}
+a { color: #2563a8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.muted { color: var(--color-text-muted); font-size: 13px; }
+
+.app-header {
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.app-header .brand-block { display: flex; align-items: center; gap: 10px; }
+.app-header .wordmark { font-weight: 700; font-size: 15px; }
+.app-header .who-block { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.app-header .name { font-weight: 600; font-size: 13px; }
+
+.jc-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  background: var(--color-primary); color: #fff;
+  font-weight: 700; font-size: 14px;
+  border-radius: var(--radius);
+}
+.jc-badge.sm { width: 28px; height: 28px; font-size: 11px; }
+.jc-badge.avatar { border-radius: 50%; width: 32px; height: 32px; font-size: 12px; }
+
+.auth-page {
+  min-height: calc(100vh - 60px);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 60px 16px;
+}
+.auth-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  width: 100%; max-width: 460px;
+  padding: 32px;
+}
+.auth-card .auth-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.auth-card .auth-head .title { font-weight: 700; font-size: 18px; }
+
+label { display: block; margin-top: 14px; font-weight: 600; font-size: 13px; }
+input, select, textarea {
+  width: 100%; padding: 9px 12px; margin-top: 4px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  font-size: 14px; font-family: inherit;
+  background: var(--color-card); color: var(--color-text);
+}
+button.btn {
+  margin-top: 16px; padding: 12px 18px;
+  background: var(--color-primary); color: #fff;
+  border: 1px solid var(--color-primary); border-radius: var(--radius);
+  cursor: pointer; font-weight: 700; font-size: 14px; font-family: inherit;
+}
+button.btn:hover { background: var(--color-primary-light); }
+button.btn.full { width: 100%; }
+
+.field-error { color: var(--color-error); font-size: 12px; margin-top: 4px; }
+.field-error.inline {
+  margin-top: 6px; padding: 6px 10px;
+  background: var(--color-error-bg); border-radius: var(--radius);
+  font-size: 13px;
+}
+
+main { max-width: 720px; margin: 24px auto; padding: 0 24px; }
+.me-head { display: flex; align-items: center; gap: 14px; }
+.me-head h1 { font-size: 18px; margin: 0; }
+
+footer { text-align: center; padding: 16px; color: var(--color-text-muted); font-size: 12px; }
+
+.me-menu {
+  margin-top: 24px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  max-width: 260px;
+  box-shadow: var(--shadow-sm);
+}
+.me-menu hr { border: 0; border-top: 1px solid var(--color-border); margin: 8px 0; }
+.me-menu .me-label { font-weight: 600; font-size: 13px; margin: 6px 0; }
+.me-menu .btn-logout {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--color-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600; font-size: 13px; font-family: inherit;
+  margin-top: 4px;
+}
+.me-menu .btn-logout:hover {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}

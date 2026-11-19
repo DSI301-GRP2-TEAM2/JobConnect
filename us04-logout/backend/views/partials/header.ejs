@@ -1,0 +1,14 @@
+<nav class="app-header">
+    <div class="brand-block">
+        <span class="jc-badge sm">JC</span>
+        <span class="wordmark">JobConnect Agent</span>
+    </div>
+    <% if (user) { %>
+        <span class="who-block">
+            <span class="jc-badge avatar"><%= (user.email || '?').charAt(0).toUpperCase() %></span>
+            <span class="name"><%= user.email %></span>
+        </span>
+    <% } else { %>
+        <span class="who-block"><a href="/login">Connexion</a></span>
+    <% } %>
+</nav>

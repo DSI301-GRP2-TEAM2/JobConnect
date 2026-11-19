@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon espace - JobConnect</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main>
+        <div class="me-head">
+            <span class="jc-badge avatar"><%= (user.email || '?').charAt(0).toUpperCase() %></span>
+            <div>
+                <h1>Bienvenue <%= user.email %></h1>
+                <p class="muted">Vous êtes connecté en tant que <strong><%= user.role %></strong>.</p>
+            </div>
+        </div>
+
+        <p class="muted" style="margin-top:24px;">
+            Espace de travail spécifique au rôle disponible à partir de US-05.
+            Le bouton de déconnexion sera ajouté par US-04.
+        </p>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

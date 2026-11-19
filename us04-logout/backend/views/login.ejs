@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - JobConnect Agent</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="auth-page">
+        <section class="auth-card compact">
+            <div class="auth-head">
+                <span class="jc-badge">JC</span>
+                <span class="title">JobConnect</span>
+            </div>
+
+            <% if (error) { %>
+                <p class="field-error inline"><%= error %></p>
+            <% } %>
+
+            <form method="POST" action="/login">
+                <label for="email">E-mail *</label>
+                <input type="email" id="email" name="email" required autofocus placeholder="agent@jobconnect.fr">
+
+                <label for="mdp">Mot de passe *</label>
+                <input type="password" id="mdp" name="mdp" required placeholder="••••••••">
+
+                <button type="submit" class="btn full">Se connecter</button>
+            </form>
+
+            <p class="muted" style="margin-top:16px;">Espace réservé aux agents autorisés.</p>
+        </section>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

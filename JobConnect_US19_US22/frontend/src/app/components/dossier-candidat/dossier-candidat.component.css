@@ -1,0 +1,61 @@
+a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+strong {
+  color: #2c3e50;
+}
+
+.statut-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-left: 4px solid #3498db;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-accept, .btn-reject {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.btn-accept {
+  background-color: #27ae60;
+}
+
+.btn-reject {
+  background-color: #e74c3c;
+}
+
+.btn-accept:hover:not(:disabled), .btn-reject:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}

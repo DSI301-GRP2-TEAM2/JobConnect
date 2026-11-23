@@ -20,7 +20,7 @@ const valid = (categorie) => ({
     titre: 'Développeur', description: 'Mission du poste', categorie,
     localisation: 'Paris', typeContrat: 'CDI',
     missionsPrincipales: 'Développer les applications',
-    exigencesCandidat: 'Expérience en JavaScript'
+    profilRecherche: 'Expérience en JavaScript'
 });
 
 function request(method, path, body, bearer) {
@@ -72,10 +72,17 @@ test('US08: validation des champs', () => {
     assert.equal(validateOffre({...valid(id()), localisation: ' '}).errors.length, 1);
     assert.equal(validateOffre({...valid(id()), typeContrat: ''}).errors.length, 1);
     assert.equal(validateOffre({...valid(id()), missionsPrincipales: ''}).errors.length, 1);
-    assert.equal(validateOffre({...valid(id()), exigencesCandidat: ''}).errors.length, 1);
+    assert.equal(validateOffre({...valid(id()), profilRecherche: ''}).errors.length, 1);
 });
 test('US08: la valeur par défaut du modèle est brouillon', () => {
     assert.equal(new Offer({...valid(id()), entreprise: {id: id(), nomEntreprise: 'E'}}).statut, 'brouillon');
+});
+test('US08: ancien profil reste visible et le nouveau champ a priorité', () => {
+    const legacy = new Offer({...valid(id()), profilRecherche: undefined, exigencesCandidat: 'Ancien profil', entreprise: {id: id(), nomEntreprise: 'E'}});
+    assert.equal(legacy.toJSON().profilRecherche, 'Ancien profil');
+    legacy.profilRecherche = 'Nouveau profil';
+    assert.equal(legacy.toJSON().profilRecherche, 'Nouveau profil');
+    assert.equal(legacy.toJSON().exigencesCandidat, undefined);
 });
 test('US08: authentification et autorisation', async () => {
     assert.equal((await request('POST', '/api/offres', valid(id()))).status, 401);
@@ -83,6 +90,8 @@ test('US08: authentification et autorisation', async () => {
     assert.equal((await request('POST', '/api/offres', valid(id()), token('candidat'))).status, 403);
     assert.equal((await request('GET', '/api/offres/categories')).status, 401);
     assert.equal((await request('GET', '/api/offres/categories', undefined, token('agent'))).status, 403);
+    assert.equal((await request('GET', '/api/offres/mes-offres')).status, 401);
+    assert.equal((await request('GET', '/api/offres/mes-offres', undefined, token('candidat'))).status, 403);
 });
 test('US08: champs obligatoires avant toute requête BDD', async () => {
     const response = await request('POST', '/api/offres', {
@@ -126,7 +135,7 @@ test('US08: enregistre un brouillon, ignore les champs propriétaire/statut four
         assert.equal(saved.localisation, 'Paris');
         assert.equal(saved.typeContrat, 'CDI');
         assert.equal(saved.missionsPrincipales, 'Développer les applications');
-        assert.equal(saved.exigencesCandidat, 'Expérience en JavaScript');
+        assert.equal(saved.profilRecherche, 'Expérience en JavaScript');
         const selector = await request('GET', '/api/offres/categories', undefined, token('entreprise', companyId));
         assert.equal(selector.status, 200);
         assert.ok(selector.json.categories.some(c => c.id === categoryId));

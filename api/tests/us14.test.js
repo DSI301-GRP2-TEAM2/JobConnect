@@ -112,6 +112,8 @@ test("US-14 Fonctionnel : GET /api/offres retourne uniquement les offres au stat
     statut: "publiee",
     entreprise: { id: entreprise._id, nomEntreprise: entreprise.nomEntreprise },
     categorie: cat._id,
+    lieu: "Paris (75008) - Hybride",
+    typeContrat: "CDI",
   });
 
   await Offer.create({
@@ -143,6 +145,11 @@ test("US-14 Fonctionnel : GET /api/offres retourne uniquement les offres au stat
   assert.ok(titres.includes("Test US14 Offre Publiee"));
   assert.ok(!titres.includes("Test US14 Offre En Attente"));
   assert.ok(!titres.includes("Test US14 Offre Rejetee"));
+
+  const offreTest = res.json.find((o) => o.titre === "Test US14 Offre Publiee");
+  assert.ok(offreTest);
+  assert.equal(offreTest.lieu, "Paris (75008) - Hybride");
+  assert.equal(offreTest.typeContrat, "CDI");
 
   await Offer.deleteMany({ titre: /Test US14/ });
   await User.deleteMany({ email: "ent-us14@test.com" });

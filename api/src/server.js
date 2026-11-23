@@ -178,7 +178,8 @@ app.get("/agent/offres", agentAuth, async (req, res) => {
 
 app.post("/agent/offres/:id/reject", agentAuth, async (req, res) => {
   try {
-    const result = await rejectOffre(req.params.id);
+    const motifRefus = req.body?.motifRefus || req.body?.motif;
+    const result = await rejectOffre(req.params.id, motifRefus);
 
     if (result.error) {
       return res.redirect(

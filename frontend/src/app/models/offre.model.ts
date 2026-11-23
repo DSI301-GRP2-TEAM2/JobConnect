@@ -18,8 +18,10 @@ export interface Offre {
   statut: string;
   categorie?: Categorie;
   entreprise?: EntrepriseOffre;
+  lieu?: string;
   localisation?: string;
   typeContrat?: string;
+  motifRefus?: string;
   missionsPrincipales?: string;
   exigencesCandidat?: string;
 }
@@ -33,3 +35,4 @@ export interface OffreCreee extends OffreDraft {
   id: string;
   statut: string;
 }
+

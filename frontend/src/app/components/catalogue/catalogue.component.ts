@@ -88,7 +88,6 @@ export class CatalogueComponent implements OnInit {
   voirOffre(offre: Offre): void {
     this.selectOffre.emit(offre._id);
   }
-  }
 
   formatSalary(salaire?: number): string {
     if (!salaire) return 'Salaire non précisé';

@@ -3,7 +3,7 @@ const { authMiddleware, requireRole } = require("../middleware/auth");
 const {
   updateProfilCandidatHandler,
   getProfilCandidatHandler,
-} = require("../handlers/profilCandidat");
+} = require("../controllers/candidatController");
 const {
   uploadMiddleware,
   uploadCvHandler,

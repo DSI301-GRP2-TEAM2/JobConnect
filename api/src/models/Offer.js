@@ -7,6 +7,8 @@ const offerSchema = new mongoose.Schema(
     localisation: { type: String, trim: true },
     typeContrat: { type: String, trim: true },
     missionsPrincipales: { type: String, trim: true },
+    profilRecherche: { type: String, trim: true },
+    // Retained for offers created before the field was renamed.
     exigencesCandidat: { type: String, trim: true },
     salaire: Number,
     dateCreation: { type: Date, default: Date.now },
@@ -27,5 +29,13 @@ const offerSchema = new mongoose.Schema(
   },
   { collection: "offres" }
 );
+
+offerSchema.set("toJSON", {
+  transform(doc, ret) {
+    if (!ret.profilRecherche && ret.exigencesCandidat) ret.profilRecherche = ret.exigencesCandidat;
+    delete ret.exigencesCandidat;
+    return ret;
+  },
+});
 
 module.exports = mongoose.models.Offer || mongoose.model("Offer", offerSchema);

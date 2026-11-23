@@ -11,8 +11,7 @@ if (TEST_URI) {
 
 const mongoose = require("mongoose");
 const User = require("../src/models/User");
-const { registerHandler } = require("../src/handlers/register");
-const { loginHandler } = require("../src/handlers/login");
+const { registerHandler, loginHandler } = require("../src/controllers/authController");
 
 const context = { error() {}, log() {} };
 const fakeRequest = (body) => ({ json: async () => body });

@@ -11,7 +11,7 @@ const app = require('../src/server');
 const User = require('../src/models/User');
 const Category = require('../src/models/Category');
 const Offer = require('../src/models/Offer');
-const {submitOffre} = require('../src/handlers/submitOffre');
+const {submitOffre} = require('../src/controllers/submitOffre');
 const skip = TEST_URI ? false : 'TEST_MONGODB_URI non défini';
 let server, port;
 const id = () => new mongoose.Types.ObjectId().toString();

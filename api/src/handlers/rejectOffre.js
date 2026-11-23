@@ -2,10 +2,13 @@ const mongoose = require("mongoose");
 const { connect } = require("../db");
 const Offer = require("../models/Offer");
 
-// Logique métier partagée pour le refus d'une offre (US-13)
-async function rejectOffre(id) {
+async function rejectOffre(id, motifRefus) {
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
     return { status: 400, error: "Identifiant d'offre invalide" };
+  }
+
+  if (!motifRefus || typeof motifRefus !== "string" || !motifRefus.trim()) {
+    return { status: 400, error: "Le motif du refus est obligatoire" };
   }
 
   await connect();
@@ -20,6 +23,7 @@ async function rejectOffre(id) {
   }
 
   offre.statut = "rejetee";
+  offre.motifRefus = motifRefus.trim();
   await offre.save();
 
   return {
@@ -29,14 +33,15 @@ async function rejectOffre(id) {
       id: offre._id,
       titre: offre.titre,
       statut: offre.statut,
+      motifRefus: offre.motifRefus,
     },
   };
 }
 
-// Handler HTTP JSON pour l'API
 async function rejectOffreHandler(request, context) {
   try {
-    const result = await rejectOffre(request.params?.id);
+    const motifRefus = request.body?.motifRefus || request.body?.motif;
+    const result = await rejectOffre(request.params?.id, motifRefus);
     if (result.error) {
       return { status: result.status, jsonBody: { error: result.error } };
     }

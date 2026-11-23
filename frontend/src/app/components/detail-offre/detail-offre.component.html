@@ -63,7 +63,8 @@
 
     <aside class="detail-sidebar">
       <div class="sidebar-card">
-        <button class="btn-postuler" (click)="postuler()">Postuler à cette offre</button>
+        <button class="btn-postuler" disabled>Postuler à cette offre</button>
+        <p class="postuler-unavailable-note">Postulation bientôt disponible (US-18)</p>
         <div class="sidebar-divider"></div>
         <ul class="sidebar-meta-list">
           <li *ngIf="offre.dateCreation">

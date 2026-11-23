@@ -190,8 +190,23 @@
   text-align: center;
 }
 
-.btn-postuler:hover {
+.btn-postuler:hover:not(:disabled) {
   background: #0f172a;
+}
+
+.btn-postuler:disabled {
+  background: #64748b;
+  border-color: #64748b;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.postuler-unavailable-note {
+  font-size: 0.82rem;
+  color: #64748b;
+  text-align: center;
+  margin-top: 0.6rem;
+  font-style: italic;
 }
 
 .postuler-alert {

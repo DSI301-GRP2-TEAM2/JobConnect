@@ -1,6 +1,6 @@
 const express = require("express");
 const { authMiddleware, requireRole } = require("../middleware/auth");
-const { getOffresPublieesHandler, getOffreByIdHandler } = require("../handlers/getOffres");
+const { getOffresPublieesHandler, getOffreByIdHandler } = require("../controllers/offreController");
 const { rejectOffreHandler } = require("../handlers/rejectOffre");
 const { adapt } = require("../middleware/adapt");
 

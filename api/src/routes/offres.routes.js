@@ -12,7 +12,7 @@ const catalogueRouter = express.Router();
 router.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
 router.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));
 router.patch("/api/offres/:id/submit", authMiddleware, requireRole("entreprise"), adapt(submitOffreHandler));
-router.get("/api/entreprise/offres", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
+router.get("/api/offres/mes-offres", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
 router.get("/api/entreprise/offres/:id", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
 router.patch("/api/entreprise/offres/:id", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
 

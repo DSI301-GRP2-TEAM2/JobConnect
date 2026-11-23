@@ -26,7 +26,7 @@ function validateOffre(body) {
         ["localisation", "La localisation est obligatoire", 200],
         ["typeContrat", "Le type de contrat est obligatoire", 100],
         ["missionsPrincipales", "Les missions principales sont obligatoires", 10000],
-        ["exigencesCandidat", "Les exigences du candidat sont obligatoires", 10000],
+        ["profilRecherche", "Le profil recherché est obligatoire", 10000],
     ];
     const details = {};
     for (const [key, message, max] of fields) {
@@ -82,7 +82,7 @@ async function createOffre(body, userId) {
             localisation: offre.localisation,
             typeContrat: offre.typeContrat,
             missionsPrincipales: offre.missionsPrincipales,
-            exigencesCandidat: offre.exigencesCandidat,
+            profilRecherche: offre.profilRecherche,
             salaire: offre.salaire ?? null,
             categorie: offre.categorie,
             entreprise: {id: entreprise._id, nomEntreprise: entreprise.nomEntreprise},

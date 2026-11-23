@@ -118,6 +118,26 @@ test("US-16 Validation : PUT /api/candidats/me avec téléphone invalide -> 400"
   assert.equal(res.status, 400);
 });
 
+test("US-16 Validation : PUT /api/candidats/me avec '0 1 2' (trop peu de chiffres) -> 400", async () => {
+  const res = await request(
+    "PUT",
+    "/api/candidats/me",
+    { telephone: "0 1 2" },
+    { authorization: `Bearer ${candidatToken}` }
+  );
+  assert.equal(res.status, 400);
+});
+
+test("US-16 Validation : PUT /api/candidats/me avec '0   1   2' (3 chiffres avec espaces) -> 400", async () => {
+  const res = await request(
+    "PUT",
+    "/api/candidats/me",
+    { telephone: "0   1   2" },
+    { authorization: `Bearer ${candidatToken}` }
+  );
+  assert.equal(res.status, 400);
+});
+
 test("US-16 Validation : PUT /api/candidats/me avec prénom vide -> 400", async () => {
   const res = await request(
     "PUT",
@@ -138,11 +158,28 @@ test("US-16 Validation : PUT /api/candidats/me avec prénom composé uniquement 
   assert.equal(res.status, 400);
 });
 
-test("US-16 Validation : validateUpdateProfil traite un téléphone composé uniquement d'espaces comme vide", () => {
-  const result = validateUpdateProfil({ telephone: "     ", ville: "Paris" });
-  assert.equal(result.errors, undefined);
-  assert.equal(result.data.telephone, "");
-  assert.equal(result.data.ville, "Paris");
+test("US-16 Validation : validateUpdateProfil refuse un numéro avec moins de 8 chiffres même avec des espaces", () => {
+  const resShort = validateUpdateProfil({ telephone: "0 1 2" });
+  assert.ok(resShort.errors && resShort.errors.includes("numéro de téléphone invalide"));
+
+  const resSpaces = validateUpdateProfil({ telephone: "0   1   2" });
+  assert.ok(resSpaces.errors && resSpaces.errors.includes("numéro de téléphone invalide"));
+});
+
+test("US-16 Validation : validateUpdateProfil accepte un numéro valide avec espaces ('06 12 34 56 78')", () => {
+  const res = validateUpdateProfil({ telephone: "06 12 34 56 78" });
+  assert.equal(res.errors, undefined);
+  assert.equal(res.data.telephone, "06 12 34 56 78");
+});
+
+test("US-16 Validation : validateUpdateProfil garde le téléphone optionnel (chaîne vide ou espaces)", () => {
+  const resEmpty = validateUpdateProfil({ telephone: "", nom: "Dupont" });
+  assert.equal(resEmpty.errors, undefined);
+  assert.equal(resEmpty.data.telephone, "");
+
+  const resSpaces = validateUpdateProfil({ telephone: "     ", nom: "Dupont" });
+  assert.equal(resSpaces.errors, undefined);
+  assert.equal(resSpaces.data.telephone, "");
 });
 
 test("US-16 Validation : validateUpdateProfil refuse un prénom vide ou uniquement composé d'espaces", () => {

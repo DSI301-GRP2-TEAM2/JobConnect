@@ -1,5 +1,4 @@
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^\+?[0-9 ]{8,15}$/;
 
 const ROLE_FIELDS = {
   candidat: {
@@ -23,6 +22,19 @@ function isValidUrl(value) {
   } catch {
     return false;
   }
+}
+
+function isValidPhone(value) {
+  if (typeof value !== "string") return false;
+  const trimmed = value.trim();
+  if (trimmed === "") return true;
+
+  if (!/^\+?[0-9 ]+$/.test(trimmed)) {
+    return false;
+  }
+
+  const digits = trimmed.replace(/\D/g, "");
+  return digits.length >= 8 && digits.length <= 15;
 }
 
 function validateRegister(body) {
@@ -65,8 +77,11 @@ function validateRegister(body) {
     }
   }
 
-  if (body.telephone && !PHONE_RE.test(String(body.telephone).trim())) {
-    errors.push("telephone invalide (8 à 15 chiffres)");
+  if (body.telephone) {
+    const trimmed = String(body.telephone).trim();
+    if (trimmed !== "" && !isValidPhone(trimmed)) {
+      errors.push("telephone invalide (8 à 15 chiffres)");
+    }
   }
 
   if (body.role === "entreprise" && body.siteWeb && !isValidUrl(body.siteWeb)) {
@@ -127,7 +142,7 @@ function validateUpdateProfil(body) {
       const trimmedPhone = body.telephone.trim();
       if (trimmedPhone === "") {
         data.telephone = "";
-      } else if (!PHONE_RE.test(trimmedPhone)) {
+      } else if (!isValidPhone(trimmedPhone)) {
         errors.push("numéro de téléphone invalide");
       } else {
         data.telephone = trimmedPhone;
@@ -174,6 +189,7 @@ function validateUpdateProfil(body) {
 }
 
 module.exports = {
+  isValidPhone,
   validateRegister,
   validateUpdateProfil,
 };

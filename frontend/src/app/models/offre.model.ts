@@ -20,4 +20,16 @@ export interface Offre {
   entreprise?: EntrepriseOffre;
   localisation?: string;
   typeContrat?: string;
+  missionsPrincipales?: string;
+  exigencesCandidat?: string;
+}
+
+export interface OffreDraft extends Pick<Offre, 'titre' | 'description' | 'localisation' | 'typeContrat' | 'missionsPrincipales' | 'exigencesCandidat'> {
+  categorie: string;
+  salaire?: number;
+}
+
+export interface OffreCreee extends OffreDraft {
+  id: string;
+  statut: string;
 }

@@ -31,7 +31,7 @@ function request(method, path, bearer) {
                     json = JSON.parse(raw);
                 } catch {
                 }
-                resolve({status: res.statusCode, json});
+                resolve({status: res.statusCode, json, raw});
             });
         });
         req.on('error', reject);
@@ -111,8 +111,9 @@ test('US09 : seule une offre brouillon de son propriétaire peut être soumise',
         assert.equal((await Offer.findById(draft.id)).statut, 'en_attente');
         assert.equal((await request('PATCH', `/api/offres/${draft.id}/submit`, token('entreprise', ownerId))).status, 409);
 
-        // Existing agent pending-offer listing sees the submitted draft.
-        assert.equal((await Offer.countDocuments({_id: draft.id, statut: 'en_attente'})), 1);
+        const agentListing = await request('GET', '/agent/offres', token('agent'));
+        assert.equal(agentListing.status, 200);
+        assert.match(agentListing.raw, /Draft US09/);
     } finally {
         if (draft) await Offer.deleteOne({_id: draft.id});
         if (published) await Offer.deleteOne({_id: published.id});

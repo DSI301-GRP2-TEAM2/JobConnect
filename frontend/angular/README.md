@@ -1,4 +1,8 @@
-# Angular — US08 (module entreprise autonome)
+# Ancien prototype US08–US09
+
+Le formulaire actif se trouve désormais dans `frontend/src/app/components/offre-form/` et s'ouvre dans l'application Angular principale (`frontend/`) après connexion avec un compte entreprise. Les appels passent par `frontend/src/app/services/offre.service.ts`.
+
+Ce répertoire est conservé pour référence historique. Il ne doit plus être utilisé pour créer des offres.
 
 L'interface Angular est isolée dans `frontend/angular/` afin de **ne pas remplacer** le frontend statique et son workflow GitHub Pages actuels.
 

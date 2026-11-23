@@ -63,6 +63,8 @@
 
             <div class="offer-meta">
               <span>Catégorie : <strong><%= offre.categorie ? offre.categorie.libelle : 'Général' %></strong></span>
+              <% if (offre.localisation) { %><span>Localisation : <strong><%= offre.localisation %></strong></span><% } %>
+              <% if (offre.typeContrat) { %><span>Contrat : <strong><%= offre.typeContrat %></strong></span><% } %>
               <span>Salaire : <strong><%= offre.salaire ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></strong></span>
               <span>Déposée le : <strong><%= new Date(offre.dateCreation).toLocaleDateString('fr-FR') %></strong></span>
             </div>
@@ -70,6 +72,8 @@
             <div class="offer-desc">
               <%= offre.description %>
             </div>
+            <% if (offre.missionsPrincipales) { %><div class="offer-desc"><strong>Missions principales :</strong> <%= offre.missionsPrincipales %></div><% } %>
+            <% if (offre.exigencesCandidat) { %><div class="offer-desc"><strong>Exigences du candidat :</strong> <%= offre.exigencesCandidat %></div><% } %>
 
             <div class="offer-actions">
               <!-- Formulaire de refus d'offre (US-13) -->

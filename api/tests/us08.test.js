@@ -16,7 +16,12 @@ const skip = TEST_URI ? false : 'TEST_MONGODB_URI non défini';
 let server, port;
 const id = () => new mongoose.Types.ObjectId().toString();
 const token = (role, userId = id()) => jwt.sign({id: userId, role}, process.env.JWT_SECRET);
-const valid = (categorie) => ({titre: 'Développeur', description: 'Mission du poste', categorie});
+const valid = (categorie) => ({
+    titre: 'Développeur', description: 'Mission du poste', categorie,
+    localisation: 'Paris', typeContrat: 'CDI',
+    missionsPrincipales: 'Développer les applications',
+    exigencesCandidat: 'Expérience en JavaScript'
+});
 
 function request(method, path, body, bearer) {
     return new Promise((resolve, reject) => {
@@ -64,6 +69,10 @@ test('US08: validation des champs', () => {
     assert.ok(validateOffre({...valid(id()), salaire: '100'}).errors.length);
     assert.ok(validateOffre({...valid(id()), salaire: Number.POSITIVE_INFINITY}).errors.length);
     assert.deepEqual(validateOffre({...valid(id()), salaire: 0}).errors, []);
+    assert.equal(validateOffre({...valid(id()), localisation: ' '}).errors.length, 1);
+    assert.equal(validateOffre({...valid(id()), typeContrat: ''}).errors.length, 1);
+    assert.equal(validateOffre({...valid(id()), missionsPrincipales: ''}).errors.length, 1);
+    assert.equal(validateOffre({...valid(id()), exigencesCandidat: ''}).errors.length, 1);
 });
 test('US08: la valeur par défaut du modèle est brouillon', () => {
     assert.equal(new Offer({...valid(id()), entreprise: {id: id(), nomEntreprise: 'E'}}).statut, 'brouillon');
@@ -114,6 +123,10 @@ test('US08: enregistre un brouillon, ignore les champs propriétaire/statut four
         assert.equal(saved.statut, 'brouillon');
         assert.equal(saved.entreprise.id.toString(), companyId);
         assert.equal(saved.categorie.toString(), categoryId);
+        assert.equal(saved.localisation, 'Paris');
+        assert.equal(saved.typeContrat, 'CDI');
+        assert.equal(saved.missionsPrincipales, 'Développer les applications');
+        assert.equal(saved.exigencesCandidat, 'Expérience en JavaScript');
         const selector = await request('GET', '/api/offres/categories', undefined, token('entreprise', companyId));
         assert.equal(selector.status, 200);
         assert.ok(selector.json.categories.some(c => c.id === categoryId));

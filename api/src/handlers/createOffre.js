@@ -22,6 +22,19 @@ function validateOffre(body) {
     } else if (description.length > 10000) {
         errors.push("La description ne doit pas dépasser 10000 caractères")
     }
+    const fields = [
+        ["localisation", "La localisation est obligatoire", 200],
+        ["typeContrat", "Le type de contrat est obligatoire", 100],
+        ["missionsPrincipales", "Les missions principales sont obligatoires", 10000],
+        ["exigencesCandidat", "Les exigences du candidat sont obligatoires", 10000],
+    ];
+    const details = {};
+    for (const [key, message, max] of fields) {
+        const value = typeof body[key] === "string" ? body[key].trim() : "";
+        if (!value) errors.push(message);
+        else if (value.length > max) errors.push(`${message} (${max} caractères maximum)`);
+        details[key] = value;
+    }
     if (typeof body.categorie !== "string" || !mongoose.isValidObjectId(body.categorie)) {
         errors.push("Une catégorie valide est obligatoire");
     }
@@ -33,7 +46,7 @@ function validateOffre(body) {
             salaire = body.salaire;
         }
     }
-    return {errors, data: {titre, description, categorie: body.categorie, ...(salaire === undefined ? {} : {salaire})}};
+    return {errors, data: {titre, description, ...details, categorie: body.categorie, ...(salaire === undefined ? {} : {salaire})}};
 }
 
 async function createOffre(body, userId) {
@@ -66,6 +79,10 @@ async function createOffre(body, userId) {
             id: offre._id,
             titre: offre.titre,
             description: offre.description,
+            localisation: offre.localisation,
+            typeContrat: offre.typeContrat,
+            missionsPrincipales: offre.missionsPrincipales,
+            exigencesCandidat: offre.exigencesCandidat,
             salaire: offre.salaire ?? null,
             categorie: offre.categorie,
             entreprise: {id: entreprise._id, nomEntreprise: entreprise.nomEntreprise},

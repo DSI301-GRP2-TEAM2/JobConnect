@@ -1,0 +1,7 @@
+.offer-form { max-width: 760px; margin: 0 auto; padding: 1.5rem; background: white; border: 1px solid var(--border); border-radius: var(--radius); }
+.offer-form > p { color: var(--text-muted); margin: .5rem 0 1.5rem; }
+.form-group small, .error { color: var(--danger); display: block; margin-top: .25rem; }
+.success { color: #166534; margin: 1rem 0; }
+.draft-action { margin-top: 1.5rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius); }
+.draft-action p { margin-bottom: 1rem; }
+select + small + button, select + button { margin-top: .5rem; }

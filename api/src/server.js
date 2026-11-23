@@ -13,6 +13,8 @@ const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
 const { getCategories, getCategoriesHandler } = require("./handlers/getCategories");
 const { getOffresPublieesHandler } = require("./handlers/getOffres");
+const { createOffreHandler, getCategoriesEntrepriseHandler } = require("./handlers/createOffre");
+const { submitOffreHandler } = require("./handlers/submitOffre");
 
 const app = express();
 
@@ -110,6 +112,9 @@ app.post("/api/auth/register", adapt(registerHandler));
 app.post("/api/auth/login", adapt(loginHandler));
 
 app.get("/api/categories", authMiddleware, requireRole("agent"), adapt(getCategoriesHandler));
+app.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
+app.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));
+app.patch("/api/offres/:id/submit", authMiddleware, requireRole("entreprise"), adapt(submitOffreHandler));
 
 app.get("/agent/categories", agentAuth, async (req, res) => {
   try {

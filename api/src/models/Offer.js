@@ -4,6 +4,10 @@ const offerSchema = new mongoose.Schema(
   {
     titre: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
+    localisation: { type: String, trim: true },
+    typeContrat: { type: String, trim: true },
+    missionsPrincipales: { type: String, trim: true },
+    exigencesCandidat: { type: String, trim: true },
     salaire: Number,
     dateCreation: { type: Date, default: Date.now },
     statut: {

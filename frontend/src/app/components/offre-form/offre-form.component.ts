@@ -40,7 +40,7 @@ export class OffreFormComponent implements OnInit, OnChanges {
       next: ({ offre }) => {
         this.saving = false;
         if (offre.statut !== 'brouillon') { this.error = 'Seul un brouillon peut être modifié.'; return; }
-        this.draft = { titre: offre.titre, description: offre.description, categorie: offre.categorie?._id || '', salaire: offre.salaire, localisation: offre.localisation || '', typeContrat: offre.typeContrat || '', missionsPrincipales: offre.missionsPrincipales || '', exigencesCandidat: offre.exigencesCandidat || '' };
+        this.draft = { titre: offre.titre, description: offre.description, categorie: offre.categorie?._id || '', salaire: offre.salaire, localisation: offre.localisation || '', typeContrat: offre.typeContrat || '', missionsPrincipales: offre.missionsPrincipales || '', profilRecherche: offre.profilRecherche || '' };
         this.createdOffer = { ...this.draft, id: offre._id, statut: offre.statut };
       },
       error: err => { this.error = this.getError(err); this.saving = false; }
@@ -68,7 +68,7 @@ export class OffreFormComponent implements OnInit, OnChanges {
       localisation: this.draft.localisation?.trim(),
       typeContrat: this.draft.typeContrat?.trim(),
       missionsPrincipales: this.draft.missionsPrincipales?.trim(),
-      exigencesCandidat: this.draft.exigencesCandidat?.trim()
+      profilRecherche: this.draft.profilRecherche?.trim()
     };
     const request = this.offerId
       ? this.offreService.updateOffre(this.offerId, draft).pipe(map(response => response.offre._id))
@@ -102,7 +102,7 @@ export class OffreFormComponent implements OnInit, OnChanges {
   }
 
   private emptyDraft(): OffreDraft {
-    return { titre: '', description: '', categorie: '', localisation: '', typeContrat: '', missionsPrincipales: '', exigencesCandidat: '' };
+    return { titre: '', description: '', categorie: '', localisation: '', typeContrat: '', missionsPrincipales: '', profilRecherche: '' };
   }
 
   private getError(err: HttpErrorResponse): string {

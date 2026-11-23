@@ -75,7 +75,7 @@
               <%= offre.description %>
             </div>
             <% if (offre.missionsPrincipales) { %><div class="offer-desc"><strong>Missions principales :</strong> <%= offre.missionsPrincipales %></div><% } %>
-            <% if (offre.exigencesCandidat) { %><div class="offer-desc"><strong>Exigences du candidat :</strong> <%= offre.exigencesCandidat %></div><% } %>
+            <% if ((offre.profilRecherche || offre.exigencesCandidat)) { %><div class="offer-desc"><strong>Profil recherché :</strong> <%= (offre.profilRecherche || offre.exigencesCandidat) %></div><% } %>
 
             <div class="offer-actions">
               <button type="button" class="btn-reject" onclick="openRejectModal('<%= offre._id %>')">

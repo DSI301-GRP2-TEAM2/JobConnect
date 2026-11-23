@@ -1,14 +1,14 @@
 <header>
   <div class="navbar">
-    <a href="#" class="brand">
+    <a href="#" class="brand" (click)="setView('offres')">
       <span class="brand-box">JC</span>
       <span class="brand-name">JobConnect</span>
     </a>
 
     <ul class="nav-links">
-      <li><button class="nav-tab active">Offres</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'offres'" (click)="setView('offres')">Offres</button></li>
       <li><button class="nav-tab inactive">Mes candidatures</button></li>
-      <li><button class="nav-tab inactive">Mon profil</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'profil'" (click)="setView('profil')">Mon profil</button></li>
     </ul>
 
     <div class="auth-zone">
@@ -26,7 +26,8 @@
 </header>
 
 <main>
-  <app-catalogue></app-catalogue>
+  <app-catalogue *ngIf="currentView === 'offres'"></app-catalogue>
+  <app-profil *ngIf="currentView === 'profil'"></app-profil>
 </main>
 
 <div class="modal-overlay" [class.active]="authService.showModal">

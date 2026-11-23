@@ -1,0 +1,136 @@
+<div class="profil-container">
+  <div class="profil-header">
+    <h1 class="profil-title">Mon profil candidat</h1>
+  </div>
+
+  <div *ngIf="!authService.isAuthenticated()" class="auth-warning">
+    <p>Veuillez vous connecter en tant que candidat pour consulter et modifier votre profil.</p>
+    <button class="btn btn-primary btn-sm" (click)="authService.openLoginModal()">Connexion Candidat</button>
+  </div>
+
+  <div class="card-profil">
+    <h2 class="card-title">Informations personnelles</h2>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group col-half">
+          <label for="nom">Nom</label>
+          <input
+            type="text"
+            id="nom"
+            name="nom"
+            class="form-control"
+            [(ngModel)]="profil.nom"
+            required
+            placeholder="Jérôme"
+          />
+        </div>
+
+        <div class="form-group col-half">
+          <label for="prenom">Prénom</label>
+          <input
+            type="text"
+            id="prenom"
+            name="prenom"
+            class="form-control"
+            [(ngModel)]="profil.prenom"
+            placeholder="Sarah"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-half">
+          <label for="telephone">Téléphone</label>
+          <input
+            type="text"
+            id="telephone"
+            name="telephone"
+            class="form-control"
+            [(ngModel)]="profil.telephone"
+            placeholder="06 12 34 56 78"
+          />
+        </div>
+
+        <div class="form-group col-half">
+          <label for="ville">Ville</label>
+          <input
+            type="text"
+            id="ville"
+            name="ville"
+            class="form-control"
+            [(ngModel)]="profil.ville"
+            placeholder="Paris (75011)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="titre">Titre professionnel</label>
+        <input
+          type="text"
+          id="titre"
+          name="titre"
+          class="form-control"
+          [(ngModel)]="profil.titre"
+          placeholder="Développeuse Fullstack React / Node.js"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="tag-input">Compétences (tags)</label>
+        <div class="tags-wrapper">
+          <div class="tags-list">
+            <span *ngFor="let tag of profil.competences; let i = index" class="tag-chip">
+              {{ tag }}
+              <button type="button" class="tag-remove" (click)="removeTag(i)">&times;</button>
+            </span>
+          </div>
+          <div class="tag-input-row">
+            <input
+              type="text"
+              id="tag-input"
+              class="form-control tag-input-field"
+              placeholder="Ex: React, TypeScript, Docker..."
+              [(ngModel)]="newTag"
+              name="newTag"
+              (keydown)="onTagKeyDown($event)"
+            />
+            <button type="button" class="btn btn-outline btn-sm" (click)="addTag()">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="bio">Résumé / Bio</label>
+        <textarea
+          id="bio"
+          name="bio"
+          class="form-control"
+          rows="4"
+          [(ngModel)]="profil.bio"
+          placeholder="Développeuse passionnée avec 4 ans d'expérience dans la création d'applications web performantes et scalables."
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-dark"
+          [disabled]="loading || !authService.isAuthenticated()"
+        >
+          <span *ngIf="!loading">Enregistrer mon profil</span>
+          <span *ngIf="loading">Enregistrement en cours...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

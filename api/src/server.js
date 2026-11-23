@@ -13,6 +13,10 @@ const { rejectOffre, rejectOffreHandler } = require("./handlers/rejectOffre");
 const { createCategorie, createCategorieHandler } = require("./handlers/createCategorie");
 const { getCategories, getCategoriesHandler } = require("./handlers/getCategories");
 const { getOffresPublieesHandler } = require("./handlers/getOffres");
+const {
+  updateProfilCandidatHandler,
+  getProfilCandidatHandler,
+} = require("./handlers/profilCandidat");
 
 const app = express();
 
@@ -198,6 +202,20 @@ app.get(
   authMiddleware,
   requireRole("candidat"),
   adapt(getOffresPublieesHandler)
+);
+
+app.get(
+  "/api/candidats/me",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getProfilCandidatHandler)
+);
+
+app.put(
+  "/api/candidats/me",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(updateProfilCandidatHandler)
 );
 
 app.use((err, req, res, next) => {

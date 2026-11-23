@@ -92,4 +92,83 @@ function validateRegister(body) {
   return { data };
 }
 
-module.exports = { validateRegister };
+function validateUpdateProfil(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return { errors: ["Corps de requête invalide"] };
+  }
+
+  const errors = [];
+  const data = {};
+
+  if (body.nom !== undefined) {
+    if (!isNonEmptyString(body.nom)) {
+      errors.push("nom ne peut pas être vide");
+    } else {
+      data.nom = body.nom.trim();
+    }
+  }
+
+  if (body.prenom !== undefined) {
+    if (!isNonEmptyString(body.prenom)) {
+      errors.push("prenom ne peut pas être vide");
+    } else {
+      data.prenom = body.prenom.trim();
+    }
+  }
+
+  if (body.titre !== undefined) {
+    data.titre = typeof body.titre === "string" ? body.titre.trim() : "";
+  }
+
+  if (body.telephone !== undefined && body.telephone !== "") {
+    if (typeof body.telephone !== "string" || !PHONE_RE.test(body.telephone.trim())) {
+      errors.push("numéro de téléphone invalide");
+    } else {
+      data.telephone = body.telephone.trim();
+    }
+  } else if (body.telephone === "") {
+    data.telephone = "";
+  }
+
+  if (body.ville !== undefined) {
+    data.ville = typeof body.ville === "string" ? body.ville.trim() : "";
+  }
+
+  if (body.adresse !== undefined) {
+    data.adresse = typeof body.adresse === "string" ? body.adresse.trim() : "";
+  }
+
+  if (body.bio !== undefined) {
+    data.bio = typeof body.bio === "string" ? body.bio.trim() : "";
+  }
+
+  if (body.competences !== undefined) {
+    if (Array.isArray(body.competences)) {
+      data.competences = body.competences
+        .map((c) => String(c).trim())
+        .filter(Boolean);
+    } else if (typeof body.competences === "string") {
+      data.competences = body.competences
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+    } else {
+      errors.push("competences doit être un tableau ou une chaîne");
+    }
+  }
+
+  if (errors.length > 0) {
+    return { errors };
+  }
+
+  if (Object.keys(data).length === 0) {
+    return { errors: ["Aucune information fournie pour la mise à jour"] };
+  }
+
+  return { data };
+}
+
+module.exports = {
+  validateRegister,
+  validateUpdateProfil,
+};

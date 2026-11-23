@@ -2,21 +2,27 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CatalogueComponent } from './components/catalogue/catalogue.component';
+import { ProfilComponent } from './components/profil/profil.component';
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, CatalogueComponent],
+  imports: [CommonModule, FormsModule, CatalogueComponent, ProfilComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  currentView: 'offres' | 'profil' = 'offres';
   loginEmail = '';
   loginMdp = '';
   loginError = '';
 
   constructor(public authService: AuthService) {}
+
+  setView(view: 'offres' | 'profil'): void {
+    this.currentView = view;
+  }
 
   getInitials(): string {
     const user = this.authService.currentUser;

@@ -24,6 +24,7 @@ export class AuthService {
   currentUser: User | null = null;
   currentToken: string | null = null;
   showModal = false;
+  showRegisterModal = false;
 
   constructor(private http: HttpClient) {
     this.loadToken();
@@ -57,6 +58,10 @@ export class AuthService {
     );
   }
 
+  register(data: { nom: string; prenom: string; email: string; mdp: string }): Observable<unknown> {
+    return this.http.post<unknown>(`${this.apiUrl}/api/auth/register`, { ...data, role: 'candidat' });
+  }
+
   logout(): void {
     this.currentToken = null;
     this.currentUser = null;
@@ -65,10 +70,20 @@ export class AuthService {
   }
 
   openLoginModal(): void {
+    this.showRegisterModal = false;
     this.showModal = true;
   }
 
   closeLoginModal(): void {
     this.showModal = false;
+  }
+
+  openRegisterModal(): void {
+    this.showModal = false;
+    this.showRegisterModal = true;
+  }
+
+  closeRegisterModal(): void {
+    this.showRegisterModal = false;
   }
 }

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const categorySchema = new mongoose.Schema(
     {
         libelle: {type: String, required: true, trim: true, maxlength: 100},
-        description: {type: String, maxlength: 500, required: true},
+        description: {type: String, trim: true, maxlength: 500, required: true},
     },
     {collection: "categories"}
 );

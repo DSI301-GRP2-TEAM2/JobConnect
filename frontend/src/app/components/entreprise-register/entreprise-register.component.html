@@ -1,0 +1,40 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="form-group">
+    <label for="ent-nom">Nom de l'entreprise *</label>
+    <input type="text" id="ent-nom" class="form-control" formControlName="nomEntreprise" placeholder="TechCorp Solutions">
+    <p class="reg-error" *ngIf="form.get('nomEntreprise')?.touched && form.get('nomEntreprise')?.errors?.['required']">Le nom de l'entreprise est obligatoire.</p>
+  </div>
+
+  <div class="form-group">
+    <label for="ent-secteur">Secteur d'activité (optionnel)</label>
+    <select id="ent-secteur" class="form-control" formControlName="secteur">
+      <option value="">-- Choisir un secteur --</option>
+      <option *ngFor="let s of secteurs" [value]="s">{{ s }}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="ent-email">E-mail professionnel *</label>
+    <input type="email" id="ent-email" class="form-control" formControlName="email" placeholder="rh@techcorp.fr">
+    <p class="reg-error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">Format d'e-mail invalide.</p>
+  </div>
+
+  <div class="form-group">
+    <label for="ent-mdp">Mot de passe *</label>
+    <input type="password" id="ent-mdp" class="form-control" formControlName="mdp" placeholder="8 caractères minimum">
+    <p class="reg-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['minlength']">Au moins 8 caractères.</p>
+    <p class="reg-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['maxlength']">72 caractères maximum.</p>
+  </div>
+
+  <div class="form-group">
+    <label for="ent-mdp2">Confirmation du mot de passe *</label>
+    <input type="password" id="ent-mdp2" class="form-control" formControlName="mdpConfirmation" placeholder="Répétez le mot de passe">
+    <p class="reg-error" *ngIf="form.get('mdpConfirmation')?.touched && form.get('mdpConfirmation')?.errors?.['required']">La confirmation est obligatoire.</p>
+  </div>
+
+  <p *ngIf="errorMsg" style="color: var(--danger); font-size: 0.88rem; margin-top: 0.5rem;">{{ errorMsg }}</p>
+
+  <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" [disabled]="submitting">
+    {{ submitting ? 'Création...' : 'Créer le compte entreprise' }}
+  </button>
+</form>

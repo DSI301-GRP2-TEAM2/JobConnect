@@ -19,6 +19,7 @@
       </div>
 
       <div *ngIf="!authService.currentUser || !authService.currentToken">
+        <button class="btn btn-outline btn-sm" (click)="authService.openEntrepriseModal()">Inscription Entreprise</button>
         <button class="btn btn-primary btn-sm" (click)="authService.openLoginModal()">Connexion</button>
       </div>
     </div>
@@ -45,6 +46,14 @@
       <p *ngIf="loginError" style="color: var(--danger); font-size: 0.88rem; margin-top: 0.5rem;">{{ loginError }}</p>
       <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Se connecter</button>
     </form>
+  </div>
+</div>
+
+<div class="modal-overlay" [class.active]="authService.showEntrepriseModal">
+  <div class="modal-card" style="max-height: 85vh; overflow-y: auto;">
+    <button class="modal-close" (click)="authService.closeEntrepriseModal()">&times;</button>
+    <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Inscription Entreprise</h3>
+    <app-entreprise-register></app-entreprise-register>
   </div>
 </div>
 

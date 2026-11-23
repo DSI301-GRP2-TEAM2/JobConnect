@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CatalogueComponent } from './components/catalogue/catalogue.component';
+import { EntrepriseRegisterComponent } from './components/entreprise-register/entreprise-register.component';
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, CatalogueComponent],
+  imports: [CommonModule, FormsModule, CatalogueComponent, EntrepriseRegisterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

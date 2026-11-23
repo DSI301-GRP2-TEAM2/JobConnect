@@ -24,6 +24,7 @@ export class AuthService {
   currentUser: User | null = null;
   currentToken: string | null = null;
   showModal = false;
+  showEntrepriseModal = false;
 
   constructor(private http: HttpClient) {
     this.loadToken();
@@ -57,6 +58,14 @@ export class AuthService {
     );
   }
 
+  registerEntreprise(data: { nomEntreprise: string; secteur?: string; email: string; mdp: string }): Observable<unknown> {
+    return this.http.post<unknown>(`${this.apiUrl}/api/auth/register`, {
+      ...data,
+      nom: data.nomEntreprise,
+      role: 'entreprise'
+    });
+  }
+
   logout(): void {
     this.currentToken = null;
     this.currentUser = null;
@@ -65,10 +74,20 @@ export class AuthService {
   }
 
   openLoginModal(): void {
+    this.showEntrepriseModal = false;
     this.showModal = true;
   }
 
   closeLoginModal(): void {
     this.showModal = false;
+  }
+
+  openEntrepriseModal(): void {
+    this.showModal = false;
+    this.showEntrepriseModal = true;
+  }
+
+  closeEntrepriseModal(): void {
+    this.showEntrepriseModal = false;
   }
 }

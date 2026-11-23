@@ -18,6 +18,8 @@ export interface Offre {
   statut: string;
   categorie?: Categorie;
   entreprise?: EntrepriseOffre;
+  lieu?: string;
   localisation?: string;
   typeContrat?: string;
+  motifRefus?: string;
 }

@@ -28,7 +28,7 @@ export class OffreService {
   }
 
   getMesOffres(): Observable<{ offres: Offre[] }> {
-    return this.http.get<{ offres: Offre[] }>(`${this.apiUrl}/api/entreprise/offres`, { headers: this.authHeaders() });
+    return this.http.get<{ offres: Offre[] }>(`${this.apiUrl}/api/offres/mes-offres`, { headers: this.authHeaders() });
   }
 
   getMonOffre(id: string): Observable<{ offre: Offre }> {

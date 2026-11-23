@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { map } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CategorieOption, OffreService } from '../../services/offre.service';
 import { OffreCreee, OffreDraft } from '../../models/offre.model';
@@ -69,10 +70,11 @@ export class OffreFormComponent implements OnInit, OnChanges {
       missionsPrincipales: this.draft.missionsPrincipales?.trim(),
       exigencesCandidat: this.draft.exigencesCandidat?.trim()
     };
-    const request = this.offerId ? this.offreService.updateOffre(this.offerId, draft) : this.offreService.createOffre(draft);
+    const request = this.offerId
+      ? this.offreService.updateOffre(this.offerId, draft).pipe(map(response => response.offre._id))
+      : this.offreService.createOffre(draft).pipe(map(response => response.offre.id));
     request.subscribe({
-      next: response => {
-        const id = this.offerId || (response.offre as OffreCreee).id;
+      next: id => {
         this.createdOffer = { ...draft, id, statut: 'brouillon' };
         this.success = 'Offre enregistrée en brouillon.';
         if (!this.offerId) this.draft = this.emptyDraft();

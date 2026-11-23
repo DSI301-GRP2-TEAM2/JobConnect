@@ -32,8 +32,8 @@
           <input id="libelle" name="libelle" type="text" maxlength="100" required autocomplete="off" value="<%= values.libelle || '' %>">
         </div>
         <div class="form-field">
-          <label for="description">Description (facultative)</label>
-          <textarea id="description" name="description" rows="4" maxlength="500"><%= values.description || '' %></textarea>
+          <label for="description">Description *</label>
+          <textarea id="description" name="description" rows="4" maxlength="500" required><%= values.description || '' %></textarea>
         </div>
         <button class="btn-primary" type="submit">Créer la catégorie</button>
       </form>

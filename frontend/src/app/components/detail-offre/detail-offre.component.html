@@ -1,7 +1,7 @@
 <section id="tab-detail">
   <button class="back-link" (click)="onRetour()">← Retour aux offres</button>
 
-  <div *ngIf="loading" class="status-info">
+  <div *ngIf="loading" class="status-box">
     Chargement du détail de l'offre...
   </div>
 
@@ -9,71 +9,84 @@
     {{ error }}
   </div>
 
-  <div class="detail-card" *ngIf="!loading && offre">
-    <div class="detail-top-bar">
-      <div>
-        <span class="badge badge-success">{{ offre.categorie?.libelle || 'Général' }}</span>
-        <h2 class="detail-title">{{ offre.titre }}</h2>
-        <p class="detail-company">🏢 {{ getEntrepriseNom() }}</p>
-        <p class="detail-date">Publiée le {{ formatDate(offre.dateCreation) }}</p>
+  <div class="detail-layout" *ngIf="!loading && offre">
+    <div class="detail-main-column">
+      <div class="detail-card header-card">
+        <div class="header-badges">
+          <span class="category-badge" *ngIf="offre.categorie?.libelle">{{ offre.categorie?.libelle }}</span>
+          <span class="contract-badge" *ngIf="getTypeContrat()">{{ getTypeContrat() }}</span>
+        </div>
+        <h1 class="detail-title">{{ offre.titre }}</h1>
+        <p class="detail-subtitle">
+          {{ getEntrepriseNom() }}
+          <span *ngIf="getLieu()"> · {{ getLieu() }}</span>
+          <span *ngIf="getTypeContrat()"> · {{ getTypeContrat() }}</span>
+        </p>
       </div>
-      <button class="btn btn-primary" (click)="postuler()">Postuler</button>
-    </div>
 
-    <div *ngIf="postulerMessage" class="info-alert">
-      {{ postulerMessage }}
-    </div>
-
-    <div class="detail-section">
-      <h4>Missions & Description du poste</h4>
-      <p class="detail-desc">{{ offre.description }}</p>
-    </div>
-
-    <div class="detail-section">
-      <h4>Conditions & Rémunération</h4>
-      <div class="info-grid">
-        <div class="info-item">
-          <strong>Rémunération</strong>
-          <span>{{ formatSalary(offre.salaire) }}</span>
-        </div>
-        <div class="info-item">
-          <strong>Statut de l'offre</strong>
-          <span class="badge badge-success">Publiée (active)</span>
-        </div>
-        <div class="info-item" *ngIf="offre.typeContrat">
-          <strong>Type de contrat</strong>
-          <span>{{ offre.typeContrat }}</span>
-        </div>
-        <div class="info-item" *ngIf="offre.localisation">
-          <strong>Localisation</strong>
-          <span>{{ offre.localisation }}</span>
+      <div class="detail-card">
+        <h3 class="section-title">Missions</h3>
+        <div class="section-divider"></div>
+        <div class="missions-content">
+          <ul class="missions-list" *ngIf="getMissions().length > 1">
+            <li *ngFor="let m of getMissions()">{{ m.replace('•', '').replace('-', '').trim() }}</li>
+          </ul>
+          <p class="section-text" *ngIf="getMissions().length <= 1">
+            {{ offre.missions || offre.description }}
+          </p>
         </div>
       </div>
-    </div>
 
-    <div class="detail-section">
-      <h4>Informations Entreprise</h4>
-      <div class="info-grid">
-        <div class="info-item">
-          <strong>Entreprise</strong>
-          <span>{{ getEntrepriseNom() }}</span>
-        </div>
-        <div class="info-item">
-          <strong>Secteur d'activité</strong>
-          <span>{{ getEntrepriseSecteur() }}</span>
-        </div>
-        <div class="info-item">
-          <strong>Site web</strong>
-          <span *ngIf="getEntrepriseSiteWeb()">
-            <a [href]="getEntrepriseSiteWeb()" target="_blank" rel="noopener noreferrer">{{ getEntrepriseSiteWeb() }}</a>
-          </span>
-          <span *ngIf="!getEntrepriseSiteWeb()">Non précisé</span>
-        </div>
-        <div class="info-item">
-          <strong>Contact</strong>
-          <span>{{ getEntrepriseEmail() }}</span>
+      <div class="detail-card">
+        <h3 class="section-title">Conditions & Rémunération</h3>
+        <div class="section-divider"></div>
+        <p class="section-text">
+          {{ getConditions() }}
+        </p>
+        <p class="salary-line" *ngIf="offre.salaire">
+          <strong>Rémunération :</strong> {{ formatSalary(offre.salaire) }}
+        </p>
+      </div>
+
+      <div class="detail-card">
+        <h3 class="section-title">À propos de l'entreprise</h3>
+        <div class="section-divider"></div>
+        <p class="section-text">
+          {{ getEntrepriseDescription() }}
+        </p>
+        <div class="company-extra-meta" *ngIf="getEntrepriseSiteWeb() || getEntrepriseEmail()">
+          <span *ngIf="getEntrepriseSiteWeb()">🌐 <a [href]="getEntrepriseSiteWeb()" target="_blank" rel="noopener noreferrer">{{ getEntrepriseSiteWeb() }}</a></span>
+          <span *ngIf="getEntrepriseEmail()">✉️ {{ getEntrepriseEmail() }}</span>
         </div>
       </div>
     </div>
+
+    <aside class="detail-sidebar">
+      <div class="sidebar-card">
+        <button class="btn-postuler" (click)="postuler()">Postuler à cette offre</button>
+        <div *ngIf="postulerMessage" class="postuler-alert">
+          {{ postulerMessage }}
+        </div>
+        <div class="sidebar-divider"></div>
+        <ul class="sidebar-meta-list">
+          <li>
+            <span class="meta-label">Publication :</span>
+            <span class="meta-value">{{ formatDate(offre.dateCreation) }}</span>
+          </li>
+          <li>
+            <span class="meta-label">Type de poste :</span>
+            <span class="meta-value">{{ getTypeContrat() }}</span>
+          </li>
+          <li>
+            <span class="meta-label">Expérience :</span>
+            <span class="meta-value">{{ getExperience() }}</span>
+          </li>
+          <li>
+            <span class="meta-label">Lieu :</span>
+            <span class="meta-value">{{ getLieu() }}</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
   </div>
 </section>

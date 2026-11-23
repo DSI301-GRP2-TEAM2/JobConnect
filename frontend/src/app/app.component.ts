@@ -34,6 +34,14 @@ export class AppComponent {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  getInitials(): string {
+    const user = this.authService.currentUser;
+    if (!user) return 'SJ';
+    const p = user.prenom ? user.prenom[0].toUpperCase() : '';
+    const n = user.nom ? user.nom[0].toUpperCase() : '';
+    return p + n || 'SJ';
+  }
+
   handleLogin(): void {
     this.loginError = '';
     this.authService.login(this.loginEmail.trim(), this.loginMdp).subscribe({

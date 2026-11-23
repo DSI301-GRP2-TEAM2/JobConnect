@@ -1,18 +1,20 @@
 <header>
   <div class="navbar">
     <a href="#" class="brand" (click)="onRetourCatalogue()">
-      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-      JobConnect
+      <span class="brand-box">JC</span>
+      <span class="brand-name">JobConnect</span>
     </a>
 
     <ul class="nav-links">
-      <li><button class="nav-btn" [class.active]="currentView === 'catalogue'" (click)="onRetourCatalogue()">Offres</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'catalogue'" (click)="onRetourCatalogue()">Offres</button></li>
+      <li><button class="nav-tab inactive">Mes candidatures</button></li>
+      <li><button class="nav-tab inactive">Mon profil</button></li>
     </ul>
 
     <div class="auth-zone">
       <div *ngIf="authService.currentUser && authService.currentToken" class="user-badge">
-        <span>{{ authService.currentUser.prenom }} {{ authService.currentUser.nom }}</span>
-        <span class="role-pill role-candidat">{{ authService.currentUser.role }}</span>
+        <span class="avatar-circle">{{ getInitials() }}</span>
+        <span class="user-fullname">{{ authService.currentUser.prenom }} {{ authService.currentUser.nom[0] }}.</span>
         <button class="btn btn-outline btn-sm" (click)="authService.logout()">Déconnexion</button>
       </div>
 

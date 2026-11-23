@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouvelle catégorie - JobConnect Agent</title>
+  <link rel="stylesheet" href="/css/agent.css">
+</head>
+<body>
+  <header class="agent-header">
+    <nav class="agent-nav" aria-label="Navigation Agent">
+      <a href="/agent/offres" class="brand-title">JobConnect</a>
+      <ul class="nav-menu">
+        <li><a href="/agent/offres" class="nav-link">Offres en attente</a></li>
+        <li><a href="/agent/categories" class="nav-link active" aria-current="page">Catégories</a></li>
+      </ul>
+      <div class="agent-profile"><span>Agent Modérateur</span><span class="badge-agent">Agent</span></div>
+    </nav>
+  </header>
+  <main class="main-container">
+    <div class="page-header">
+      <h1 class="page-title">Créer une catégorie d'offres d'emploi</h1>
+      <p class="page-subtitle">Ajoutez une catégorie pour classifier les postes du catalogue (US-06).</p>
+    </div>
+    <% if (success) { %><div class="alert alert-success" role="status"><%= success %></div><% } %>
+    <% if (error) { %><div class="alert alert-error" role="alert"><%= error %></div><% } %>
+    <p class="category-return"><a href="/agent/categories">← Retour à la liste des catégories</a></p>
+    <section class="category-form-card">
+      <form action="/agent/categories/nouvelle" method="POST">
+        <div class="form-field">
+          <label for="libelle">Nom de la catégorie <span aria-hidden="true">*</span></label>
+          <input id="libelle" name="libelle" type="text" maxlength="100" required autocomplete="off" value="<%= values.libelle || '' %>">
+        </div>
+        <div class="form-field">
+          <label for="description">Description (facultative)</label>
+          <textarea id="description" name="description" rows="4" maxlength="500"><%= values.description || '' %></textarea>
+        </div>
+        <button class="btn-primary" type="submit">Créer la catégorie</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

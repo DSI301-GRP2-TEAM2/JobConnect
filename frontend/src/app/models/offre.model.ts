@@ -11,6 +11,9 @@ export interface EntrepriseDetail {
   email?: string;
   siteWeb?: string;
   secteur?: string;
+  description?: string;
+  aPropos?: string;
+  ville?: string;
 }
 
 export interface EntrepriseOffre {
@@ -27,6 +30,16 @@ export interface Offre {
   statut: string;
   categorie?: Categorie;
   entreprise?: EntrepriseOffre;
+  lieu?: string;
   localisation?: string;
   typeContrat?: string;
+  experience?: string;
+  missions?: string;
+  conditions?: string;
+  exigences?: string;
+  profilRecherche?: string;
+  avantages?: string;
+  descriptionEntreprise?: string;
+  aPropos?: string;
+  motifRefus?: string;
 }

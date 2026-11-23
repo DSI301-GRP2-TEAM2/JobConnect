@@ -241,3 +241,142 @@ body {
   margin-bottom: 0.5rem;
   color: var(--text-main);
 }
+
+/* US-06 : formulaire de création d'une catégorie */
+.category-form-card {
+  max-width: 680px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+}
+.form-field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.25rem; }
+.form-field label { font-weight: 600; font-size: .95rem; }
+.form-field input, .form-field textarea {
+  width: 100%; padding: .7rem .8rem; border: 1px solid var(--border);
+  border-radius: 6px; background: #fff; color: var(--text-main);
+  font: inherit;
+}
+.form-field input:focus-visible, .form-field textarea:focus-visible, .btn-primary:focus-visible {
+  outline: 2px solid var(--primary); outline-offset: 2px;
+}
+.btn-primary {
+  background: var(--primary); color: #fff; border: 0; border-radius: 6px;
+  padding: .7rem 1.1rem; font: inherit; font-weight: 600; cursor: pointer;
+}
+.btn-primary:hover { background: #1d4ed8; }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background: #ffffff;
+  border: 1px solid #0f172a;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 540px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  margin-bottom: 1.25rem;
+}
+
+.modal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+}
+
+.modal-subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.required-star {
+  color: #dc2626;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1.5px solid #dc2626;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: #0f172a;
+  resize: vertical;
+  background: #ffffff;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-cancel {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-cancel:hover {
+  background: #f1f5f9;
+}
+
+.btn-confirm-reject {
+  background: #dc2626;
+  color: #ffffff;
+  border: 1.5px solid #dc2626;
+  border-radius: 6px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-confirm-reject:hover {
+  background: #b91c1c;
+}

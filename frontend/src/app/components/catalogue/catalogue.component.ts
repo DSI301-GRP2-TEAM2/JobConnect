@@ -22,6 +22,7 @@ export class CatalogueComponent implements OnInit {
   pages: number[] = [];
   loading = false;
   error = '';
+  selectedOffre: Offre | null = null;
 
   constructor(
     private offreService: OffreService,
@@ -46,10 +47,14 @@ export class CatalogueComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
+        this.allOffres = [];
+        this.pagedOffres = [];
         if (err.status === 401 || err.status === 403) {
           this.error = 'Accès réservé aux candidats';
+        } else if (err?.error?.error && typeof err.error.error === 'string') {
+          this.error = err.error.error;
         } else {
-          this.error = 'Impossible de charger les offres';
+          this.error = "Erreur lors du chargement des offres d'emploi";
         }
       }
     });
@@ -78,6 +83,11 @@ export class CatalogueComponent implements OnInit {
 
   voirDetail(id: string): void {
     this.selectOffre.emit(id);
+  }
+
+  voirOffre(offre: Offre): void {
+    this.selectOffre.emit(offre._id);
+  }
   }
 
   formatSalary(salaire?: number): string {

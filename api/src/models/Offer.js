@@ -18,6 +18,18 @@ const offerSchema = new mongoose.Schema(
     },
 
     categorie: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+    lieu: { type: String, default: null },
+    localisation: { type: String, default: null },
+    typeContrat: { type: String, default: null },
+    motifRefus: { type: String, default: null },
+    missions: { type: String, default: null },
+    conditions: { type: String, default: null },
+    exigences: { type: String, default: null },
+    profilRecherche: { type: String, default: null },
+    avantages: { type: String, default: null },
+    experience: { type: String, default: null },
+    descriptionEntreprise: { type: String, default: null },
+    aPropos: { type: String, default: null },
   },
   { collection: "offres" }
 );

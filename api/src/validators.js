@@ -120,14 +120,19 @@ function validateUpdateProfil(body) {
     data.titre = typeof body.titre === "string" ? body.titre.trim() : "";
   }
 
-  if (body.telephone !== undefined && body.telephone !== "") {
-    if (typeof body.telephone !== "string" || !PHONE_RE.test(body.telephone.trim())) {
+  if (body.telephone !== undefined) {
+    if (typeof body.telephone !== "string") {
       errors.push("numéro de téléphone invalide");
     } else {
-      data.telephone = body.telephone.trim();
+      const trimmedPhone = body.telephone.trim();
+      if (trimmedPhone === "") {
+        data.telephone = "";
+      } else if (!PHONE_RE.test(trimmedPhone)) {
+        errors.push("numéro de téléphone invalide");
+      } else {
+        data.telephone = trimmedPhone;
+      }
     }
-  } else if (body.telephone === "") {
-    data.telephone = "";
   }
 
   if (body.ville !== undefined) {

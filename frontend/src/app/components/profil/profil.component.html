@@ -22,7 +22,7 @@
     <form (ngSubmit)="onSubmit()">
       <div class="form-row">
         <div class="form-group col-half">
-          <label for="nom">Nom</label>
+          <label for="nom">Nom *</label>
           <input
             type="text"
             id="nom"
@@ -35,13 +35,14 @@
         </div>
 
         <div class="form-group col-half">
-          <label for="prenom">Prénom</label>
+          <label for="prenom">Prénom *</label>
           <input
             type="text"
             id="prenom"
             name="prenom"
             class="form-control"
             [(ngModel)]="profil.prenom"
+            required
             placeholder="Sarah"
           />
         </div>

@@ -27,6 +27,18 @@ export class OffreService {
     return this.http.post<{ message: string; offre: OffreCreee }>(`${this.apiUrl}/api/offres`, draft, { headers: this.authHeaders() });
   }
 
+  getMesOffres(): Observable<{ offres: Offre[] }> {
+    return this.http.get<{ offres: Offre[] }>(`${this.apiUrl}/api/entreprise/offres`, { headers: this.authHeaders() });
+  }
+
+  getMonOffre(id: string): Observable<{ offre: Offre }> {
+    return this.http.get<{ offre: Offre }>(`${this.apiUrl}/api/entreprise/offres/${encodeURIComponent(id)}`, { headers: this.authHeaders() });
+  }
+
+  updateOffre(id: string, draft: OffreDraft): Observable<{ offre: Offre }> {
+    return this.http.patch<{ offre: Offre }>(`${this.apiUrl}/api/entreprise/offres/${encodeURIComponent(id)}`, draft, { headers: this.authHeaders() });
+  }
+
   submitOffre(id: string): Observable<{ message: string; offre: OffreCreee }> {
     return this.http.patch<{ message: string; offre: OffreCreee }>(`${this.apiUrl}/api/offres/${encodeURIComponent(id)}/submit`, {}, { headers: this.authHeaders() });
   }

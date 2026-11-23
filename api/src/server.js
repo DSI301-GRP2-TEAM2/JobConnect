@@ -15,6 +15,7 @@ const { getCategories, getCategoriesHandler } = require("./handlers/getCategorie
 const { getOffresPublieesHandler } = require("./handlers/getOffres");
 const { createOffreHandler, getCategoriesEntrepriseHandler } = require("./handlers/createOffre");
 const { submitOffreHandler } = require("./handlers/submitOffre");
+const { companyOffres } = require("./handlers/companyOffres");
 
 const app = express();
 
@@ -51,6 +52,7 @@ function adapt(handler) {
         query: req.query,
         user: req.user,
         headers: req.headers,
+        method: req.method,
       };
       const result = await handler(requestObj, context);
       if (result.status === 200 && result.jsonBody?.token && result.jsonBody?.user?.role === "agent") {
@@ -115,6 +117,9 @@ app.get("/api/categories", authMiddleware, requireRole("agent"), adapt(getCatego
 app.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
 app.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));
 app.patch("/api/offres/:id/submit", authMiddleware, requireRole("entreprise"), adapt(submitOffreHandler));
+app.get("/api/entreprise/offres", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
+app.get("/api/entreprise/offres/:id", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
+app.patch("/api/entreprise/offres/:id", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
 
 app.get("/agent/categories", agentAuth, async (req, res) => {
   try {

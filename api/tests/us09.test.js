@@ -84,7 +84,7 @@ test('US09 : seule une offre brouillon de son propriétaire peut être soumise',
                 nomEntreprise: 'B'
             },
         ]);
-        await Category.create({_id: categoryId, libelle: `US09 category ${categoryId}`});
+        await Category.create({_id: categoryId, description: 'Test category', libelle: `US09 category ${categoryId}`});
         draft = await Offer.create({
             titre: 'Draft US09', description: 'A draft', categorie: categoryId,
             entreprise: {id: ownerId, nomEntreprise: 'A'}, statut: 'brouillon'
@@ -130,7 +130,7 @@ test('US09 : un compte entreprise bloqué ne peut pas soumettre', {skip}, async 
             _id: ownerId, nom: 'Blocked Co', email: `us09-blocked-${ownerId}@example.test`,
             mdp: 'test', role: 'entreprise', statut: 'bloque', nomEntreprise: 'Blocked'
         });
-        await Category.create({_id: categoryId, libelle: `US09 blocked ${categoryId}`});
+        await Category.create({_id: categoryId, description: 'Test category', libelle: `US09 blocked ${categoryId}`});
         draft = await Offer.create({
             titre: 'Draft US09', description: 'Draft', categorie: categoryId,
             entreprise: {id: ownerId, nomEntreprise: 'Blocked'}, statut: 'brouillon'

@@ -1,5 +1,5 @@
 <section class="offer-form">
-  <h1>Créer une offre d'emploi</h1>
+  <h1>{{ offerId ? 'Modifier le brouillon' : "Créer une offre d'emploi" }}</h1>
   <p>Enregistrez un brouillon, puis soumettez-le à un agent pour validation.</p>
   <form #offerForm="ngForm" (ngSubmit)="save(offerForm)">
     <div class="form-group"><label for="titre">Titre du poste *</label><input class="form-control" id="titre" name="titre" [(ngModel)]="draft.titre" required maxlength="200" #titre="ngModel"><small *ngIf="titre.touched && titre.invalid">Titre obligatoire.</small></div>
@@ -14,7 +14,7 @@
     <p role="status" class="success" *ngIf="success">{{ success }}</p>
     <button class="btn btn-primary" type="submit" [disabled]="offerForm.invalid || saving || submitting">{{ saving ? 'Enregistrement…' : 'Enregistrer en brouillon' }}</button>
   </form>
-  <div class="draft-action" *ngIf="createdOffer?.statut === 'brouillon'">
+  <div class="draft-action" *ngIf="createdOffer?.statut === 'brouillon' && (!offerId || !offerForm.dirty)">
     <p>Votre brouillon est enregistré. Vous pouvez le soumettre à validation.</p>
     <button class="btn btn-primary" type="button" (click)="submitForValidation()" [disabled]="submitting">{{ submitting ? 'Soumission…' : 'Soumettre à validation' }}</button>
   </div>

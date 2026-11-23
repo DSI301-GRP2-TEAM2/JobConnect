@@ -10,6 +10,10 @@
       <li><button class="nav-tab inactive">Mes candidatures</button></li>
       <li><button class="nav-tab inactive">Mon profil</button></li>
     </ul>
+    <ul class="nav-links" *ngIf="authService.isEntreprise()">
+      <li><button class="nav-tab" [class.active]="companyView === 'list'" (click)="companyView = 'list'">Mes offres</button></li>
+      <li><button class="nav-tab" [class.active]="companyView === 'form'" (click)="openOffer(null)">Créer une offre</button></li>
+    </ul>
 
     <div class="auth-zone">
       <div *ngIf="authService.currentUser && authService.currentToken" class="user-badge">
@@ -26,7 +30,8 @@
 </header>
 
 <main>
-  <app-offre-form *ngIf="authService.isEntreprise()"></app-offre-form>
+  <app-mes-offres *ngIf="authService.isEntreprise() && companyView === 'list'" (edit)="openOffer($event)"></app-mes-offres>
+  <app-offre-form *ngIf="authService.isEntreprise() && companyView === 'form'" [offerId]="selectedOfferId"></app-offre-form>
   <app-catalogue *ngIf="!authService.isEntreprise()"></app-catalogue>
 </main>
 

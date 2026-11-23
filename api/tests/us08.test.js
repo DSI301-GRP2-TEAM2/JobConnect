@@ -107,7 +107,7 @@ test('US08: enregistre un brouillon, ignore les champs propriétaire/statut four
             role: 'entreprise',
             nomEntreprise: 'Entreprise US08'
         });
-        await Category.create({_id: categoryId, libelle: `Catégorie US08 ${categoryId}`});
+        await Category.create({_id: categoryId, description: 'Test category', libelle: `Catégorie US08 ${categoryId}`});
         const response = await request('POST', '/api/offres', {
             ...valid(categoryId),
             salaire: 1200,
@@ -150,7 +150,7 @@ test('US08: compte bloqué ne peut pas créer une offre', {skip}, async () => {
             statut: 'bloque',
             nomEntreprise: 'B'
         });
-        await Category.create({_id: categoryId, libelle: `US08 blocked ${categoryId}`});
+        await Category.create({_id: categoryId, description: 'Test category', libelle: `US08 blocked ${categoryId}`});
         const res = await request('POST', '/api/offres', valid(categoryId), token('entreprise', companyId));
         assert.equal(res.status, 403);
     } finally {

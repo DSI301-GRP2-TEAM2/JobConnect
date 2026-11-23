@@ -17,7 +17,6 @@ export class DetailOffreComponent implements OnInit {
   offre: Offre | null = null;
   loading = false;
   error = '';
-  postulerMessage = '';
 
   constructor(private offreService: OffreService) {}
 
@@ -53,11 +52,10 @@ export class DetailOffreComponent implements OnInit {
   }
 
   postuler(): void {
-    this.postulerMessage = 'Votre candidature a bien été enregistrée pour cette offre.';
   }
 
   getEntrepriseNom(): string {
-    return this.offre?.entreprise?.nomEntreprise || 'Entreprise';
+    return this.offre?.entreprise?.nomEntreprise || '';
   }
 
   private getEntrepriseDetails(): EntrepriseDetail | null {
@@ -70,7 +68,7 @@ export class DetailOffreComponent implements OnInit {
 
   getEntrepriseSecteur(): string {
     const details = this.getEntrepriseDetails();
-    return details?.secteur || this.offre?.categorie?.libelle || '';
+    return details?.secteur || '';
   }
 
   getEntrepriseSiteWeb(): string {
@@ -84,15 +82,15 @@ export class DetailOffreComponent implements OnInit {
   }
 
   getLieu(): string {
-    return this.offre?.lieu || this.offre?.localisation || 'Non précisé';
+    return this.offre?.lieu || this.offre?.localisation || '';
   }
 
   getTypeContrat(): string {
-    return this.offre?.typeContrat || 'CDI (Temps plein)';
+    return this.offre?.typeContrat || '';
   }
 
   getExperience(): string {
-    return this.offre?.experience || '3 ans min.';
+    return this.offre?.experience || '';
   }
 
   getMissions(): string[] {
@@ -103,29 +101,17 @@ export class DetailOffreComponent implements OnInit {
   }
 
   getConditions(): string {
-    if (this.offre?.conditions) return this.offre.conditions;
-    if (this.offre?.profilRecherche) return this.offre.profilRecherche;
-    if (this.offre?.exigences) return this.offre.exigences;
-    return 'De formation Bac+5 en informatique, vous justifiez d\'une première expérience réussie sur un poste similaire. Maîtrise de l\'écosystème moderne, Git et sensibilité aux bonnes pratiques de développement.';
+    return this.offre?.conditions || this.offre?.profilRecherche || this.offre?.exigences || '';
   }
 
   getEntrepriseDescription(): string {
-    if (this.offre?.descriptionEntreprise) return this.offre.descriptionEntreprise;
-    if (this.offre?.aPropos) return this.offre.aPropos;
     const details = this.getEntrepriseDetails();
-    if (details?.description) return details.description;
-    if (details?.aPropos) return details.aPropos;
-    const nom = this.getEntrepriseNom();
-    const secteur = this.getEntrepriseSecteur();
-    if (secteur) {
-      return `${nom} est une entreprise de référence dans le secteur ${secteur}, engagée pour l'innovation et la qualité de ses solutions.`;
-    }
-    return `${nom} est une entreprise en plein développement offrant un environnement stimulant et d'excellentes perspectives professionnelles.`;
+    return this.offre?.descriptionEntreprise || this.offre?.aPropos || details?.description || details?.aPropos || '';
   }
 
   formatSalary(salaire?: number): string {
-    if (!salaire) return 'Rémunération selon profil + RTT';
-    return Number(salaire).toLocaleString('fr-FR') + ' €/an selon profil + RTT';
+    if (!salaire) return '';
+    return Number(salaire).toLocaleString('fr-FR') + ' €';
   }
 
   formatDate(dateStr?: string): string {

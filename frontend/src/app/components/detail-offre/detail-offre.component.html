@@ -18,13 +18,13 @@
         </div>
         <h1 class="detail-title">{{ offre.titre }}</h1>
         <p class="detail-subtitle">
-          {{ getEntrepriseNom() }}
+          <span *ngIf="getEntrepriseNom()">{{ getEntrepriseNom() }}</span>
           <span *ngIf="getLieu()"> · {{ getLieu() }}</span>
           <span *ngIf="getTypeContrat()"> · {{ getTypeContrat() }}</span>
         </p>
       </div>
 
-      <div class="detail-card">
+      <div class="detail-card" *ngIf="offre.missions || offre.description">
         <h3 class="section-title">Missions</h3>
         <div class="section-divider"></div>
         <div class="missions-content">
@@ -37,10 +37,10 @@
         </div>
       </div>
 
-      <div class="detail-card">
+      <div class="detail-card" *ngIf="getConditions() || offre.salaire">
         <h3 class="section-title">Conditions & Rémunération</h3>
         <div class="section-divider"></div>
-        <p class="section-text">
+        <p class="section-text" *ngIf="getConditions()">
           {{ getConditions() }}
         </p>
         <p class="salary-line" *ngIf="offre.salaire">
@@ -48,10 +48,10 @@
         </p>
       </div>
 
-      <div class="detail-card">
+      <div class="detail-card" *ngIf="getEntrepriseDescription() || getEntrepriseSiteWeb() || getEntrepriseEmail()">
         <h3 class="section-title">À propos de l'entreprise</h3>
         <div class="section-divider"></div>
-        <p class="section-text">
+        <p class="section-text" *ngIf="getEntrepriseDescription()">
           {{ getEntrepriseDescription() }}
         </p>
         <div class="company-extra-meta" *ngIf="getEntrepriseSiteWeb() || getEntrepriseEmail()">
@@ -64,24 +64,21 @@
     <aside class="detail-sidebar">
       <div class="sidebar-card">
         <button class="btn-postuler" (click)="postuler()">Postuler à cette offre</button>
-        <div *ngIf="postulerMessage" class="postuler-alert">
-          {{ postulerMessage }}
-        </div>
         <div class="sidebar-divider"></div>
         <ul class="sidebar-meta-list">
-          <li>
+          <li *ngIf="offre.dateCreation">
             <span class="meta-label">Publication :</span>
             <span class="meta-value">{{ formatDate(offre.dateCreation) }}</span>
           </li>
-          <li>
+          <li *ngIf="getTypeContrat()">
             <span class="meta-label">Type de poste :</span>
             <span class="meta-value">{{ getTypeContrat() }}</span>
           </li>
-          <li>
+          <li *ngIf="getExperience()">
             <span class="meta-label">Expérience :</span>
             <span class="meta-value">{{ getExperience() }}</span>
           </li>
-          <li>
+          <li *ngIf="getLieu()">
             <span class="meta-label">Lieu :</span>
             <span class="meta-value">{{ getLieu() }}</span>
           </li>

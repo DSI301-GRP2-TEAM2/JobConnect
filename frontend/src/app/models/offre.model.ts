@@ -23,10 +23,10 @@ export interface Offre {
   typeContrat?: string;
   motifRefus?: string;
   missionsPrincipales?: string;
-  exigencesCandidat?: string;
+  profilRecherche?: string;
 }
 
-export interface OffreDraft extends Pick<Offre, 'titre' | 'description' | 'localisation' | 'typeContrat' | 'missionsPrincipales' | 'exigencesCandidat'> {
+export interface OffreDraft extends Pick<Offre, 'titre' | 'description' | 'localisation' | 'typeContrat' | 'missionsPrincipales' | 'profilRecherche'> {
   categorie: string;
   salaire?: number;
 }

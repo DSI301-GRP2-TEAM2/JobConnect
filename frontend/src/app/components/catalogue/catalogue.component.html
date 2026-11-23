@@ -31,9 +31,9 @@
         </div>
         <div class="offre-meta-line">
           <span>{{ o.entreprise?.nomEntreprise }}</span>
-          <span *ngIf="o.localisation"> · {{ o.localisation }}</span>
+          <span *ngIf="o.lieu || o.localisation"> · {{ o.lieu || o.localisation }}</span>
           <span *ngIf="o.typeContrat"> · {{ o.typeContrat }}</span>
-          <span *ngIf="!o.localisation && !o.typeContrat && o.salaire"> · {{ formatSalary(o.salaire) }}</span>
+          <span *ngIf="!(o.lieu || o.localisation) && !o.typeContrat && o.salaire"> · {{ formatSalary(o.salaire) }}</span>
         </div>
       </div>
 
@@ -59,7 +59,7 @@
       <h3 style="font-size: 1.35rem; margin-top: 0.5rem; color: #0f172a;">{{ selectedOffre.titre }}</h3>
       <p style="font-size: 0.95rem; color: #475569; margin-top: 0.25rem;">
         {{ selectedOffre.entreprise?.nomEntreprise }}
-        <span *ngIf="selectedOffre.localisation"> · {{ selectedOffre.localisation }}</span>
+        <span *ngIf="selectedOffre.lieu || selectedOffre.localisation"> · {{ selectedOffre.lieu || selectedOffre.localisation }}</span>
         <span *ngIf="selectedOffre.typeContrat"> · {{ selectedOffre.typeContrat }}</span>
       </p>
       <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">Publié le {{ formatDate(selectedOffre.dateCreation) }}</p>

@@ -243,3 +243,44 @@ test("US-13 Fonctionnel : L'agent refuse une offre via l'interface EJS avec cook
   await User.deleteMany({ email: "ent-ejs@test.com" });
   await Category.deleteMany({ libelle: "Cat US13 EJS" });
 });
+
+test("US-13 Fonctionnel : Refus d'une offre avec motif de refus", { skip }, async () => {
+  await Offer.deleteMany({ titre: /Test US13 Motif/ });
+
+  const cat = await Category.create({ libelle: "Cat US13 Motif", description: "Desc" });
+  const entreprise = await User.create({
+    nom: "Ent Motif",
+    nomEntreprise: "Ent Motif SAS",
+    email: "ent-motif@test.com",
+    mdp: "Test12345",
+    role: "entreprise",
+  });
+
+  const offre = await Offer.create({
+    titre: "Test US13 Motif Refus",
+    description: "Poste avec motif de refus",
+    salaire: 39000,
+    statut: "en_attente",
+    entreprise: { id: entreprise._id, nomEntreprise: entreprise.nomEntreprise },
+    categorie: cat._id,
+  });
+
+  const motif = "La description du poste manque de précisions concernant la rémunération.";
+  const res = await request(
+    "PATCH",
+    `/api/offres/${offre._id}/reject`,
+    { motifRefus: motif },
+    { authorization: `Bearer ${agentToken}` }
+  );
+  assert.equal(res.status, 200);
+  assert.equal(res.json.offre.statut, "rejetee");
+  assert.equal(res.json.offre.motifRefus, motif);
+
+  const check = await Offer.findById(offre._id);
+  assert.equal(check.statut, "rejetee");
+  assert.equal(check.motifRefus, motif);
+
+  await Offer.deleteMany({ titre: /Test US13 Motif/ });
+  await User.deleteMany({ email: "ent-motif@test.com" });
+  await Category.deleteMany({ libelle: "Cat US13 Motif" });
+});

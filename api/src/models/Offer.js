@@ -18,6 +18,10 @@ const offerSchema = new mongoose.Schema(
     },
 
     categorie: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+    lieu: { type: String, default: null },
+    localisation: { type: String, default: null },
+    typeContrat: { type: String, default: null },
+    motifRefus: { type: String, default: null },
   },
   { collection: "offres" }
 );

@@ -110,6 +110,17 @@ test("US-13 API Validation : PATCH /api/offres/:id/reject avec identifiant inval
   assert.equal(res.status, 400);
 });
 
+test("US-13 API Validation : PATCH /api/offres/:id/reject avec motif de refus vide -> 400", async () => {
+  const res = await request(
+    "PATCH",
+    "/api/offres/507f1f77bcf86cd799439011/reject",
+    { motifRefus: "   " },
+    { authorization: `Bearer ${agentToken}` }
+  );
+  assert.equal(res.status, 400);
+  assert.equal(res.json.error, "Le motif du refus est obligatoire");
+});
+
 test("US-13 EJS Sécurité : GET /agent/offres sans token ni cookie -> 401", async () => {
   const res = await request("GET", "/agent/offres");
   assert.equal(res.status, 401);
@@ -176,25 +187,22 @@ test("US-13 Fonctionnel : L'agent refuse une offre en attente via l'API", { skip
     categorie: cat._id,
   });
 
-  // 1. Refus par l'agent
   const res = await request(
     "PATCH",
     `/api/offres/${offre._id}/reject`,
-    {},
+    { motifRefus: "Profil non correspondant aux attentes" },
     { authorization: `Bearer ${agentToken}` }
   );
   assert.equal(res.status, 200);
   assert.equal(res.json.offre.statut, "rejetee");
 
-  // 2. Vérification que le statut en BDD est passé à rejetee
   const check = await Offer.findById(offre._id);
   assert.equal(check.statut, "rejetee");
 
-  // 3. Tentative de rejeter à nouveau -> 400
   const resDouble = await request(
     "PATCH",
     `/api/offres/${offre._id}/reject`,
-    {},
+    { motifRefus: "Deuxième tentative" },
     { authorization: `Bearer ${agentToken}` }
   );
   assert.equal(resDouble.status, 400);
@@ -225,11 +233,10 @@ test("US-13 Fonctionnel : L'agent refuse une offre via l'interface EJS avec cook
     categorie: cat._id,
   });
 
-  // Action POST sur /agent/offres/:id/reject avec cookie token agent -> 302 Redirection sans token en URL
   const res = await request(
     "POST",
     `/agent/offres/${offre._id}/reject`,
-    {},
+    { motifRefus: "Offre incomplète pour validation" },
     { cookie: `token=${agentToken}` }
   );
   assert.equal(res.status, 302);
@@ -283,4 +290,54 @@ test("US-13 Fonctionnel : Refus d'une offre avec motif de refus", { skip }, asyn
   await Offer.deleteMany({ titre: /Test US13 Motif/ });
   await User.deleteMany({ email: "ent-motif@test.com" });
   await Category.deleteMany({ libelle: "Cat US13 Motif" });
+});
+
+test("US-13 Fonctionnel : L'offre reste en attente si le motif de refus est vide", { skip }, async () => {
+  await Offer.deleteMany({ titre: /Test US13 Blank/ });
+
+  const cat = await Category.create({ libelle: "Cat US13 Blank", description: "Desc" });
+  const entreprise = await User.create({
+    nom: "Ent Blank",
+    nomEntreprise: "Ent Blank SAS",
+    email: "ent-blank@test.com",
+    mdp: "Test12345",
+    role: "entreprise",
+  });
+
+  const offre = await Offer.create({
+    titre: "Test US13 Blank Motif",
+    description: "Poste test motif vide",
+    salaire: 40000,
+    statut: "en_attente",
+    entreprise: { id: entreprise._id, nomEntreprise: entreprise.nomEntreprise },
+    categorie: cat._id,
+  });
+
+  const res = await request(
+    "PATCH",
+    `/api/offres/${offre._id}/reject`,
+    { motifRefus: "   " },
+    { authorization: `Bearer ${agentToken}` }
+  );
+  assert.equal(res.status, 400);
+
+  const check = await Offer.findById(offre._id);
+  assert.equal(check.statut, "en_attente");
+  assert.equal(check.motifRefus, null);
+
+  const resEjs = await request(
+    "POST",
+    `/agent/offres/${offre._id}/reject`,
+    { motifRefus: "" },
+    { cookie: `token=${agentToken}` }
+  );
+  assert.equal(resEjs.status, 302);
+  assert.ok(resEjs.headers.location.includes("error"));
+
+  const checkEjs = await Offer.findById(offre._id);
+  assert.equal(checkEjs.statut, "en_attente");
+
+  await Offer.deleteMany({ titre: /Test US13 Blank/ });
+  await User.deleteMany({ email: "ent-blank@test.com" });
+  await Category.deleteMany({ libelle: "Cat US13 Blank" });
 });

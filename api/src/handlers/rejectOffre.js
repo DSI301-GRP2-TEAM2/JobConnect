@@ -7,6 +7,10 @@ async function rejectOffre(id, motifRefus) {
     return { status: 400, error: "Identifiant d'offre invalide" };
   }
 
+  if (!motifRefus || typeof motifRefus !== "string" || !motifRefus.trim()) {
+    return { status: 400, error: "Le motif du refus est obligatoire" };
+  }
+
   await connect();
 
   const offre = await Offer.findById(id);
@@ -19,9 +23,7 @@ async function rejectOffre(id, motifRefus) {
   }
 
   offre.statut = "rejetee";
-  if (motifRefus && typeof motifRefus === "string") {
-    offre.motifRefus = motifRefus.trim();
-  }
+  offre.motifRefus = motifRefus.trim();
   await offre.save();
 
   return {

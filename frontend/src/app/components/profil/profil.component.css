@@ -180,6 +180,138 @@
   color: #991b1b;
 }
 
+.dropzone {
+  border: 1px solid #0f172a;
+  border-radius: 8px;
+  padding: 2.2rem 1.5rem;
+  text-align: center;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.dropzone.dragover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.dropzone-icon {
+  margin-bottom: 0.75rem;
+}
+
+.dropzone-text {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.dropzone-sub {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+.dropzone-btn {
+  border: 1px solid #0f172a;
+  color: #0f172a;
+  font-weight: 600;
+  padding: 0.45rem 1.5rem;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.dropzone-btn:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.cv-status-card {
+  border-radius: 6px;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+}
+
+.cv-status-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+
+.cv-status-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.cv-status-left {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.cv-badge-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.cv-badge-icon.checkmark {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.cv-badge-icon.warning {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.cv-status-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-filename {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.cv-meta {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+.cv-status-right {
+  display: flex;
+  align-items: center;
+}
+
+.btn-delete-link {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.btn-delete-link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .form-row {
     flex-direction: column;

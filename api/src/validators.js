@@ -1,5 +1,16 @@
+const path = require("path");
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9 ]{8,15}$/;
+
+const ALLOWED_CV_EXTS = [".pdf", ".docx", ".doc"];
+const ALLOWED_CV_MIMES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/msword",
+  "application/octet-stream",
+];
+const MAX_CV_SIZE = 5 * 1024 * 1024;
 
 const ROLE_FIELDS = {
   candidat: {
@@ -168,7 +179,31 @@ function validateUpdateProfil(body) {
   return { data };
 }
 
+function validateCvFile(file) {
+  if (!file) {
+    return { errors: ["Aucun fichier fourni"] };
+  }
+
+  const originalname = file.originalname || file.name || "";
+  const ext = path.extname(originalname).toLowerCase();
+
+  if (!ALLOWED_CV_EXTS.includes(ext)) {
+    return { errors: ["Format non supporté. Veuillez utiliser un fichier PDF ou DOCX"] };
+  }
+
+  if (file.mimetype && !ALLOWED_CV_MIMES.includes(file.mimetype.toLowerCase())) {
+    return { errors: ["Format non supporté. Veuillez utiliser un fichier PDF ou DOCX"] };
+  }
+
+  if (file.size !== undefined && file.size > MAX_CV_SIZE) {
+    return { errors: ["Le fichier dépasse la taille maximale autorisée (5 Mo)"] };
+  }
+
+  return { valid: true };
+}
+
 module.exports = {
   validateRegister,
   validateUpdateProfil,
+  validateCvFile,
 };

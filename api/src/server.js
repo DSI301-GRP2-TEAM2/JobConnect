@@ -17,6 +17,11 @@ const {
   updateProfilCandidatHandler,
   getProfilCandidatHandler,
 } = require("./handlers/profilCandidat");
+const {
+  uploadMiddleware,
+  uploadCvHandler,
+  deleteCvHandler,
+} = require("./handlers/uploadCv");
 
 const app = express();
 
@@ -24,6 +29,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 const origins = (process.env.CORS_ORIGIN || "")
   .split(",")
@@ -216,6 +222,21 @@ app.put(
   authMiddleware,
   requireRole("candidat"),
   adapt(updateProfilCandidatHandler)
+);
+
+app.post(
+  "/api/candidats/me/cv",
+  authMiddleware,
+  requireRole("candidat"),
+  uploadMiddleware,
+  adapt(uploadCvHandler)
+);
+
+app.delete(
+  "/api/candidats/me/cv",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(deleteCvHandler)
 );
 
 app.use((err, req, res, next) => {

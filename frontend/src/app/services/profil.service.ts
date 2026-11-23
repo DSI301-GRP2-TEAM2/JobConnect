@@ -32,4 +32,21 @@ export class ProfilService {
       headers: this.getHeaders()
     });
   }
+
+  uploadCv(file: File): Observable<{ message: string; cv: string; user: ProfilCandidat }> {
+    const formData = new FormData();
+    formData.append('cv', file);
+    return this.http.post<{ message: string; cv: string; user: ProfilCandidat }>(
+      `${this.apiUrl}/api/candidats/me/cv`,
+      formData,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  deleteCv(): Observable<{ message: string; user: ProfilCandidat }> {
+    return this.http.delete<{ message: string; user: ProfilCandidat }>(
+      `${this.apiUrl}/api/candidats/me/cv`,
+      { headers: this.getHeaders() }
+    );
+  }
 }

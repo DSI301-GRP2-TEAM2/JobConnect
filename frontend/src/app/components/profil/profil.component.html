@@ -133,4 +133,74 @@
       </div>
     </form>
   </div>
+
+  <div class="card-profil">
+    <h2 class="card-title">Mon CV</h2>
+
+    <div
+      class="dropzone"
+      [class.dragover]="isDragOver"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+    >
+      <input
+        type="file"
+        #fileInput
+        style="display: none"
+        accept=".pdf,.docx,.doc"
+        (change)="onFileSelected($event)"
+      />
+      <div class="dropzone-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+      </div>
+      <p class="dropzone-text">Glissez-déposez votre CV ici</p>
+      <p class="dropzone-sub">PDF ou DOCX, 5 Mo max</p>
+      <button
+        type="button"
+        class="btn btn-outline btn-sm dropzone-btn"
+        (click)="fileInput.click()"
+        [disabled]="cvUploading"
+      >
+        <span *ngIf="!cvUploading">Parcourir</span>
+        <span *ngIf="cvUploading">Téléversement...</span>
+      </button>
+    </div>
+
+    <div *ngIf="profil.cv" class="cv-status-card cv-status-success">
+      <div class="cv-status-left">
+        <span class="cv-badge-icon checkmark">✓</span>
+        <div class="cv-status-details">
+          <div class="cv-filename">{{ getCvFilename() }}</div>
+          <div class="cv-meta">{{ formatFileSize(profil.cvTaille) }} · Importé avec succès</div>
+        </div>
+      </div>
+      <div class="cv-status-right">
+        <button
+          type="button"
+          class="btn-delete-link"
+          (click)="deleteCv()"
+          [disabled]="cvDeleting"
+        >
+          {{ cvDeleting ? 'Suppression...' : 'Supprimer' }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="cvErrorMessage" class="cv-status-card cv-status-error">
+      <div class="cv-status-left">
+        <span class="cv-badge-icon warning">⚠</span>
+        <div class="cv-status-details">
+          <div class="cv-filename">{{ cvErrorFilename }}</div>
+          <div class="cv-meta">{{ cvErrorMessage }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

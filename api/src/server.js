@@ -15,8 +15,7 @@ const { getCategories, getCategoriesHandler } = require("./handlers/getCategorie
 const { getOffresPublieesHandler } = require("./handlers/getOffres");
 const { createOffreHandler, getCategoriesEntrepriseHandler } = require("./handlers/createOffre");
 const { submitOffreHandler } = require("./handlers/submitOffre");
-const { adapt } = require("./middleware/adapt");
-const companyRoutes = require("./routes/company.routes");
+const { companyOffres } = require("./handlers/companyOffres");
 
 const app = express();
 
@@ -37,6 +36,39 @@ if (origins.length === 0) {
 app.use(cors({ origin: origins.length > 0 ? origins : false }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const context = {
+  error: (...args) => console.error(...args),
+  log: (...args) => console.log(...args),
+};
+
+function adapt(handler) {
+  return async (req, res) => {
+    try {
+      const requestObj = {
+        json: async () => req.body,
+        body: req.body,
+        params: req.params,
+        query: req.query,
+        user: req.user,
+        headers: req.headers,
+        method: req.method,
+      };
+      const result = await handler(requestObj, context);
+      if (result.status === 200 && result.jsonBody?.token && result.jsonBody?.user?.role === "agent") {
+        res.cookie("token", result.jsonBody.token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+        });
+      }
+      res.status(result.status).json(result.jsonBody);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  };
+}
 
 function getCookie(req, name) {
   const cookieHeader = req.headers.cookie;
@@ -85,7 +117,9 @@ app.get("/api/categories", authMiddleware, requireRole("agent"), adapt(getCatego
 app.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
 app.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));
 app.patch("/api/offres/:id/submit", authMiddleware, requireRole("entreprise"), adapt(submitOffreHandler));
-app.use("/api/entreprise", companyRoutes);
+app.get("/api/entreprise/offres", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
+app.get("/api/entreprise/offres/:id", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
+app.patch("/api/entreprise/offres/:id", authMiddleware, requireRole("entreprise"), adapt(companyOffres));
 
 app.get("/agent/categories", agentAuth, async (req, res) => {
   try {

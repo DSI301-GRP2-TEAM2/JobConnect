@@ -13,6 +13,7 @@ function adapt(handler) {
         query: req.query,
         user: req.user,
         headers: req.headers,
+        method: req.method,
       };
       const result = await handler(requestObj, context);
       if (result.status === 200 && result.jsonBody?.token && result.jsonBody?.user?.role === "agent") {

@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface User {
+  id?: string;
   _id: string;
   nom: string;
   prenom?: string;
@@ -43,6 +44,10 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.currentToken && this.currentUser?.role === 'candidat';
+  }
+
+  isEntreprise(): boolean {
+    return !!this.currentToken && this.currentUser?.role === 'entreprise';
   }
 
   login(email: string, mdp: string): Observable<AuthResponse> {

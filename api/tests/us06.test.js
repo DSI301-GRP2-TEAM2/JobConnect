@@ -63,6 +63,9 @@ test("US06 validation : nom obligatoire, espaces, longueur et description", () =
     assert.ok(validateCategorie({libelle: 123}).errors.length);
     assert.ok(validateCategorie({libelle: "x".repeat(101)}).errors.length);
     assert.ok(validateCategorie({libelle: "Développement", description: 42}).errors.length);
+    assert.ok(validateCategorie({libelle: "Développement"}).errors.length);
+    assert.ok(validateCategorie({libelle: "Développement", description: "   "}).errors.length);
+    assert.deepEqual(validateCategorie({libelle: "Développement", description: "Texte"}).errors, []);
     assert.deepEqual(validateCategorie({libelle: "  Data   Engineering  "}).libelle, "Data Engineering");
 });
 
@@ -89,6 +92,7 @@ test("US06 EJS : formulaire agent affiché", async () => {
     assert.equal(res.status, 200);
     assert.match(res.raw, /Créer une catégorie/);
     assert.match(res.raw, /name="libelle"/);
+    assert.match(res.raw, /name="description"[^>]*required/);
 });
 test("US06 BDD : création, catalogue et doublon insensible à la casse", {skip}, async () => {
     const name = `US06 Developpement ${new mongoose.Types.ObjectId()}`;
@@ -100,9 +104,9 @@ test("US06 BDD : création, catalogue et doublon insensible à la casse", {skip}
         assert.equal(first.status, 201);
         assert.equal(first.json.categorie.libelle, name);
         assert.ok(await Category.findById(first.json.categorie.id));
-        const duplicate = await request("POST", "/api/categories", {libelle: name.toLowerCase()}, {authorization: `Bearer ${agentToken}`});
+        const duplicate = await request("POST", "/api/categories", {libelle: name.toLowerCase(), description: "Test"}, {authorization: `Bearer ${agentToken}`});
         assert.equal(duplicate.status, 409);
-        const htmlDuplicate = await request("POST", "/agent/categories/nouvelle", {libelle: name}, {cookie: `token=${agentToken}`});
+        const htmlDuplicate = await request("POST", "/agent/categories/nouvelle", {libelle: name, description: "Test"}, {cookie: `token=${agentToken}`});
         assert.equal(htmlDuplicate.status, 409);
     } finally {
         await Category.deleteMany({libelle: name});

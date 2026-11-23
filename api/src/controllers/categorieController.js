@@ -11,7 +11,9 @@ function validateCategorie(body) {
     } else if (libelle.trim().length > 100) {
         errors.push("Le nom de la catégorie ne doit pas dépasser 100 caractères");
     }
-    if (description !== undefined && (typeof description !== "string" || description.trim().length > 500)) {
+    if (typeof description !== "string" || !description.trim()) {
+        errors.push("La description est obligatoire");
+    } else if (description.trim().length > 500) {
         errors.push("La description doit être un texte de 500 caractères maximum");
     }
     return {

@@ -2,16 +2,21 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CatalogueComponent } from './components/catalogue/catalogue.component';
+import { OffreFormComponent } from './components/offre-form/offre-form.component';
+import { MesOffresComponent } from './components/mes-offres/mes-offres.component';
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, CatalogueComponent],
+  imports: [CommonModule, FormsModule, CatalogueComponent, OffreFormComponent, MesOffresComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  companyView: 'list' | 'form' = 'list';
+  selectedOfferId: string | null = null;
+  openOffer(id: string | null): void { this.selectedOfferId = id; this.companyView = 'form'; }
   loginEmail = '';
   loginMdp = '';
   loginError = '';

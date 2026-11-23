@@ -15,6 +15,7 @@ if (TEST_URI) {
 
 const app = require("../src/server");
 const User = require("../src/models/User");
+const { validateUpdateProfil } = require("../src/validators");
 
 let server;
 let port;
@@ -117,6 +118,41 @@ test("US-16 Validation : PUT /api/candidats/me avec téléphone invalide -> 400"
   assert.equal(res.status, 400);
 });
 
+test("US-16 Validation : PUT /api/candidats/me avec prénom vide -> 400", async () => {
+  const res = await request(
+    "PUT",
+    "/api/candidats/me",
+    { prenom: "" },
+    { authorization: `Bearer ${candidatToken}` }
+  );
+  assert.equal(res.status, 400);
+});
+
+test("US-16 Validation : PUT /api/candidats/me avec prénom composé uniquement d'espaces -> 400", async () => {
+  const res = await request(
+    "PUT",
+    "/api/candidats/me",
+    { prenom: "    " },
+    { authorization: `Bearer ${candidatToken}` }
+  );
+  assert.equal(res.status, 400);
+});
+
+test("US-16 Validation : validateUpdateProfil traite un téléphone composé uniquement d'espaces comme vide", () => {
+  const result = validateUpdateProfil({ telephone: "     ", ville: "Paris" });
+  assert.equal(result.errors, undefined);
+  assert.equal(result.data.telephone, "");
+  assert.equal(result.data.ville, "Paris");
+});
+
+test("US-16 Validation : validateUpdateProfil refuse un prénom vide ou uniquement composé d'espaces", () => {
+  const resEmpty = validateUpdateProfil({ prenom: "" });
+  assert.ok(resEmpty.errors && resEmpty.errors.includes("prenom ne peut pas être vide"));
+
+  const resSpaces = validateUpdateProfil({ prenom: "   " });
+  assert.ok(resSpaces.errors && resSpaces.errors.includes("prenom ne peut pas être vide"));
+});
+
 test("US-16 Validation : PUT /api/candidats/me sans modifications -> 400", async () => {
   const res = await request(
     "PUT",
@@ -168,6 +204,15 @@ test("US-16 Fonctionnel : PUT /api/candidats/me met à jour le profil et GET le 
   assert.equal(getRes.json.prenom, "Jean-Marc");
   assert.equal(getRes.json.titre, "Développeur Full Stack");
   assert.equal(getRes.json.ville, "Paris (75011)");
+
+  const updateSpacePhone = await request(
+    "PUT",
+    "/api/candidats/me",
+    { telephone: "    " },
+    { authorization: `Bearer ${token}` }
+  );
+  assert.equal(updateSpacePhone.status, 200);
+  assert.equal(updateSpacePhone.json.user.telephone, "");
 
   await User.deleteMany({ email: "profil-us16@test.com" });
 });

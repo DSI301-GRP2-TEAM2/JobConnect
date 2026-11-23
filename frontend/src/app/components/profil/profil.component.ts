@@ -110,10 +110,15 @@ export class ProfilComponent implements OnInit {
       return;
     }
 
+    if (!this.profil.prenom || !this.profil.prenom.trim()) {
+      this.errorMessage = 'Le prénom est obligatoire';
+      return;
+    }
+
     this.loading = true;
     const payload: Partial<ProfilCandidat> = {
       nom: this.profil.nom.trim(),
-      prenom: this.profil.prenom ? this.profil.prenom.trim() : '',
+      prenom: this.profil.prenom.trim(),
       telephone: this.profil.telephone ? this.profil.telephone.trim() : '',
       ville: this.profil.ville ? this.profil.ville.trim() : '',
       titre: this.profil.titre ? this.profil.titre.trim() : '',

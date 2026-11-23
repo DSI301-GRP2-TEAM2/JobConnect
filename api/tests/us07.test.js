@@ -10,7 +10,7 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "us07-test-secret";
 
 const app = require("../src/server");
 const Category = require("../src/models/Category");
-const { getCategoriesHandler } = require("../src/handlers/getCategories");
+const { getCategoriesHandler } = require("../src/controllers/categorieController");
 
 let server;
 let port;

@@ -1,6 +1,25 @@
 const mongoose = require("mongoose");
 const { connect } = require("../db");
 const Offer = require("../models/Offer");
+require("../models/Category");
+
+async function getOffresPublieesHandler(request, context) {
+  try {
+    await connect();
+
+    const offres = await Offer.find({ statut: "publiee" })
+      .populate("categorie", "libelle description")
+      .sort({ dateCreation: -1 });
+
+    return {
+      status: 200,
+      jsonBody: offres,
+    };
+  } catch (err) {
+    context?.error?.(err);
+    return { status: 500, jsonBody: { error: "Erreur serveur" } };
+  }
+}
 
 async function rejectOffre(id, motifRefus) {
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
@@ -60,6 +79,7 @@ async function rejectOffreHandler(request, context) {
 }
 
 module.exports = {
+  getOffresPublieesHandler,
   rejectOffre,
   rejectOffreHandler,
 };

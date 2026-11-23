@@ -10,7 +10,7 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "us06-test-secret";
 if (TEST_URI) process.env.MONGODB_URI = TEST_URI;
 const app = require("../src/server");
 const Category = require("../src/models/Category");
-const {validateCategorie} = require("../src/handlers/createCategorie");
+const {validateCategorie} = require("../src/controllers/categorieController");
 let server, port;
 const token = (role) => jwt.sign({id: new mongoose.Types.ObjectId().toString(), role}, process.env.JWT_SECRET);
 const agentToken = token("agent"), candidatToken = token("candidat");

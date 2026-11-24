@@ -1,6 +1,6 @@
 <header>
   <div class="navbar">
-    <a href="#" class="brand">
+    <a routerLink="/" class="brand">
       <span class="brand-box">JC</span>
       <span class="brand-name">JobConnect</span>
     </a>
@@ -11,8 +11,8 @@
       <li><button class="nav-tab inactive">Mon profil</button></li>
     </ul>
     <ul class="nav-links" *ngIf="authService.isEntreprise()">
-      <li><button class="nav-tab" [class.active]="companyView === 'list'" (click)="companyView = 'list'">Mes offres</button></li>
-      <li><button class="nav-tab" [class.active]="companyView === 'form'" (click)="openOffer(null)">Créer une offre</button></li>
+      <li><button class="nav-tab active">Mes offres</button></li>
+      <li><button class="nav-tab inactive">Créer une offre</button></li>
     </ul>
 
     <div class="auth-zone">
@@ -22,7 +22,8 @@
         <button class="btn btn-outline btn-sm" (click)="authService.logout()">Déconnexion</button>
       </div>
 
-      <div *ngIf="!authService.currentUser || !authService.currentToken">
+      <div *ngIf="!authService.currentUser || !authService.currentToken" class="auth-buttons">
+        <a routerLink="/register-candidat" class="btn btn-outline btn-sm">S'inscrire</a>
         <button class="btn btn-primary btn-sm" (click)="authService.openLoginModal()">Connexion</button>
       </div>
     </div>
@@ -30,15 +31,13 @@
 </header>
 
 <main>
-  <app-mes-offres *ngIf="authService.isEntreprise() && companyView === 'list'" (edit)="openOffer($event)"></app-mes-offres>
-  <app-offre-form *ngIf="authService.isEntreprise() && companyView === 'form'" [offerId]="selectedOfferId"></app-offre-form>
-  <app-catalogue *ngIf="!authService.isEntreprise()"></app-catalogue>
+  <router-outlet></router-outlet>
 </main>
 
 <div class="modal-overlay" [class.active]="authService.showModal">
   <div class="modal-card">
     <button class="modal-close" (click)="authService.closeLoginModal()">&times;</button>
-    <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion</h3>
+    <h3 class="modal-title">Connexion</h3>
     <form (ngSubmit)="handleLogin()">
       <div class="form-group">
         <label for="login-email">Adresse e-mail</label>
@@ -48,8 +47,8 @@
         <label for="login-mdp">Mot de passe</label>
         <input type="password" id="login-mdp" class="form-control" required placeholder="••••••••" [(ngModel)]="loginMdp" name="loginMdp">
       </div>
-      <p *ngIf="loginError" style="color: var(--danger); font-size: 0.88rem; margin-top: 0.5rem;">{{ loginError }}</p>
-      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Se connecter</button>
+      <p *ngIf="loginError" class="login-error">{{ loginError }}</p>
+      <button type="submit" class="btn btn-primary login-btn">Se connecter</button>
     </form>
   </div>
 </div>

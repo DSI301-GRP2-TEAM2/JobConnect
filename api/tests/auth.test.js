@@ -19,7 +19,7 @@ const fakeRequest = (body) => ({ json: async () => body });
 const candidat = {
   nom: "Test",
   prenom: "Candidat",
-  email: "candidat@test.local",
+  email: "auth.candidat@test.local",
   mdp: "Test12345",
   role: "candidat",
 };
@@ -27,13 +27,13 @@ const candidat = {
 const entreprise = {
   nom: "Societe",
   nomEntreprise: "Societe Test",
-  email: "entreprise@test.local",
+  email: "auth.entreprise@test.local",
   mdp: "Test12345",
   role: "entreprise",
 };
 
 async function cleanup() {
-  await User.deleteMany({ email: /@test\.local$/ });
+  await User.deleteMany({ email: /^auth\./i });
 }
 
 test.before(async () => {
@@ -84,7 +84,7 @@ test("register : refuse un email invalide", { skip }, async () => {
 
 test("register : refuse un mot de passe trop court", { skip }, async () => {
   const res = await registerHandler(
-    fakeRequest({ ...candidat, email: "court@test.local", mdp: "abc" }),
+    fakeRequest({ ...candidat, email: "auth.court@test.local", mdp: "abc" }),
     context
   );
   assert.equal(res.status, 400);
@@ -92,7 +92,7 @@ test("register : refuse un mot de passe trop court", { skip }, async () => {
 
 test("register : refuse un candidat sans prénom", { skip }, async () => {
   const res = await registerHandler(
-    fakeRequest({ ...candidat, email: "sansprenom@test.local", prenom: "" }),
+    fakeRequest({ ...candidat, email: "auth.sansprenom@test.local", prenom: "" }),
     context
   );
   assert.equal(res.status, 400);
@@ -100,7 +100,7 @@ test("register : refuse un candidat sans prénom", { skip }, async () => {
 
 test("register : refuse une entreprise sans nomEntreprise", { skip }, async () => {
   const res = await registerHandler(
-    fakeRequest({ ...entreprise, email: "sansnom@test.local", nomEntreprise: undefined }),
+    fakeRequest({ ...entreprise, email: "auth.sansnom@test.local", nomEntreprise: undefined }),
     context
   );
   assert.equal(res.status, 400);
@@ -108,7 +108,7 @@ test("register : refuse une entreprise sans nomEntreprise", { skip }, async () =
 
 test("register : refuse le rôle agent", { skip }, async () => {
   const res = await registerHandler(
-    fakeRequest({ ...candidat, email: "agent@test.local", role: "agent" }),
+    fakeRequest({ ...candidat, email: "auth.agent@test.local", role: "agent" }),
     context
   );
   assert.equal(res.status, 400);
@@ -134,7 +134,7 @@ test("login : refuse un mauvais mot de passe", { skip }, async () => {
 
 test("login : refuse un email inconnu", { skip }, async () => {
   const res = await loginHandler(
-    fakeRequest({ email: "inconnu@test.local", mdp: "Test12345" }),
+    fakeRequest({ email: "auth.inconnu@test.local", mdp: "Test12345" }),
     context
   );
   assert.equal(res.status, 401);

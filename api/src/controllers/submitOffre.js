@@ -19,7 +19,7 @@ async function submitOffre(offerId, entrepriseId) {
 
     const offre = await Offer.findOneAndUpdate(
         {_id: offerId, "entreprise.id": entreprise._id, statut: "brouillon"},
-        {$set: {statut: "en_attente"}},
+        {$set: {statut: "en_attente", dateSoumission: new Date()}},
         {new: true, runValidators: true}
     );
     if (offre) {

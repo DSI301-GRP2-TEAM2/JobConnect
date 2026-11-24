@@ -43,7 +43,7 @@ async function renderOffres(req, res) {
     await connect();
     const offres = await Offer.find({ statut: "en_attente" })
       .populate("categorie", "libelle description")
-      .sort({ dateCreation: -1 });
+      .sort({ dateSoumission: -1, dateCreation: -1, _id: -1 });
 
     res.render("agent/offres", {
       offres: offres || [],

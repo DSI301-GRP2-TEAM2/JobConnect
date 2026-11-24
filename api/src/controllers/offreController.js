@@ -32,18 +32,15 @@ async function rejectOffre(id, motifRefus) {
 
   await connect();
 
-  const offre = await Offer.findById(id);
+  const offre = await Offer.findOneAndUpdate(
+    { _id: id, statut: "en_attente" },
+    { $set: { statut: "rejetee", motifRefus: motifRefus.trim() } },
+    { returnDocument: "after", runValidators: true }
+  );
   if (!offre) {
-    return { status: 404, error: "Offre introuvable" };
-  }
-
-  if (offre.statut !== "en_attente") {
+    if (!await Offer.exists({ _id: id })) return { status: 404, error: "Offre introuvable" };
     return { status: 400, error: "Seule une offre en attente peut être rejetée" };
   }
-
-  offre.statut = "rejetee";
-  offre.motifRefus = motifRefus.trim();
-  await offre.save();
 
   return {
     status: 200,
@@ -55,6 +52,32 @@ async function rejectOffre(id, motifRefus) {
       motifRefus: offre.motifRefus,
     },
   };
+}
+
+async function approveOffre(id) {
+  if (!id || !mongoose.isValidObjectId(id)) return { status: 400, error: "Identifiant d'offre invalide" };
+  await connect();
+  const offre = await Offer.findOneAndUpdate(
+    { _id: id, statut: "en_attente" },
+    { $set: { statut: "publiee" } },
+    { returnDocument: "after", runValidators: true }
+  );
+  if (!offre) {
+    if (!await Offer.exists({ _id: id })) return { status: 404, error: "Offre introuvable" };
+    return { status: 409, error: "Seule une offre en attente peut être approuvée" };
+  }
+  return { status: 200, offre: { id: offre._id, titre: offre.titre, statut: offre.statut } };
+}
+
+async function approveOffreHandler(request, context) {
+  try {
+    const result = await approveOffre(request.params?.id);
+    if (result.error) return { status: result.status, jsonBody: { error: result.error } };
+    return { status: 200, jsonBody: { message: "Offre approuvée avec succès", offre: result.offre } };
+  } catch (err) {
+    context?.error?.(err);
+    return { status: 500, jsonBody: { error: "Erreur serveur" } };
+  }
 }
 
 async function rejectOffreHandler(request, context) {
@@ -82,4 +105,6 @@ module.exports = {
   getOffresPublieesHandler,
   rejectOffre,
   rejectOffreHandler,
+  approveOffre,
+  approveOffreHandler,
 };

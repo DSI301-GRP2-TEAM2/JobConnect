@@ -41,7 +41,8 @@ test('US11: vue vide et données échappées', async () => {
   assert.match(html, /&lt;script&gt;/);
   assert.doesNotMatch(html, /<script>alert\(1\)<\/script>/);
   assert.match(html, /Non précisée/);
-  assert.match(html, /0 €/);
+  const detail = await ejs.renderFile(path.join(__dirname, '../src/views/agent/examiner-offre.ejs'), {offre: {_id: new mongoose.Types.ObjectId(), titre: 'Offre', description: 'Détails', entreprise: {nomEntreprise: 'Entreprise'}, categorie: null, salaire: 0, statut: 'en_attente'}});
+  assert.match(detail, /0 €/);
 });
 
 test('US11: soumission visible et seuls les emplois en attente sont affichés', {skip: !uri && 'TEST_MONGODB_URI non défini'}, async () => {
@@ -67,8 +68,11 @@ test('US11: soumission visible et seuls les emplois en attente sont affichés', 
     const html = await response.text();
     assert.ok(html.includes(`${prefix}-brouillon`));
     assert.ok(!html.includes(`${prefix}-publiee`) && !html.includes(`${prefix}-rejetee`));
-    assert.ok(html.includes('Entreprise US11') && html.includes('Missions test') && html.includes('Profil test'));
+    assert.ok(html.includes('Entreprise US11'));
     assert.ok(html.includes('Examiner'));
+    const detail = await fetch(`${base}/agent/offres/${ids[0]}/examiner`, {headers: {authorization: `Bearer ${token('agent')}`}});
+    const detailHtml = await detail.text();
+    assert.ok(detailHtml.includes('Missions test') && detailHtml.includes('Profil test'));
   } finally {
     await Offer.deleteMany({_id: {$in: ids}});
     await User.deleteOne({_id: owner});

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examen d'une offre - JobConnect Agent</title>
+  <link rel="stylesheet" href="/css/agent.css">
+</head>
+<body>
+  <header class="agent-header"><nav class="agent-nav">
+    <a href="/agent/offres" class="brand-title">JobConnect</a>
+    <ul class="nav-menu"><li><a class="nav-link active" href="/agent/offres">Offres en attente</a></li><li><a class="nav-link" href="/agent/categories">Catégories</a></li></ul>
+    <div class="agent-profile"><span>Agent Modérateur</span><span class="badge-agent">Agent</span></div>
+  </nav></header>
+  <main class="main-container">
+    <a href="/agent/offres" class="review-link">← Offres en attente</a>
+    <article class="review-card">
+      <p><%= offre.categorie ? offre.categorie.libelle : 'Général' %></p>
+      <h1><%= offre.titre %></h1>
+      <p><%= offre.entreprise ? offre.entreprise.nomEntreprise : 'Entreprise' %><% if (offre.lieu || offre.localisation) { %> · <%= offre.lieu || offre.localisation %><% } %><% if (offre.typeContrat) { %> · <%= offre.typeContrat %><% } %></p>
+      <section><h2>Description du poste</h2><p><%= offre.description %></p></section>
+      <% if (offre.missionsPrincipales) { %><section><h2>Missions principales</h2><p><%= offre.missionsPrincipales %></p></section><% } %>
+      <% if (offre.profilRecherche || offre.exigencesCandidat) { %><section><h2>Profil recherché</h2><p><%= offre.profilRecherche || offre.exigencesCandidat %></p></section><% } %>
+      <% if (offre.salaire != null) { %><section><h2>Rémunération</h2><p><%= offre.salaire.toLocaleString('fr-FR') %> €/an</p></section><% } %>
+      <% if (offre.statut === 'en_attente') { %>
+        <p>Statut actuel : En attente de validation</p>
+        <div class="review-actions">
+          <form method="post" action="/agent/offres/<%= offre._id %>/approve"><button class="btn-primary" type="submit">Approuver</button></form>
+          <details><summary class="review-link">Refuser</summary>
+            <form method="post" action="/agent/offres/<%= offre._id %>/reject" class="review-reject-form">
+              <label for="motifRefus">Motif du refus *</label>
+              <textarea class="form-textarea" id="motifRefus" name="motifRefus" rows="4" required></textarea>
+              <button type="submit" class="btn-reject">Confirmer le refus</button>
+            </form>
+          </details>
+        </div>
+      <% } else { %>
+        <p role="status">Cette offre n'est plus en attente de validation.</p>
+      <% } %>
+    </article>
+  </main>
+</body>
+</html>

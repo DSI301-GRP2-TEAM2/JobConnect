@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth.routes");
 const categoriesRoutes = require("./routes/categories.routes");
 const offresRoutes = require("./routes/offres.routes");
 const agentRoutes = require("./routes/agent.routes");
+const webAuthRoutes = require("./routes/web/auth"); // US-03: EJS login/me
 
 const app = express();
 
@@ -27,6 +28,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+
+// US-03 : routes EJS pour la connexion (login, /me)
+app.use(webAuthRoutes);
+
 app.use(authRoutes);
 app.use(categoriesRoutes);
 app.use(agentRoutes);

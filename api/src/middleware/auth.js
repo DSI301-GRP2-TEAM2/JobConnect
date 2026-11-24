@@ -75,8 +75,37 @@ function agentAuth(req, res, next) {
   }
 }
 
+// US-03 : authentification EJS pour /me et autres pages web.
+// Comme agentAuth mais sans restriction de rôle : tout utilisateur connecté
+// (candidat, entreprise, agent) avec un cookie JWT valide est accepté.
+// Redirige vers /login au lieu de renvoyer 401 (adapté aux pages EJS).
+function requireAuth(req, res, next) {
+  const cookieToken = getCookie(req, "token") || getCookie(req, "jwt");
+  const authHeader = req.headers["authorization"] || req.headers["Authorization"];
+  const bearerToken =
+    authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+  const token = cookieToken || bearerToken;
+
+  if (!token) {
+    return res.redirect("/login");
+  }
+
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).send("Erreur serveur : JWT_SECRET manquant");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.redirect("/login");
+  }
+}
+
 module.exports = {
   authMiddleware,
   agentAuth,
   requireRole,
+  requireAuth,
 };

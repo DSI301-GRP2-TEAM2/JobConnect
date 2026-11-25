@@ -47,43 +47,34 @@
         <p>Toutes les annonces déposées ont été traitées.</p>
       </div>
     <% } else { %>
-      <div class="offers-list">
-        <% offres.forEach(function(offre) { %>
-          <article class="offer-card">
-            <div class="offer-header">
-              <h2 class="offer-title"><%= offre.titre %></h2>
-              <span class="badge-status">En attente de validation</span>
-            </div>
-
-            <div class="offer-company">
-              🏢 <%= offre.entreprise ? offre.entreprise.nomEntreprise : 'Entreprise' %>
-            </div>
-
-            <div class="offer-meta">
-              <span>Catégorie : <strong><%= offre.categorie ? offre.categorie.libelle : 'Général' %></strong></span>
-              <% if (offre.lieu || offre.localisation) { %>
-                <span>Lieu : <strong><%= offre.lieu || offre.localisation %></strong></span>
-              <% } %>
-              <% if (offre.typeContrat) { %>
-                <span>Contrat : <strong><%= offre.typeContrat %></strong></span>
-              <% } %>
-              <span>Salaire : <strong><%= offre.salaire ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></strong></span>
-              <span>Déposée le : <strong><%= new Date(offre.dateCreation).toLocaleDateString('fr-FR') %></strong></span>
-            </div>
-
-            <div class="offer-desc">
-              <%= offre.description %>
-            </div>
-            <% if (offre.missionsPrincipales) { %><div class="offer-desc"><strong>Missions principales :</strong> <%= offre.missionsPrincipales %></div><% } %>
-            <% if ((offre.profilRecherche || offre.exigencesCandidat)) { %><div class="offer-desc"><strong>Profil recherché :</strong> <%= (offre.profilRecherche || offre.exigencesCandidat) %></div><% } %>
-
-            <div class="offer-actions">
-              <button type="button" class="btn-reject" onclick="openRejectModal('<%= offre._id %>')">
-                Refuser
-              </button>
-            </div>
-          </article>
-        <% }); %>
+      <div class="offers-table-wrapper">
+        <table class="offers-table">
+          <thead><tr><th scope="col">Titre de l'offre</th><th scope="col">Entreprise</th><th scope="col">Catégorie</th><th scope="col">Date de soumission</th><th scope="col">Action</th></tr></thead>
+          <tbody>
+            <% offres.forEach(function(offre) { %>
+              <tr>
+                <td><%= offre.titre %></td>
+                <td><%= offre.entreprise ? offre.entreprise.nomEntreprise : 'Entreprise' %></td>
+                <td><%= offre.categorie ? offre.categorie.libelle : 'Général' %></td>
+                <td><%= offre.dateSoumission ? new Date(offre.dateSoumission).toLocaleDateString('fr-FR') : 'Non précisée' %></td>
+                <td>
+                  <details class="offer-review">
+                    <summary>Examiner <span class="visually-hidden"><%= offre.titre %></span></summary>
+                    <div class="offer-review-details">
+                      <p><strong>Description :</strong> <%= offre.description %></p>
+                      <% if (offre.lieu || offre.localisation) { %><p><strong>Lieu :</strong> <%= offre.lieu || offre.localisation %></p><% } %>
+                      <% if (offre.typeContrat) { %><p><strong>Contrat :</strong> <%= offre.typeContrat %></p><% } %>
+                      <p><strong>Salaire :</strong> <%= offre.salaire != null ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></p>
+                      <% if (offre.missionsPrincipales) { %><p><strong>Missions principales :</strong> <%= offre.missionsPrincipales %></p><% } %>
+                      <% if (offre.profilRecherche || offre.exigencesCandidat) { %><p><strong>Profil recherché :</strong> <%= offre.profilRecherche || offre.exigencesCandidat %></p><% } %>
+                      <button type="button" class="btn-reject" onclick="openRejectModal('<%= offre._id %>')">Refuser</button>
+                    </div>
+                  </details>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
       </div>
     <% } %>
 

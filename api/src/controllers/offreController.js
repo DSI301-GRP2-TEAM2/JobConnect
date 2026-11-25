@@ -3,6 +3,23 @@ const { connect } = require("../db");
 const Offer = require("../models/Offer");
 require("../models/Category");
 
+async function getOffresEnAttente() {
+  await connect();
+  return Offer.find({ statut: "en_attente" })
+    .populate("categorie", "libelle description")
+    .sort({ dateSoumission: -1, dateCreation: -1, _id: -1 });
+}
+
+async function getOffresEnAttenteHandler(request, context) {
+  try {
+    const offres = await getOffresEnAttente();
+    return { status: 200, jsonBody: offres };
+  } catch (err) {
+    context?.error?.(err);
+    return { status: 500, jsonBody: { error: "Erreur serveur" } };
+  }
+}
+
 async function getOffresPublieesHandler(request, context) {
   try {
     await connect();
@@ -79,6 +96,8 @@ async function rejectOffreHandler(request, context) {
 }
 
 module.exports = {
+  getOffresEnAttente,
+  getOffresEnAttenteHandler,
   getOffresPublieesHandler,
   rejectOffre,
   rejectOffreHandler,

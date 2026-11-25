@@ -12,6 +12,7 @@ const offerSchema = new mongoose.Schema(
     exigencesCandidat: { type: String, trim: true },
     salaire: Number,
     dateCreation: { type: Date, default: Date.now },
+    dateSoumission: { type: Date },
     statut: {
       type: String,
       enum: ["brouillon", "en_attente", "publiee", "rejetee"],

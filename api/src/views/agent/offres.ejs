@@ -58,8 +58,9 @@
                 <td><%= offre.categorie ? offre.categorie.libelle : 'Général' %></td>
                 <td><%= offre.dateSoumission ? new Date(offre.dateSoumission).toLocaleDateString('fr-FR') : 'Non précisée' %></td>
                 <td>
+                  <a class="review-link" href="/agent/offres/<%= offre._id %>/examiner">Examiner <span class="visually-hidden"><%= offre.titre %></span></a>
                   <details class="offer-review">
-                    <summary>Examiner <span class="visually-hidden"><%= offre.titre %></span></summary>
+                    <summary>Aperçu rapide <span class="visually-hidden"><%= offre.titre %></span></summary>
                     <div class="offer-review-details">
                       <p><strong>Description :</strong> <%= offre.description %></p>
                       <% if (offre.lieu || offre.localisation) { %><p><strong>Lieu :</strong> <%= offre.lieu || offre.localisation %></p><% } %>

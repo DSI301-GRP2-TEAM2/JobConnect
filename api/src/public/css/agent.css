@@ -143,6 +143,14 @@ body {
 .offers-table th, .offers-table td { padding: 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
 .offers-table th { color: var(--text-muted); font-size: .85rem; }
 .offers-table tr:last-child td { border-bottom: 0; }
+.review-link { color: var(--primary); font-weight: 600; cursor: pointer; }
+.review-card { margin-top: 1rem; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow-wrap: anywhere; }
+.review-card section { margin: 1.25rem 0; }
+.review-card section h2 { font-size: 1.05rem; margin-bottom: .35rem; }
+.review-card section p { white-space: pre-line; }
+.review-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1rem; margin-top: 1rem; }
+.review-reject-form { margin-top: .75rem; max-width: 30rem; }
+.review-reject-form label { display: block; font-weight: 600; }
 .offer-review summary { color: var(--primary); cursor: pointer; font-weight: 600; }
 .offer-review-details { min-width: 16rem; margin-top: 1rem; white-space: pre-line; overflow-wrap: anywhere; }
 .offer-review-details p { margin-bottom: .75rem; }

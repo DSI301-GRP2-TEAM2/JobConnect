@@ -1,5 +1,8 @@
 const { createCategorie, getCategories } = require("./categorieController");
-const { rejectOffre, getOffresEnAttente } = require("./offreController");
+const mongoose = require("mongoose");
+const { connect } = require("../db");
+const Offer = require("../models/Offer");
+const { rejectOffre, approveOffre, getOffresEnAttente } = require("./offreController");
 
 async function renderCategories(req, res) {
   try {
@@ -71,10 +74,37 @@ async function submitRejectOffre(req, res) {
   }
 }
 
+async function examinerOffre(req, res) {
+  if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send("Identifiant d'offre invalide");
+  try {
+    await connect();
+    const offre = await Offer.findById(req.params.id).populate("categorie", "libelle");
+    if (!offre) return res.status(404).send("Offre introuvable");
+    return res.render("agent/examiner-offre", { offre });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Erreur serveur");
+  }
+}
+
+async function submitApproveOffre(req, res) {
+  try {
+    const result = await approveOffre(req.params.id);
+    const key = result.error ? "error" : "success";
+    const message = result.error || "Offre approuvée avec succès";
+    return res.redirect(`/agent/offres?${key}=${encodeURIComponent(message)}`);
+  } catch (err) {
+    console.error(err);
+    return res.redirect("/agent/offres?error=Erreur+serveur");
+  }
+}
+
 module.exports = {
   renderCategories,
   renderNouvelleCategorie,
   submitNouvelleCategorie,
   renderOffres,
   submitRejectOffre,
+  examinerOffre,
+  submitApproveOffre,
 };

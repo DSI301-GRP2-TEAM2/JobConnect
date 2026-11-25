@@ -1,7 +1,7 @@
 const express = require("express");
 const { authMiddleware, requireRole } = require("../middleware/auth");
 const adapt = require("../middleware/adapt");
-const { getOffresPublieesHandler, getOffresEnAttenteHandler, rejectOffreHandler } = require("../controllers/offreController");
+const { getOffresPublieesHandler, getOffresEnAttenteHandler, rejectOffreHandler, approveOffreHandler } = require("../controllers/offreController");
 const { createOffreHandler, getCategoriesEntrepriseHandler } = require("../controllers/createOffre");
 const { submitOffreHandler } = require("../controllers/submitOffre");
 const { companyOffres } = require("../controllers/companyOffres");
@@ -10,6 +10,7 @@ const router = express.Router();
 const catalogueRouter = express.Router();
 
 router.get("/api/offres/en-attente", authMiddleware, requireRole("agent"), adapt(getOffresEnAttenteHandler));
+router.patch("/api/offres/:id/approve", authMiddleware, requireRole("agent"), adapt(approveOffreHandler));
 
 router.get("/api/offres/categories", authMiddleware, requireRole("entreprise"), adapt(getCategoriesEntrepriseHandler));
 router.post("/api/offres", authMiddleware, requireRole("entreprise"), adapt(createOffreHandler));

@@ -1,14 +1,14 @@
 <header>
   <div class="navbar">
-    <a href="#" class="brand">
+    <a href="#" class="brand" (click)="setView('offres')">
       <span class="brand-box">JC</span>
       <span class="brand-name">JobConnect</span>
     </a>
 
     <ul class="nav-links" *ngIf="!authService.isEntreprise()">
-      <li><button class="nav-tab active">Offres</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'offres'" (click)="setView('offres')">Offres</button></li>
       <li><button class="nav-tab inactive">Mes candidatures</button></li>
-      <li><button class="nav-tab inactive">Mon profil</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'profil'" (click)="setView('profil')">Mon profil</button></li>
     </ul>
     <ul class="nav-links" *ngIf="authService.isEntreprise()">
       <li><button class="nav-tab" [class.active]="companyView === 'list'" (click)="companyView = 'list'">Mes offres</button></li>
@@ -32,7 +32,8 @@
 <main>
   <app-mes-offres *ngIf="authService.isEntreprise() && companyView === 'list'" (edit)="openOffer($event)"></app-mes-offres>
   <app-offre-form *ngIf="authService.isEntreprise() && companyView === 'form'" [offerId]="selectedOfferId"></app-offre-form>
-  <app-catalogue *ngIf="!authService.isEntreprise()"></app-catalogue>
+  <app-catalogue *ngIf="!authService.isEntreprise() && currentView === 'offres'"></app-catalogue>
+  <app-profil *ngIf="!authService.isEntreprise() && currentView === 'profil'"></app-profil>
 </main>
 
 <div class="modal-overlay" [class.active]="authService.showModal">

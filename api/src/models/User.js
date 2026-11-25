@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema(
 
     telephone: String,
     adresse: String,
+    ville: String,
+    titre: String,
+    competences: { type: [String], default: [] },
+    bio: String,
 
     nomEntreprise: String,
     secteur: String,

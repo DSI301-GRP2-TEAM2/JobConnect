@@ -1,0 +1,28 @@
+<div class="container">
+  <h2>Candidatures reçues : {{ offreTitre }}</h2>
+
+  <p *ngIf="candidatures.length === 0">Aucune candidature reçue pour cette offre.</p>
+
+  <table *ngIf="candidatures.length > 0">
+    <thead>
+      <tr>
+        <th>Candidat</th>
+        <th>Date de candidature</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of candidatures">
+        <td>{{ c.candidat?.prenom }} {{ c.candidat?.nom }}</td>
+        <td>{{ c.dateCandidature | date:'dd/MM/yyyy' }}</td>
+        <td>
+          <span class="badge" [ngClass]="'badge-' + c.statut">{{ c.statut }}</span>
+        </td>
+        <td>
+          <a [routerLink]="['/entreprise/candidatures', c._id]" class="btn">Voir le dossier</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,9 @@
+table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+td a.btn {
+  font-size: 12px;
+  padding: 6px 12px;
+}

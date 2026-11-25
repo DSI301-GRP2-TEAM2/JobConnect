@@ -1,0 +1,21 @@
+<section class="offer-form">
+  <h1>{{ offerId ? 'Modifier le brouillon' : "Créer une offre d'emploi" }}</h1>
+  <p>Enregistrez un brouillon, puis soumettez-le à un agent pour validation.</p>
+  <form #offerForm="ngForm" (ngSubmit)="save(offerForm)">
+    <div class="form-group"><label for="titre">Titre du poste *</label><input class="form-control" id="titre" name="titre" [(ngModel)]="draft.titre" required maxlength="200" #titre="ngModel"><small *ngIf="titre.touched && titre.invalid">Titre obligatoire.</small></div>
+    <div class="form-group"><label for="description">Description *</label><textarea class="form-control" id="description" name="description" [(ngModel)]="draft.description" required maxlength="10000" rows="4" #description="ngModel"></textarea><small *ngIf="description.touched && description.invalid">Description obligatoire.</small></div>
+    <div class="form-group"><label for="localisation">Localisation *</label><input class="form-control" id="localisation" name="localisation" [(ngModel)]="draft.localisation" required maxlength="200" #localisation="ngModel"><small *ngIf="localisation.touched && localisation.invalid">Localisation obligatoire.</small></div>
+    <div class="form-group"><label for="typeContrat">Type de contrat *</label><input class="form-control" id="typeContrat" name="typeContrat" [(ngModel)]="draft.typeContrat" required maxlength="100" placeholder="Ex. CDI" #typeContrat="ngModel"><small *ngIf="typeContrat.touched && typeContrat.invalid">Type de contrat obligatoire.</small></div>
+    <div class="form-group"><label for="missionsPrincipales">Missions principales *</label><textarea class="form-control" id="missionsPrincipales" name="missionsPrincipales" [(ngModel)]="draft.missionsPrincipales" required maxlength="10000" rows="4" #missions="ngModel"></textarea><small *ngIf="missions.touched && missions.invalid">Missions principales obligatoires.</small></div>
+    <div class="form-group"><label for="profilRecherche">Profil recherché *</label><textarea class="form-control" id="profilRecherche" name="profilRecherche" [(ngModel)]="draft.profilRecherche" required maxlength="10000" rows="4" #exigences="ngModel"></textarea><small *ngIf="exigences.touched && exigences.invalid">Profil recherché obligatoire.</small></div>
+    <div class="form-group"><label for="categorie">Catégorie *</label><select class="form-control" id="categorie" name="categorie" [(ngModel)]="draft.categorie" required #categorie="ngModel"><option value="">Sélectionner une catégorie</option><option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option></select><small *ngIf="categorie.touched && categorie.invalid">Catégorie obligatoire.</small><button type="button" class="btn btn-outline btn-sm" (click)="loadCategories()" [disabled]="loadingCategories">Actualiser les catégories</button></div>
+    <div class="form-group"><label for="salaire">Salaire annuel (facultatif)</label><input class="form-control" id="salaire" name="salaire" type="number" min="0" [(ngModel)]="draft.salaire" #salaire="ngModel"><small *ngIf="salaire.touched && salaire.invalid">Le salaire doit être positif ou nul.</small></div>
+    <p role="alert" class="error" *ngIf="error">{{ error }}</p>
+    <p role="status" class="success" *ngIf="success">{{ success }}</p>
+    <button class="btn btn-primary" type="submit" [disabled]="offerForm.invalid || saving || submitting">{{ saving ? 'Enregistrement…' : 'Enregistrer en brouillon' }}</button>
+  </form>
+  <div class="draft-action" *ngIf="createdOffer?.statut === 'brouillon' && (!offerId || !offerForm.dirty)">
+    <p>Votre brouillon est enregistré. Vous pouvez le soumettre à validation.</p>
+    <button class="btn btn-primary" type="button" (click)="submitForValidation()" [disabled]="submitting">{{ submitting ? 'Soumission…' : 'Soumettre à validation' }}</button>
+  </div>
+</section>

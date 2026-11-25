@@ -94,14 +94,13 @@ export class DetailOffreComponent implements OnInit {
   }
 
   getMissions(): string[] {
-    const raw = this.offre?.missions || this.offre?.description || '';
+    const raw = this.offre?.missionsPrincipales || this.offre?.missions || this.offre?.description || '';
     if (!raw) return [];
-    const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    return lines;
+    return raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   }
 
   getConditions(): string {
-    return this.offre?.conditions || this.offre?.profilRecherche || this.offre?.exigences || '';
+    return this.offre?.profilRecherche || this.offre?.conditions || this.offre?.exigences || '';
   }
 
   getEntrepriseDescription(): string {

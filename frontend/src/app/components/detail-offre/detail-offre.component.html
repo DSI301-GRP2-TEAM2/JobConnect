@@ -24,7 +24,13 @@
         </p>
       </div>
 
-      <div class="detail-card" *ngIf="offre.missions || offre.description">
+      <div class="detail-card" *ngIf="offre.description && offre.missionsPrincipales">
+        <h3 class="section-title">Description du poste</h3>
+        <div class="section-divider"></div>
+        <p class="section-text">{{ offre.description }}</p>
+      </div>
+
+      <div class="detail-card" *ngIf="offre.missionsPrincipales || offre.missions || offre.description">
         <h3 class="section-title">Missions</h3>
         <div class="section-divider"></div>
         <div class="missions-content">
@@ -32,7 +38,7 @@
             <li *ngFor="let m of getMissions()">{{ m.replace('•', '').replace('-', '').trim() }}</li>
           </ul>
           <p class="section-text" *ngIf="getMissions().length <= 1">
-            {{ offre.missions || offre.description }}
+            {{ offre.missionsPrincipales || offre.missions || offre.description }}
           </p>
         </div>
       </div>
@@ -48,11 +54,14 @@
         </p>
       </div>
 
-      <div class="detail-card" *ngIf="getEntrepriseDescription() || getEntrepriseSiteWeb() || getEntrepriseEmail()">
+      <div class="detail-card" *ngIf="getEntrepriseDescription() || getEntrepriseSecteur() || getEntrepriseSiteWeb() || getEntrepriseEmail()">
         <h3 class="section-title">À propos de l'entreprise</h3>
         <div class="section-divider"></div>
         <p class="section-text" *ngIf="getEntrepriseDescription()">
           {{ getEntrepriseDescription() }}
+        </p>
+        <p class="section-text" *ngIf="!getEntrepriseDescription() && getEntrepriseSecteur()">
+          <strong>Secteur :</strong> {{ getEntrepriseSecteur() }}
         </p>
         <div class="company-extra-meta" *ngIf="getEntrepriseSiteWeb() || getEntrepriseEmail()">
           <span *ngIf="getEntrepriseSiteWeb()">🌐 <a [href]="getEntrepriseSiteWeb()" target="_blank" rel="noopener noreferrer">{{ getEntrepriseSiteWeb() }}</a></span>

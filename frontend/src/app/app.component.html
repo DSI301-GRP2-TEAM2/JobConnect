@@ -5,16 +5,20 @@
       <span class="brand-name">JobConnect</span>
     </a>
 
-    <ul class="nav-links">
-      <li><button class="nav-tab" [class.active]="currentView === 'catalogue'" (click)="onRetourCatalogue()">Offres</button></li>
+    <ul class="nav-links" *ngIf="!authService.isEntreprise()">
+      <li><button class="nav-tab" [class.active]="currentView === 'catalogue' || currentView === 'detail'" (click)="onRetourCatalogue()">Offres</button></li>
       <li><button class="nav-tab inactive">Mes candidatures</button></li>
       <li><button class="nav-tab inactive">Mon profil</button></li>
+    </ul>
+    <ul class="nav-links" *ngIf="authService.isEntreprise()">
+      <li><button class="nav-tab" [class.active]="companyView === 'list'" (click)="companyView = 'list'">Mes offres</button></li>
+      <li><button class="nav-tab" [class.active]="companyView === 'form'" (click)="openOffer(null)">Créer une offre</button></li>
     </ul>
 
     <div class="auth-zone">
       <div *ngIf="authService.currentUser && authService.currentToken" class="user-badge">
         <span class="avatar-circle">{{ getInitials() }}</span>
-        <span class="user-fullname">{{ authService.currentUser.prenom }} {{ authService.currentUser.nom[0] }}.</span>
+        <span class="user-fullname">{{ authService.currentUser.prenom || authService.currentUser.nom }}<ng-container *ngIf="authService.currentUser.prenom"> {{ authService.currentUser.nom[0] }}.</ng-container></span>
         <button class="btn btn-outline btn-sm" (click)="authService.logout()">Déconnexion</button>
       </div>
 
@@ -26,14 +30,16 @@
 </header>
 
 <main>
-  <app-catalogue *ngIf="currentView === 'catalogue'" (selectOffre)="onSelectOffre($event)"></app-catalogue>
-  <app-detail-offre *ngIf="currentView === 'detail' && selectedOffreId" [offreId]="selectedOffreId" (retour)="onRetourCatalogue()"></app-detail-offre>
+  <app-mes-offres *ngIf="authService.isEntreprise() && companyView === 'list'" (edit)="openOffer($event)"></app-mes-offres>
+  <app-offre-form *ngIf="authService.isEntreprise() && companyView === 'form'" [offerId]="selectedOfferId"></app-offre-form>
+  <app-catalogue *ngIf="!authService.isEntreprise() && currentView === 'catalogue'" (selectOffre)="onSelectOffre($event)"></app-catalogue>
+  <app-detail-offre *ngIf="!authService.isEntreprise() && currentView === 'detail' && selectedOffreId" [offreId]="selectedOffreId" (retour)="onRetourCatalogue()"></app-detail-offre>
 </main>
 
 <div class="modal-overlay" [class.active]="authService.showModal">
   <div class="modal-card">
     <button class="modal-close" (click)="authService.closeLoginModal()">&times;</button>
-    <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion Candidat</h3>
+    <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Connexion</h3>
     <form (ngSubmit)="handleLogin()">
       <div class="form-group">
         <label for="login-email">Adresse e-mail</label>

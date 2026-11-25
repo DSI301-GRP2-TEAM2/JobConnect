@@ -155,11 +155,11 @@ test("US-15 Fonctionnel : GET /api/offres/:id retourne 200 et les détails pour 
   const offre = await Offer.create({
     titre: "Test US15 Offre Detail",
     description: "Description complète du poste proposé",
-    missions: "Missions détaillées",
-    conditions: "Conditions détaillées",
+    missionsPrincipales: "Développement Angular et Node.js",
+    profilRecherche: "Bac+5, 3 ans d'expérience minimum",
     salaire: 50000,
     statut: "publiee",
-    lieu: "Paris (75008) - Hybride",
+    localisation: "Paris (75008) - Hybride",
     typeContrat: "CDI",
     entreprise: { id: entreprise._id, nomEntreprise: entreprise.nomEntreprise },
     categorie: cat._id,
@@ -173,9 +173,10 @@ test("US-15 Fonctionnel : GET /api/offres/:id retourne 200 et les détails pour 
   assert.equal(res.json.titre, "Test US15 Offre Detail");
   assert.equal(res.json.statut, "publiee");
   assert.equal(res.json.salaire, 50000);
-  assert.equal(res.json.lieu, "Paris (75008) - Hybride");
+  assert.equal(res.json.localisation, "Paris (75008) - Hybride");
   assert.equal(res.json.typeContrat, "CDI");
-  assert.equal(res.json.missions, "Missions détaillées");
+  assert.equal(res.json.missionsPrincipales, "Développement Angular et Node.js");
+  assert.equal(res.json.profilRecherche, "Bac+5, 3 ans d'expérience minimum");
 
   await Offer.deleteMany({ titre: /Test US15/ });
   await User.deleteMany({ email: "ent-us15@test.com" });

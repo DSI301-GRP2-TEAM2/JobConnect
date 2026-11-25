@@ -1,0 +1,6 @@
+.list { max-width: 760px; margin: auto; }
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.filters [aria-pressed="true"] { background: #1e293b; color: white; }
+.card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; margin-top: 1rem; }
+.card h2 { font-size: 1.1rem; }
+.card p { margin: .4rem 0; }

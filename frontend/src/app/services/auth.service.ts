@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface User {
+  id?: string;
   _id: string;
   nom: string;
   prenom?: string;
@@ -24,6 +25,7 @@ export class AuthService {
   currentUser: User | null = null;
   currentToken: string | null = null;
   showModal = false;
+  authState$ = new BehaviorSubject<User | null>(null);
 
   constructor(private http: HttpClient) {
     this.loadToken();
@@ -35,6 +37,7 @@ export class AuthService {
     if (this.currentToken && u) {
       try {
         this.currentUser = JSON.parse(u);
+        this.authState$.next(this.currentUser);
       } catch {
         this.logout();
       }
@@ -45,6 +48,10 @@ export class AuthService {
     return !!this.currentToken && this.currentUser?.role === 'candidat';
   }
 
+  isEntreprise(): boolean {
+    return !!this.currentToken && this.currentUser?.role === 'entreprise';
+  }
+
   login(email: string, mdp: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/api/auth/login`, { email, mdp }).pipe(
       tap((res) => {
@@ -53,6 +60,7 @@ export class AuthService {
         localStorage.setItem('jobconnect_token', res.token);
         localStorage.setItem('jobconnect_user', JSON.stringify(res.user));
         this.showModal = false;
+        this.authState$.next(res.user);
       })
     );
   }
@@ -62,6 +70,7 @@ export class AuthService {
     this.currentUser = null;
     localStorage.removeItem('jobconnect_token');
     localStorage.removeItem('jobconnect_user');
+    this.authState$.next(null);
   }
 
   openLoginModal(): void {

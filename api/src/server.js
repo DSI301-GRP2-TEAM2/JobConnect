@@ -4,9 +4,9 @@ const path = require("path");
 
 const authRoutes = require("./routes/auth.routes");
 const categoriesRoutes = require("./routes/categories.routes");
+const agentRoutes = require("./routes/agent.routes");
 const offresRoutes = require("./routes/offres.routes");
 const candidatsRoutes = require("./routes/candidats.routes");
-const agentRoutes = require("./routes/agent.routes");
 
 const app = express();
 
@@ -29,12 +29,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
-
-app.use("/api/auth", authRoutes);
-app.use("/api/categories", categoriesRoutes);
-app.use("/api/offres", offresRoutes);
-app.use("/api/candidats", candidatsRoutes);
-app.use("/agent", agentRoutes);
+app.use(authRoutes);
+app.use(categoriesRoutes);
+app.use(agentRoutes);
+app.use(offresRoutes);
+app.use(candidatsRoutes);
 
 app.use((err, req, res, next) => {
   if (err.type === "entity.parse.failed") {

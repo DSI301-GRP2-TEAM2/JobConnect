@@ -10,9 +10,6 @@ export interface ProfilCandidat {
   competences?: string[];
   bio?: string;
   cv?: string;
-  cvNomOriginal?: string;
-  cvTaille?: number;
-  cvDateUpload?: string;
 }
 
 export interface UpdateProfilResponse {

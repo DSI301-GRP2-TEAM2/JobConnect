@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ProfilService } from '../../services/profil.service';
 import { AuthService } from '../../services/auth.service';
 import { ProfilCandidat } from '../../models/profil.model';
@@ -12,7 +13,7 @@ import { ProfilCandidat } from '../../models/profil.model';
   templateUrl: './profil.component.html',
   styleUrls: ['./profil.component.css']
 })
-export class ProfilComponent implements OnInit {
+export class ProfilComponent implements OnInit, OnDestroy {
   profil: ProfilCandidat = {
     nom: '',
     prenom: '',
@@ -28,6 +29,7 @@ export class ProfilComponent implements OnInit {
   loading: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
+  private authSub?: Subscription;
 
   constructor(
     private profilService: ProfilService,
@@ -45,6 +47,27 @@ export class ProfilComponent implements OnInit {
         this.profil.email = u.email || '';
       }
     }
+
+    this.authSub = this.authService.authState$.subscribe((user) => {
+      if (user && this.authService.isAuthenticated()) {
+        this.loadProfil();
+      } else if (!user) {
+        this.profil = {
+          nom: '',
+          prenom: '',
+          email: '',
+          telephone: '',
+          ville: '',
+          titre: '',
+          competences: [],
+          bio: ''
+        };
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSub?.unsubscribe();
   }
 
   loadProfil(): void {

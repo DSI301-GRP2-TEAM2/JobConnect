@@ -11,7 +11,9 @@ function validateCategorie(body) {
     } else if (libelle.trim().length > 100) {
         errors.push("Le nom de la catégorie ne doit pas dépasser 100 caractères");
     }
-    if (description !== undefined && (typeof description !== "string" || description.trim().length > 500)) {
+    if (typeof description !== "string" || !description.trim()) {
+        errors.push("La description est obligatoire");
+    } else if (description.trim().length > 500) {
         errors.push("La description doit être un texte de 500 caractères maximum");
     }
     return {
@@ -54,4 +56,26 @@ async function createCategorieHandler(request, context) {
     }
 }
 
-module.exports = {validateCategorie, createCategorie, createCategorieHandler};
+async function getCategories() {
+    await connect();
+    const categories = await Category.find({})
+        .sort({libelle: 1, _id: 1})
+        .lean();
+    return categories.map(({_id, libelle, description}) => ({
+        id: String(_id),
+        libelle,
+        description: description || "",
+    }));
+}
+
+async function getCategoriesHandler(request, context) {
+    try {
+        const categories = await getCategories();
+        return {status: 200, jsonBody: {categories}};
+    } catch (err) {
+        context?.error?.(err);
+        return {status: 500, jsonBody: {error: "Erreur serveur"}};
+    }
+}
+
+module.exports = {validateCategorie, createCategorie, createCategorieHandler, getCategories, getCategoriesHandler};

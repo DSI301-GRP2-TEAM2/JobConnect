@@ -72,6 +72,12 @@
       </p>
     </div>
 
+    <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;" *ngIf="selectedOffre.missionsPrincipales">
+      <h4>Missions principales</h4><p style="white-space: pre-line;">{{ selectedOffre.missionsPrincipales }}</p>
+    </div>
+    <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;" *ngIf="selectedOffre.profilRecherche">
+      <h4>Profil recherché</h4><p style="white-space: pre-line;">{{ selectedOffre.profilRecherche }}</p>
+    </div>
     <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;" *ngIf="selectedOffre.salaire">
       <h4 style="font-size: 0.95rem; color: #0f172a; margin-bottom: 0.25rem;">Rémunération</h4>
       <p style="font-size: 0.92rem; color: #166534; font-weight: 600;">{{ formatSalary(selectedOffre.salaire) }}</p>

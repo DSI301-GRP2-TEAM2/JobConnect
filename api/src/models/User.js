@@ -11,9 +11,6 @@ const userSchema = new mongoose.Schema(
 
     prenom: String,
     cv: String,
-    cvNomOriginal: String,
-    cvTaille: Number,
-    cvDateUpload: Date,
 
     telephone: String,
     adresse: String,

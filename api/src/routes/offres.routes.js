@@ -1,7 +1,7 @@
 const express = require("express");
 const { authMiddleware, requireRole } = require("../middleware/auth");
 const adapt = require("../middleware/adapt");
-const { getOffresPublieesHandler, rejectOffreHandler } = require("../controllers/offreController");
+const { getOffresPublieesHandler, getOffreByIdHandler, rejectOffreHandler } = require("../controllers/offreController");
 const { createOffreHandler, getCategoriesEntrepriseHandler } = require("../controllers/createOffre");
 const { submitOffreHandler } = require("../controllers/submitOffre");
 const { companyOffres } = require("../controllers/companyOffres");
@@ -27,10 +27,14 @@ catalogueRouter.get(
   "/",
   authMiddleware,
   requireRole("candidat"),
-  async (req, res) => {
-    const result = await getOffresPublieesHandler(req, console);
-    res.status(result.status).json(result.jsonBody);
-  }
+  adapt(getOffresPublieesHandler)
+);
+
+catalogueRouter.get(
+  "/:id",
+  authMiddleware,
+  requireRole("candidat"),
+  adapt(getOffreByIdHandler)
 );
 
 router.use("/api/offres", catalogueRouter);

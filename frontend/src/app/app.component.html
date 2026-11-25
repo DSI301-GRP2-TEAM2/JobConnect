@@ -1,12 +1,12 @@
 <header>
   <div class="navbar">
-    <a href="#" class="brand">
+    <a href="#" class="brand" (click)="onRetourCatalogue()">
       <span class="brand-box">JC</span>
       <span class="brand-name">JobConnect</span>
     </a>
 
     <ul class="nav-links" *ngIf="!authService.isEntreprise()">
-      <li><button class="nav-tab active">Offres</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'catalogue'" (click)="onRetourCatalogue()">Offres</button></li>
       <li><button class="nav-tab inactive">Mes candidatures</button></li>
       <li><button class="nav-tab inactive">Mon profil</button></li>
     </ul>
@@ -32,7 +32,8 @@
 <main>
   <app-mes-offres *ngIf="authService.isEntreprise() && companyView === 'list'" (edit)="openOffer($event)"></app-mes-offres>
   <app-offre-form *ngIf="authService.isEntreprise() && companyView === 'form'" [offerId]="selectedOfferId"></app-offre-form>
-  <app-catalogue *ngIf="!authService.isEntreprise()"></app-catalogue>
+  <app-catalogue *ngIf="!authService.isEntreprise() && currentView === 'catalogue'" (selectOffre)="onSelectOffre($event)"></app-catalogue>
+  <app-detail-offre *ngIf="!authService.isEntreprise() && currentView === 'detail' && selectedOffreId" [offreId]="selectedOffreId" (retour)="onRetourCatalogue()"></app-detail-offre>
 </main>
 
 <div class="modal-overlay" [class.active]="authService.showModal">

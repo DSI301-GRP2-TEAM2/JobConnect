@@ -36,10 +36,9 @@
           <span *ngIf="!(o.lieu || o.localisation) && !o.typeContrat && o.salaire"> · {{ formatSalary(o.salaire) }}</span>
         </div>
       </div>
-
       <div class="offre-action-zone">
         <span class="offre-date">Publié le {{ formatDate(o.dateCreation) }}</span>
-        <button class="btn-voir" (click)="voirOffre(o)">Voir l'offre</button>
+        <button class="btn-voir" (click)="voirDetail(o._id)">Voir l'offre</button>
       </div>
     </div>
   </div>
@@ -50,41 +49,3 @@
     <button class="page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">&gt;</button>
   </div>
 </section>
-
-<div class="modal-overlay" [class.active]="selectedOffre !== null">
-  <div class="modal-card" *ngIf="selectedOffre">
-    <button class="modal-close" (click)="fermerApercu()">&times;</button>
-    <div style="margin-bottom: 1rem;">
-      <span class="offre-category-badge" style="margin-left: 0;">{{ selectedOffre.categorie?.libelle || 'Général' }}</span>
-      <h3 style="font-size: 1.35rem; margin-top: 0.5rem; color: #0f172a;">{{ selectedOffre.titre }}</h3>
-      <p style="font-size: 0.95rem; color: #475569; margin-top: 0.25rem;">
-        {{ selectedOffre.entreprise?.nomEntreprise }}
-        <span *ngIf="selectedOffre.lieu || selectedOffre.localisation"> · {{ selectedOffre.lieu || selectedOffre.localisation }}</span>
-        <span *ngIf="selectedOffre.typeContrat"> · {{ selectedOffre.typeContrat }}</span>
-      </p>
-      <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">Publié le {{ formatDate(selectedOffre.dateCreation) }}</p>
-    </div>
-
-    <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;">
-      <h4 style="font-size: 0.95rem; color: #0f172a; margin-bottom: 0.5rem;">Description du poste</h4>
-      <p style="font-size: 0.92rem; line-height: 1.6; color: #334155; white-space: pre-line;">
-        {{ selectedOffre.description }}
-      </p>
-    </div>
-
-    <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;" *ngIf="selectedOffre.missionsPrincipales">
-      <h4>Missions principales</h4><p style="white-space: pre-line;">{{ selectedOffre.missionsPrincipales }}</p>
-    </div>
-    <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;" *ngIf="selectedOffre.profilRecherche">
-      <h4>Profil recherché</h4><p style="white-space: pre-line;">{{ selectedOffre.profilRecherche }}</p>
-    </div>
-    <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem;" *ngIf="selectedOffre.salaire">
-      <h4 style="font-size: 0.95rem; color: #0f172a; margin-bottom: 0.25rem;">Rémunération</h4>
-      <p style="font-size: 0.92rem; color: #166534; font-weight: 600;">{{ formatSalary(selectedOffre.salaire) }}</p>
-    </div>
-
-    <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
-      <button class="btn btn-outline btn-sm" (click)="fermerApercu()">Fermer</button>
-    </div>
-  </div>
-</div>

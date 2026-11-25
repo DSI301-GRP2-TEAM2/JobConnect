@@ -46,4 +46,8 @@ export class OffreService {
   getOffresPubliees(): Observable<Offre[]> {
     return this.http.get<Offre[]>(`${this.apiUrl}/api/offres`, { headers: this.authHeaders() });
   }
+
+  getOffreById(id: string): Observable<Offre> {
+    return this.http.get<Offre>(`${this.apiUrl}/api/offres/${encodeURIComponent(id)}`, { headers: this.authHeaders() });
+  }
 }

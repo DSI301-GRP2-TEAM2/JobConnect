@@ -4,8 +4,21 @@ export interface Categorie {
   description?: string;
 }
 
+export interface EntrepriseDetail {
+  _id?: string;
+  nom?: string;
+  nomEntreprise?: string;
+  email?: string;
+  siteWeb?: string;
+  secteur?: string;
+  telephone?: string;
+  adresse?: string;
+  description?: string;
+  aPropos?: string;
+}
+
 export interface EntrepriseOffre {
-  id: string;
+  id: string | EntrepriseDetail;
   nomEntreprise: string;
 }
 
@@ -21,9 +34,16 @@ export interface Offre {
   lieu?: string;
   localisation?: string;
   typeContrat?: string;
-  motifRefus?: string;
+  experience?: string;
+  missions?: string;
   missionsPrincipales?: string;
+  conditions?: string;
+  exigences?: string;
   profilRecherche?: string;
+  avantages?: string;
+  descriptionEntreprise?: string;
+  aPropos?: string;
+  motifRefus?: string;
 }
 
 export interface OffreDraft extends Pick<Offre, 'titre' | 'description' | 'localisation' | 'typeContrat' | 'missionsPrincipales' | 'profilRecherche'> {
@@ -35,4 +55,3 @@ export interface OffreCreee extends OffreDraft {
   id: string;
   statut: string;
 }
-

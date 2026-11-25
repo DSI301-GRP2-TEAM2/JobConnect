@@ -40,6 +40,40 @@ test('US12: accès et identifiants vérifiés', async () => {
   assert.equal((await request('/agent/offres/invalid/examiner', 'agent')).status, 400);
 });
 
+test('US12: parcours agent EJS de la liste à la publication', {skip: !uri && 'TEST_MONGODB_URI non défini'}, async () => {
+  const owner = id(), category = id(), offerId = id();
+  const prefix = `US12-ejs-${offerId}`;
+  const cookie = `token=${token('agent')}`;
+  try {
+    await User.create({_id: owner, nom: 'Company', nomEntreprise: 'Company EJS', email: `${prefix}@example.test`, mdp: 'test', role: 'entreprise'});
+    await Category.create({_id: category, libelle: prefix, description: 'Test'});
+    await Offer.create({_id: offerId, titre: prefix, description: 'Description EJS', statut: 'en_attente', entreprise: {id: owner, nomEntreprise: 'Company EJS'}, categorie: category});
+    const list = await fetch(`${base}/agent/offres`, {headers: {cookie}});
+    assert.equal(list.status, 200);
+    const html = await list.text();
+    const detailPath = `/agent/offres/${offerId}/examiner`;
+    assert.ok(html.includes(`href="${detailPath}"`));
+    const detail = await fetch(base + detailPath, {headers: {cookie}});
+    assert.equal(detail.status, 200);
+    assert.match(await detail.text(), new RegExp(`/agent/offres/${offerId}/approve`));
+    const submit = await fetch(`${base}/agent/offres/${offerId}/approve`, {method: 'POST', headers: {cookie}, redirect: 'manual'});
+    assert.equal(submit.status, 302);
+    assert.match(submit.headers.get('location'), /success=/);
+    const after = await fetch(base + submit.headers.get('location'), {headers: {cookie}});
+    assert.equal(after.status, 200);
+    const afterHtml = await after.text();
+    assert.match(afterHtml, /Offre approuvée avec succès/);
+    assert.ok(!afterHtml.includes(prefix));
+    assert.equal((await Offer.findById(offerId)).statut, 'publiee');
+    const catalogue = JSON.parse((await request('/api/offres', 'candidat')).body);
+    assert.ok(catalogue.some(o => o._id === String(offerId)));
+  } finally {
+    await Offer.deleteOne({_id: offerId});
+    await User.deleteOne({_id: owner});
+    await Category.deleteOne({_id: category});
+  }
+});
+
 test('US12: approbation, publication et conflit avec un refus', {skip: !uri && 'TEST_MONGODB_URI non défini'}, async () => {
   const owner = id(), category = id(), ids = [], prefix = `US12-${owner}`;
   try {

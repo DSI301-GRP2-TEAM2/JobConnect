@@ -31,6 +31,11 @@ test('US11: accès réservé aux agents', async () => {
   assert.equal((await fetch(base + '/agent/offres')).status, 401);
   assert.equal((await fetch(base + '/agent/offres', {headers: {authorization: `Bearer ${token('entreprise')}`}})).status, 403);
   assert.equal((await fetch(base + '/agent/offres', {headers: {authorization: 'Bearer invalid'}})).status, 401);
+  assert.equal((await fetch(base + '/api/offres/en-attente')).status, 401);
+  assert.equal((await fetch(base + '/api/offres/en-attente', {headers: {authorization: 'Bearer invalid'}})).status, 401);
+  for (const role of ['entreprise', 'candidat']) {
+    assert.equal((await fetch(base + '/api/offres/en-attente', {headers: {authorization: `Bearer ${token(role)}`}})).status, 403);
+  }
 });
 
 test('US11: vue vide et données échappées', async () => {
@@ -41,8 +46,39 @@ test('US11: vue vide et données échappées', async () => {
   assert.match(html, /&lt;script&gt;/);
   assert.doesNotMatch(html, /<script>alert\(1\)<\/script>/);
   assert.match(html, /Non précisée/);
-  const detail = await ejs.renderFile(path.join(__dirname, '../src/views/agent/examiner-offre.ejs'), {offre: {_id: new mongoose.Types.ObjectId(), titre: 'Offre', description: 'Détails', entreprise: {nomEntreprise: 'Entreprise'}, categorie: null, salaire: 0, statut: 'en_attente'}});
-  assert.match(detail, /0 €/);
+  assert.match(html, /0 €/);
+});
+
+test('US11: API et page trient les offres par date de soumission décroissante', {skip: !uri && 'TEST_MONGODB_URI non défini'}, async () => {
+  const owner = new mongoose.Types.ObjectId(), category = new mongoose.Types.ObjectId();
+  const prefix = `US11-sort-${owner}`;
+  const ids = [];
+  try {
+    await User.create({_id: owner, nom: 'Test', nomEntreprise: 'Entreprise tri', email: `${prefix}@example.test`, mdp: 'test', role: 'entreprise'});
+    await Category.create({_id: category, libelle: prefix, description: 'Test'});
+    for (const [label, dateSoumission, dateCreation, statut] of [
+      ['ancien', '2024-01-01', '2025-01-01', 'en_attente'],
+      ['recent', '2025-01-01', '2023-01-01', 'en_attente'],
+      ['brouillon', '2026-01-01', '2026-01-01', 'brouillon']
+    ]) {
+      const offer = await Offer.create({titre: `${prefix}-${label}`, description: 'Test', statut, dateSoumission: new Date(dateSoumission), dateCreation: new Date(dateCreation), entreprise: {id: owner, nomEntreprise: 'Entreprise tri'}, categorie: category});
+      ids.push(offer._id);
+    }
+    const headers = {authorization: `Bearer ${token('agent')}`};
+    const response = await fetch(base + '/api/offres/en-attente', {headers});
+    assert.equal(response.status, 200);
+    const offres = (await response.json()).filter(offer => offer.titre.startsWith(prefix));
+    assert.deepEqual(offres.map(offer => offer.titre), [`${prefix}-recent`, `${prefix}-ancien`]);
+    assert.equal(offres[0].categorie.libelle, prefix);
+    const html = await (await fetch(base + '/agent/offres', {headers})).text();
+    assert.ok(html.includes(`${prefix}-recent`) && html.includes(`${prefix}-ancien`));
+    assert.ok(html.indexOf(`${prefix}-recent`) < html.indexOf(`${prefix}-ancien`));
+    assert.ok(!html.includes(`${prefix}-brouillon`));
+  } finally {
+    await Offer.deleteMany({_id: {$in: ids}});
+    await User.deleteOne({_id: owner});
+    await Category.deleteOne({_id: category});
+  }
 });
 
 test('US11: soumission visible et seuls les emplois en attente sont affichés', {skip: !uri && 'TEST_MONGODB_URI non défini'}, async () => {
@@ -68,11 +104,8 @@ test('US11: soumission visible et seuls les emplois en attente sont affichés', 
     const html = await response.text();
     assert.ok(html.includes(`${prefix}-brouillon`));
     assert.ok(!html.includes(`${prefix}-publiee`) && !html.includes(`${prefix}-rejetee`));
-    assert.ok(html.includes('Entreprise US11'));
+    assert.ok(html.includes('Entreprise US11') && html.includes('Missions test') && html.includes('Profil test'));
     assert.ok(html.includes('Examiner'));
-    const detail = await fetch(`${base}/agent/offres/${ids[0]}/examiner`, {headers: {authorization: `Bearer ${token('agent')}`}});
-    const detailHtml = await detail.text();
-    assert.ok(detailHtml.includes('Missions test') && detailHtml.includes('Profil test'));
   } finally {
     await Offer.deleteMany({_id: {$in: ids}});
     await User.deleteOne({_id: owner});

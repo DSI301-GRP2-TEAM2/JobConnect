@@ -58,7 +58,18 @@
                 <td><%= offre.categorie ? offre.categorie.libelle : 'Général' %></td>
                 <td><%= offre.dateSoumission ? new Date(offre.dateSoumission).toLocaleDateString('fr-FR') : 'Non précisée' %></td>
                 <td>
-                  <a class="review-link" href="/agent/offres/<%= offre._id %>/examiner">Examiner <span class="visually-hidden"><%= offre.titre %></span></a>
+                  <details class="offer-review">
+                    <summary>Examiner <span class="visually-hidden"><%= offre.titre %></span></summary>
+                    <div class="offer-review-details">
+                      <p><strong>Description :</strong> <%= offre.description %></p>
+                      <% if (offre.lieu || offre.localisation) { %><p><strong>Lieu :</strong> <%= offre.lieu || offre.localisation %></p><% } %>
+                      <% if (offre.typeContrat) { %><p><strong>Contrat :</strong> <%= offre.typeContrat %></p><% } %>
+                      <p><strong>Salaire :</strong> <%= offre.salaire != null ? offre.salaire.toLocaleString('fr-FR') + ' €/an' : 'Non précisé' %></p>
+                      <% if (offre.missionsPrincipales) { %><p><strong>Missions principales :</strong> <%= offre.missionsPrincipales %></p><% } %>
+                      <% if (offre.profilRecherche || offre.exigencesCandidat) { %><p><strong>Profil recherché :</strong> <%= offre.profilRecherche || offre.exigencesCandidat %></p><% } %>
+                      <button type="button" class="btn-reject" onclick="openRejectModal('<%= offre._id %>')">Refuser</button>
+                    </div>
+                  </details>
                 </td>
               </tr>
             <% }); %>
@@ -68,6 +79,40 @@
     <% } %>
 
   </main>
+
+  <div id="reject-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Motif du refus de l'offre</h2>
+        <p class="modal-subtitle">Veuillez indiquer clairement les raisons du refus afin que l'entreprise puisse corriger son annonce.</p>
+      </div>
+      <form id="reject-form" method="POST" action="">
+        <div class="form-group">
+          <label for="motifRefus" class="form-label">Motif du refus <span class="required-star">*</span></label>
+          <textarea id="motifRefus" name="motifRefus" class="form-textarea" rows="4" required placeholder="La description du poste manque de précisions concernant la rémunération exacte et les horaires de travail en mode hybride."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeRejectModal()">Annuler</button>
+          <button type="submit" class="btn-confirm-reject">Confirmer le refus</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openRejectModal(id) {
+      var modal = document.getElementById('reject-modal');
+      var form = document.getElementById('reject-form');
+      var textarea = document.getElementById('motifRefus');
+      form.action = '/agent/offres/' + id + '/reject';
+      textarea.value = '';
+      modal.classList.add('active');
+    }
+    function closeRejectModal() {
+      var modal = document.getElementById('reject-modal');
+      modal.classList.remove('active');
+    }
+  </script>
 
 </body>
 </html>

@@ -1,8 +1,5 @@
-const { connect } = require("../db");
-const Offer = require("../models/Offer");
 const { createCategorie, getCategories } = require("./categorieController");
-const { rejectOffre, approveOffre } = require("./offreController");
-const mongoose = require("mongoose");
+const { rejectOffre } = require("./offreController");
 
 async function renderCategories(req, res) {
   try {
@@ -44,7 +41,7 @@ async function renderOffres(req, res) {
     await connect();
     const offres = await Offer.find({ statut: "en_attente" })
       .populate("categorie", "libelle description")
-      .sort({ dateSoumission: -1, dateCreation: -1, _id: -1 });
+      .sort({ dateCreation: -1 });
 
     res.render("agent/offres", {
       offres: offres || [],

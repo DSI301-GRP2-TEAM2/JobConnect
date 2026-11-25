@@ -33,7 +33,7 @@ async function getOffreByIdHandler(request, context) {
 
     const offre = await Offer.findById(id)
       .populate("categorie", "libelle description")
-      .populate("entreprise.id", "nom nomEntreprise email siteWeb secteur");
+      .populate("entreprise.id", "nom nomEntreprise email siteWeb secteur telephone adresse");
 
     if (!offre || offre.statut !== "publiee") {
       return { status: 404, jsonBody: { error: "Offre introuvable ou non publiée" } };

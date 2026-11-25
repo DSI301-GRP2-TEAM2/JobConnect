@@ -6,7 +6,7 @@
     </a>
 
     <ul class="nav-links" *ngIf="!authService.isEntreprise()">
-      <li><button class="nav-tab" [class.active]="currentView === 'catalogue' || currentView === 'detail'" (click)="onRetourCatalogue()">Offres</button></li>
+      <li><button class="nav-tab" [class.active]="currentView === 'catalogue'" (click)="onRetourCatalogue()">Offres</button></li>
       <li><button class="nav-tab inactive">Mes candidatures</button></li>
       <li><button class="nav-tab inactive">Mon profil</button></li>
     </ul>

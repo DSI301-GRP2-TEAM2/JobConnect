@@ -32,3 +32,7 @@ def absolute_value(n):
 def square(n):
     """Return the square of n."""
     return power(n, 2)
+
+def cube(n):
+    """Return the cube of n."""
+    return power(n, 3)

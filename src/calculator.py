@@ -36,3 +36,14 @@ def square(n):
 def cube(n):
     """Return the cube of n."""
     return power(n, 3)
+
+def factorial(n):
+    """Return the factorial of n."""
+    if n < 0:
+        raise ValueError('Cannot compute factorial of negative number')
+    if n <= 1:
+        return 1
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result

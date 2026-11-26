@@ -51,10 +51,6 @@ export class CandidatRegisterComponent {
         this.successMsg.set(res.message);
         this.submitting.set(false);
         this.form.reset();
-        setTimeout(() => {
-          this.auth.openLoginModal();
-          this.router.navigate(['/']);
-        }, 2000);
       },
       error: (err) => {
         this.submitting.set(false);

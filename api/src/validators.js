@@ -40,7 +40,9 @@ function validateRegister(body) {
     errors.push("email invalide");
   }
 
-  if (typeof body.mdp !== "string" || body.mdp.length < 8) {
+  if (typeof body.mdp !== "string" || body.mdp === "") {
+    errors.push("mdp est obligatoire");
+  } else if (body.mdp.length < 8) {
     errors.push("mdp doit contenir au moins 8 caractères");
   } else if (body.mdp.length > 72) {
     errors.push("mdp ne doit pas dépasser 72 caractères");
@@ -92,4 +94,11 @@ function validateRegister(body) {
   return { data };
 }
 
-module.exports = { validateRegister };
+function validateRegisterCandidat(body) {
+  if (body && typeof body === "object" && body.role !== undefined && body.role !== "candidat") {
+    return { errors: ["Le rôle n'est pas autorisé pour cette route"] };
+  }
+  return validateRegister({ ...body, role: "candidat" });
+}
+
+module.exports = { validateRegister, validateRegisterCandidat };

@@ -1,0 +1,3 @@
+<app-mes-offres *ngIf="authService.isEntreprise() && entrepriseView.view() === 'list'" (edit)="onEditOffer($event)"></app-mes-offres>
+<app-offre-form *ngIf="authService.isEntreprise() && entrepriseView.view() === 'form'" [offerId]="entrepriseView.selectedOfferId()"></app-offre-form>
+<app-catalogue *ngIf="!authService.isEntreprise()"></app-catalogue>

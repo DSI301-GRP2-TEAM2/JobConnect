@@ -1,0 +1,85 @@
+<div class="auth-page">
+  <section class="auth-card">
+
+    <div class="auth-head">
+      <span class="jc-badge">JC</span>
+      <span class="title">Inscription Candidat</span>
+    </div>
+
+    <div *ngIf="successMsg()" class="success-block">
+      <p class="form-success">{{ successMsg() }}</p>
+      <button type="button" class="btn btn-primary full-btn" (click)="goToLogin()">Se connecter</button>
+    </div>
+
+    <form *ngIf="!successMsg()" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input id="nom" type="text" class="form-control" formControlName="nom" placeholder="Dupont" />
+          <p class="field-error" *ngIf="form.get('nom')?.touched && form.get('nom')?.errors?.['required']">
+            Le nom est obligatoire.
+          </p>
+          <p class="field-error" *ngIf="form.get('nom')?.touched && form.get('nom')?.errors?.['pattern']">
+            Le nom ne peut pas contenir uniquement des espaces.
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="prenom">Prénom *</label>
+          <input id="prenom" type="text" class="form-control" formControlName="prenom" placeholder="Jean" />
+          <p class="field-error" *ngIf="form.get('prenom')?.touched && form.get('prenom')?.errors?.['required']">
+            Le prénom est obligatoire.
+          </p>
+          <p class="field-error" *ngIf="form.get('prenom')?.touched && form.get('prenom')?.errors?.['pattern']">
+            Le prénom ne peut pas contenir uniquement des espaces.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-mail *</label>
+        <input id="email" type="email" class="form-control" formControlName="email" placeholder="jean.dupont@email.fr" />
+        <p class="field-error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">
+          Format d'e-mail invalide.
+        </p>
+        <p class="field-error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['required']">
+          L'e-mail est obligatoire.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="mdp">Mot de passe *</label>
+        <input id="mdp" type="password" class="form-control" formControlName="mdp" placeholder="password123" />
+        <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['required']">
+          Le mot de passe est obligatoire.
+        </p>
+        <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['minlength']">
+          Au moins 8 caractères.
+        </p>
+        <p class="field-error" *ngIf="form.get('mdp')?.touched && form.get('mdp')?.errors?.['maxlength']">
+          72 caractères maximum.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="mdpConfirmation">Confirmation du mot de passe *</label>
+        <input id="mdpConfirmation" type="password" class="form-control" formControlName="mdpConfirmation" placeholder="password123" />
+        <p class="field-error" *ngIf="form.get('mdpConfirmation')?.touched && form.get('mdpConfirmation')?.errors?.['required']">
+          La confirmation est obligatoire.
+        </p>
+      </div>
+
+      <button type="submit" class="btn btn-primary full-btn" [disabled]="submitting()">
+        {{ submitting() ? 'Création...' : 'Créer mon compte' }}
+      </button>
+    </form>
+
+    <p class="field-error" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+
+    <hr *ngIf="!successMsg()" />
+
+    <div class="auth-foot" *ngIf="!successMsg()">
+      <button type="button" class="link-button red-link" (click)="goToLogin()">Déjà inscrit ? Se connecter</button>
+    </div>
+
+  </section>
+</div>

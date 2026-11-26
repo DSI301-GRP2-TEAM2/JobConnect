@@ -27,3 +27,8 @@ def is_positive(n):
 def absolute_value(n):
     """Return the absolute value of n."""
     return n if n >= 0 else -n
+
+# Helper for common operations
+def square(n):
+    """Return the square of n."""
+    return power(n, 2)

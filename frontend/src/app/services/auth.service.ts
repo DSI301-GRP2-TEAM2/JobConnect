@@ -2,20 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface User {
-  id?: string;
-  _id: string;
-  nom: string;
-  prenom?: string;
-  email: string;
-  role: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user: User;
-}
+import { User, AuthResponse, RegisterCandidatPayload, RegisterCandidatResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +47,10 @@ export class AuthService {
         this.showModal = false;
       })
     );
+  }
+
+  registerCandidat(payload: RegisterCandidatPayload): Observable<RegisterCandidatResponse> {
+    return this.http.post<RegisterCandidatResponse>(`${this.apiUrl}/api/auth/register/candidat`, payload);
   }
 
   logout(): void {
